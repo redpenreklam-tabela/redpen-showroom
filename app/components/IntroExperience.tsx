@@ -10,7 +10,7 @@ import {
 } from "react";
 
 type IntroExperienceProps = {
-  children: ReactNode;
+  children?: ReactNode;
 };
 
 const INTRO_REVEAL_MS = 2100;
@@ -153,7 +153,7 @@ export default function IntroExperience({
         </div>
       </section>
 
-      <main className="rp-showroom-content">{children}</main>
+      {children ? <main className="rp-showroom-content">{children}</main> : null}
 
       <style jsx global>{`
         :root {
