@@ -1,0 +1,26 @@
+REDPEN ŞEFFAF VIDEO SCROLL KURULUMU
+
+1) ZIP içindeki app/components/AssemblyScroll.tsx dosyasını proje içindeki aynı dosyanın üzerine yaz.
+
+2) ZIP içindeki app/globals.css dosyasını mevcut globals.css dosyanın üzerine YAZMA.
+   İçindeki CSS kodunu mevcut app/globals.css dosyanın EN ALTINA ekle.
+   (Bu ZIP'teki globals.css yalnızca eklenecek yeni CSS bölümüdür.)
+
+3) Şeffaf video şu yolda olmalı:
+   D:\Projects\redpen-showroom\public\videos\tabela-assembly.webm
+
+4) PowerShell:
+   cd D:\Projects\redpen-showroom
+   npm.cmd run dev
+
+5) Tarayıcıda Ctrl + F5 yap.
+
+NOT:
+- GLB montaj modeli artık bu bölümde kullanılmaz.
+- Kullanıcı scroll yaptıkça video ileri gider, yukarı kaydırınca geri sarar.
+- Video autoplay değildir; scroll zaman çizelgesini kontrol eder.
+- Şeffaf WebM arkasındaki grid, gradient ve efektler görünür kalır.
+- Brave/Chrome üzerinde hedeflenmiştir.
+
+SCRUB TAKILIYORSA (isteğe bağlı yeniden encode):
+ffmpeg -framerate 30 -start_number 1 -i "%04d.png" -c:v libvpx-vp9 -pix_fmt yuva420p -auto-alt-ref 0 -b:v 0 -crf 24 -g 15 -row-mt 1 -cpu-used 4 "tabela-assembly.webm"

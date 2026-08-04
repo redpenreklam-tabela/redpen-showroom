@@ -1,0 +1,19 @@
+REDPEN INFOGRAFIK V2 KURULUM
+
+1) ZIP içeriğini D:\Projects\redpen-showroom klasörüne çıkartın.
+2) app\components\SignAnatomy.tsx ve app\globals.css dosyalarının üzerine yazılmasını onaylayın.
+3) PowerShell:
+   cd D:\Projects\redpen-showroom
+   npm.cmd run dev
+4) Tarayıcıda Ctrl + F5 yapın.
+
+V2 DEĞİŞİKLİKLERİ
+- Katman sırası aşağıdan yukarıya düzeltildi:
+  01 Kompozit Zemin
+  02 Forex Taban
+  03 LED Modül
+  04 Pleksi Kutu Harf
+- Her katmanda modelin üzerinde numara ve isim etiketi eklendi.
+- Katmanlar benzersiz materyal ve yüzey ayrımlarıyla belirginleştirildi.
+- Aktif katman bilgisi model alanında ayrıca gösteriliyor.
+- Sağ panelde teknik malzeme bilgileri eklendi.

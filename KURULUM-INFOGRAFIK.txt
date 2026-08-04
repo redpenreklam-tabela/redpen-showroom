@@ -1,0 +1,30 @@
+REDPEN SHOWCASE - 3D INFOGRAFIK V1
+
+Eklenen bölüm:
+- "Bir Tabelanın Anatomisi" etkileşimli patlatılmış görünüm
+- Pleksi ön yüz, LED modül, alüminyum kasa, forex taban ve montaj yüzeyi
+- Katmanları aç / birleştir butonu
+- Katman üzerine gelince teknik açıklama ve görsel vurgu
+- Mouse hareketine bağlı hafif 3D perspektif
+- Mobil ve reduced-motion uyumu
+
+Kurulum:
+1) ZIP içeriğini şuraya çıkartın:
+D:\Projects\redpen-showroom
+
+2) Üzerine yazılacak dosyalar:
+app\components\Showroom.tsx
+app\globals.css
+
+3) Yeni dosya:
+app\components\SignAnatomy.tsx
+
+4) PowerShell:
+cd D:\Projects\redpen-showroom
+Ctrl + C
+npm.cmd run dev
+
+5) Tarayıcı:
+Ctrl + F5
+
+Ek paket kurulumu gerekmiyor.

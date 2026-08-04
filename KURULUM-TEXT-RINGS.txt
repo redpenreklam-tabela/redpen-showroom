@@ -1,0 +1,22 @@
+REDPEN 3D YAZI HALKALARI KURULUMU
+
+1) ZIP içeriğini şu klasöre çıkart:
+D:\Projects\redpen-showroom
+
+2) Üzerine yazılacak dosyalar:
+app\components\Showroom.tsx
+app\globals.css
+
+3) Yeni eklenecek dosya:
+app\components\TextRings.tsx
+
+4) Yeni npm paketi gerekmiyor. Mevcut Three.js ve React Three Fiber kullanılıyor.
+
+5) Çalıştır:
+cd D:\Projects\redpen-showroom
+npm.cmd run dev
+
+6) Tarayıcıda Ctrl + F5 yap.
+
+Bölüm SHOWCASE ana model alanının altında, üretim animasyonunun üstünde görünür.
+Metinleri değiştirmek için TextRings.tsx içindeki IŞIKLI TABELA, DİJİTAL BASKI ve LED EKRAN ifadelerini düzenle.

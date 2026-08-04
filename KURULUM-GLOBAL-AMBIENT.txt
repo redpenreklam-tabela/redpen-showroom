@@ -1,0 +1,26 @@
+REDPEN SHOWCASE — GLOBAL AMBIENT BACKGROUND
+
+1) ZIP içeriğini D:\Projects\redpen-showroom klasörüne çıkartın.
+2) Dosyaların üzerine yazılmasını onaylayın.
+3) PowerShell:
+
+cd D:\Projects\redpen-showroom
+npm.cmd run dev
+
+Sunucu zaten açıksa önce Ctrl + C, sonra npm.cmd run dev.
+Tarayıcıda Ctrl + F5 ile sert yenileyin.
+
+DEĞİŞEN DOSYALAR
+- app/components/GlobalAmbient.tsx (yeni)
+- app/components/Showroom.tsx
+- app/components/AssemblyScroll.tsx
+- app/components/SignAnatomy.tsx
+- app/globals.css
+
+ÖZELLİKLER
+- Tüm sayfanın arkasında tek, sabit ambient sistem
+- Bölümler arasında yumuşak renk ve ışık geçişleri
+- Showcase, üretim, anatomi, harfler, süreç, stüdyo ve iletişim için ayrı atmosfer
+- Hareketli grid, orbit çizgileri, scan ışığı ve düşük grain
+- Mouse parallax ve scroll tabanlı arka plan hareketi
+- Mobil ve prefers-reduced-motion optimizasyonu

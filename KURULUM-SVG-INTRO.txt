@@ -1,0 +1,24 @@
+REDPEN SVG INTRO GÜNCELLEMESİ
+
+1) ZIP içeriğini şu klasöre çıkartın:
+   D:\Projects\redpen-showroom
+
+2) Üzerine yazılacak dosya:
+   app\components\IntroExperience.tsx
+
+3) SVG logo kesinlikle şu yolda olmalı:
+   D:\Projects\redpen-showroom\public\brand\redpen-logo.svg
+
+4) PowerShell:
+   cd D:\Projects\redpen-showroom
+   npm.cmd run dev
+
+Sunucu açıksa önce Ctrl+C yapın. Tarayıcıda Ctrl+F5 ile sert yenileyin.
+
+Özellikler:
+- 3D intro modeli kaldırıldı.
+- SVG logo CSS glow ile aydınlanır.
+- Butona basılana kadar tüm scroll kilitlidir.
+- Büyük, gözden kaçmayacak CTA butonu vardır.
+- Işıkla senkron biçimde ana sayfa görünür olur.
+- Geçiş tamamlanınca sayfa hafifçe aşağı kayarak devamı gösterir.

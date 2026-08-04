@@ -1,0 +1,335 @@
+/* REDPEN SHOWROOM - MOBİL OPTİMİZASYON KATMANI */
+@media (max-width: 780px) {
+  html { -webkit-text-size-adjust: 100%; }
+  body { overscroll-behavior-y: none; }
+  .showroom { overflow: clip; }
+
+  .topbar {
+    height: 64px;
+    padding: 0 14px;
+    grid-template-columns: 1fr auto;
+    backdrop-filter: blur(12px);
+  }
+  .topbar .brand { gap: 8px; font-size: 9px; letter-spacing: .13em; }
+  .topbar .brand-mark { width: 27px; height: 27px; }
+  .topbar nav { display: none; }
+  .outline-button { min-height: 40px; padding: 11px 13px; }
+
+  .section-pad { padding: 76px 18px; }
+  .section-kicker { font-size: 8px; letter-spacing: .28em; }
+
+  .showcase-hero { padding: 92px 0 72px; min-height: auto; }
+  .showcase-grid { background-size: 48px 48px; }
+  .showcase-heading { width: calc(100vw - 28px); margin-bottom: 24px; }
+  .showcase-heading > p { font-size: 8px; letter-spacing: .26em; }
+  .showcase-heading h1 { font-size: clamp(58px, 21.5vw, 104px); line-height: .82; }
+  .showcase-heading-meta { margin-top: 20px; padding-top: 12px; gap: 7px; font-size: 7px; }
+  .showcase-stage { width: calc(100vw - 18px); }
+  .model-carousel {
+    height: min(68svh, 540px);
+    min-height: 430px;
+    padding: 46px 10px 58px;
+    border-radius: 20px;
+  }
+  .carousel-topline { top: 17px; left: 18px; right: 18px; }
+  .carousel-project-copy { left: 18px !important; right: 18px; bottom: 68px !important; }
+  .carousel-project-copy h2 { font-size: clamp(19px, 6vw, 28px) !important; }
+  .carousel-project-copy p { font-size: 6px; }
+  .carousel-arrow { width: 42px; height: 42px; bottom: 12px; }
+  .carousel-arrow-left { left: 12px; }
+  .carousel-arrow-right { right: 12px; }
+  .carousel-footer { left: 60px; right: 60px; bottom: 25px; }
+
+  .assembly-scroll { height: 470vh; }
+  .assembly-sticky { min-height: 560px; }
+  .assembly-canvas,
+  .assembly-video-shell { inset: 12vh -12vw 19vh 5vw; opacity: .88; }
+  .assembly-copy {
+    left: 18px;
+    top: auto;
+    bottom: 92px;
+    width: calc(100vw - 36px);
+    transform: none;
+    padding: 18px;
+    background: linear-gradient(90deg, rgba(5,5,6,.94), rgba(5,5,6,.62), transparent);
+  }
+  .assembly-copy .section-kicker { margin-bottom: 12px; }
+  .assembly-stage-copy h2 { margin: 10px 0 10px; font-size: clamp(34px, 12vw, 58px); }
+  .assembly-stage-copy p { max-width: 88%; font-size: 12px; line-height: 1.55; }
+  .assembly-stage-copy ul,
+  .assembly-stage-list,
+  .assembly-callout { display: none; }
+  .assembly-progress { left: 18px; right: 18px; bottom: 22px; }
+  .assembly-orbit-a { width: 120vw; height: 120vw; }
+  .assembly-orbit-b { width: 78vw; height: 78vw; }
+
+  .anatomy-section { padding-left: 12px; padding-right: 12px; }
+  .anatomy-heading { gap: 18px; margin-bottom: 28px; }
+  .anatomy-heading h2 { font-size: clamp(43px, 13vw, 66px); line-height: .9; }
+  .anatomy-heading > p { font-size: 12px; line-height: 1.6; }
+  .anatomy-layout { border-radius: 0; }
+  .anatomy-visual { min-height: 500px; }
+  .anatomy-object { left: 38%; top: 44%; width: 88vw; }
+  .anatomy-active-readout { left: 12px; bottom: 56px; max-width: 190px; }
+  .anatomy-panel-top { padding: 18px 14px; }
+  .anatomy-list > button { padding: 20px 14px; grid-template-columns: 27px 1fr 12px; }
+  .anatomy-list > button:hover,
+  .anatomy-list > button.is-active { padding-left: 18px; }
+  .anatomy-list strong { font-size: 18px; }
+  .anatomy-list p { font-size: 11px; line-height: 1.55; }
+
+  .manifesto-layout { gap: 24px; margin-bottom: 42px; }
+  .manifesto-layout h2,
+  .process-title h2,
+  .studio-card h2,
+  .contact h2 { font-size: clamp(44px, 13vw, 72px); line-height: .92; }
+  .manifesto-layout > p,
+  .process-title > p { max-width: none; font-size: 13px; line-height: 1.65; }
+  .work-grid { gap: 16px; }
+  .work-card { border-radius: 0; }
+  .work-visual-3d { height: min(92vw, 390px); }
+  .work-meta { padding: 22px 18px 24px; }
+  .work-meta h3 { font-size: 26px; }
+
+  .process { min-height: auto; }
+  .process-content { position: relative; }
+  .process-title { gap: 22px; margin-bottom: 38px; }
+  .process-rail { grid-template-columns: 1fr; }
+  .process-step { min-height: 240px; padding: 30px 22px; }
+  .process-orbit { opacity: .45; }
+
+  .studio-card { padding: 24px 18px; gap: 34px; }
+  .stats { grid-template-columns: 1fr 1fr; }
+  .stats div { min-height: 128px; padding: 18px 10px; }
+  .stats strong { font-size: 42px; }
+
+  .contact { min-height: 72svh; display: flex; flex-direction: column; justify-content: center; }
+  .contact-link { min-height: 54px; width: 100%; justify-content: center; }
+  .contact-ghost { font-size: 34vw; }
+
+  footer { padding: 26px 18px; font-size: 8px; }
+  footer .brand { width: 100%; }
+
+  .rp-intro-stage { padding: 72px 10px 94px !important; }
+  .rp-intro-display { gap: 22px !important; transform: translateY(-18px) !important; }
+  .rp-intro-logo-wrap { width: 98vw !important; height: clamp(160px, 42vw, 250px) !important; }
+  .rp-wallwasher { width: 94vw !important; height: 38px !important; }
+  .rp-wallwasher-beam { height: 300px !important; }
+  .rp-intro-action { bottom: 72px !important; width: calc(100vw - 28px); }
+  .rp-light-button { min-width: 0 !important; width: 100%; }
+  .rp-light-button-inner { min-height: 58px !important; padding: 0 14px !important; font-size: 11px !important; }
+  .rp-intro-hint { display: none; }
+
+  .scene-shell canvas { touch-action: pan-y pinch-zoom; }
+  .drag-hint,
+  .work-interaction-hint { font-size: 6px; opacity: .72; }
+}
+
+@media (max-width: 390px) {
+  .showcase-heading h1 { font-size: 20vw; }
+  .model-carousel { min-height: 405px; }
+  .assembly-copy { bottom: 82px; }
+  .assembly-stage-copy h2 { font-size: 32px; }
+  .anatomy-visual { min-height: 450px; }
+  .stats { grid-template-columns: 1fr; }
+  .stats div { min-height: 105px; }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .work-card:hover,
+  .outline-button:hover,
+  .carousel-arrow:hover,
+  .contact-link:hover { transform: none !important; }
+  .process-grid-motion,
+  .process-orbit,
+  .rp-intro-orbit { animation-duration: 70s !important; }
+}
+
+/* ANATOMY MOBİL V2
+   Görsel üstte, katman seçimleri altta 2x2 kompakt kart düzeninde. */
+@media (max-width: 780px) {
+  .anatomy-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border-radius: 0;
+  }
+
+  .anatomy-visual {
+    order: 1;
+    min-height: clamp(430px, 118vw, 560px);
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .anatomy-panel {
+    order: 2;
+    min-height: 0;
+  }
+
+  .anatomy-panel-top {
+    padding: 14px 12px;
+  }
+
+  .anatomy-panel-top > span {
+    font-size: 6px;
+    letter-spacing: .14em;
+  }
+
+  .anatomy-panel-top button {
+    font-size: 7px;
+    letter-spacing: .12em;
+  }
+
+  .anatomy-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    flex: none;
+  }
+
+  .anatomy-list > button {
+    min-height: 116px;
+    grid-template-columns: 20px minmax(0, 1fr) 10px;
+    gap: 8px;
+    align-items: start;
+    padding: 15px 11px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .anatomy-list > button:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .anatomy-list > button:hover,
+  .anatomy-list > button.is-active {
+    padding-left: 11px;
+    background:
+      linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--layer-accent) 12%, transparent),
+        transparent 70%
+      );
+    box-shadow:
+      inset 0 3px 0 var(--layer-accent),
+      inset 0 0 28px color-mix(in srgb, var(--layer-accent) 5%, transparent);
+  }
+
+  .anatomy-list > button > span {
+    padding-top: 4px;
+    font-size: 7px;
+  }
+
+  .anatomy-list strong {
+    margin-bottom: 8px;
+    font-size: clamp(14px, 4.3vw, 18px);
+    line-height: 1.06;
+  }
+
+  /* Mobilde açıklamayı kaldırıp kartları temiz ve okunur tutuyoruz. */
+  .anatomy-list p {
+    display: none;
+  }
+
+  .anatomy-list small {
+    margin-top: 9px;
+    font-size: 5.5px;
+    line-height: 1.35;
+    letter-spacing: .08em;
+  }
+
+  .anatomy-list > button > i {
+    padding-top: 2px;
+    font-size: 10px;
+  }
+
+  .anatomy-panel-foot {
+    padding: 12px 10px;
+    font-size: 5.5px;
+    letter-spacing: .1em;
+  }
+}
+
+@media (max-width: 390px) {
+  .anatomy-list > button {
+    min-height: 106px;
+    padding: 13px 9px;
+    grid-template-columns: 18px minmax(0, 1fr) 9px;
+  }
+
+  .anatomy-list > button:hover,
+  .anatomy-list > button.is-active {
+    padding-left: 9px;
+  }
+
+  .anatomy-list strong {
+    font-size: 14px;
+  }
+
+  .anatomy-list small {
+    font-size: 5px;
+  }
+}
+
+/* MODEL SHOWCASE MOBİL V3
+   Model alanında swipe ile slayt değiştirme kapalıdır.
+   Dokunma hareketleri yalnızca 3D model etkileşimine ayrılır. */
+@media (max-width: 780px) {
+  .model-carousel {
+    overscroll-behavior: contain;
+  }
+
+  .carousel-scene,
+  .carousel-scene .scene-shell,
+  .carousel-scene canvas {
+    touch-action: none !important;
+    overscroll-behavior: contain;
+  }
+
+  .carousel-scene {
+    isolation: isolate;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .carousel-arrow {
+    z-index: 40;
+    width: 50px;
+    height: 50px;
+    bottom: 12px;
+    border-color: rgba(213, 43, 69, .55);
+    background:
+      radial-gradient(circle at 50% 20%, rgba(255,255,255,.12), transparent 44%),
+      linear-gradient(180deg, rgba(128,18,38,.92), rgba(66,7,20,.96));
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,.05) inset,
+      0 0 18px rgba(213,43,69,.24);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .carousel-arrow:active {
+    transform: scale(.92) !important;
+    background:
+      radial-gradient(circle at 50% 20%, rgba(255,255,255,.18), transparent 44%),
+      linear-gradient(180deg, rgba(175,28,52,.96), rgba(88,9,27,.98));
+  }
+
+  .carousel-arrow-left { left: 10px; }
+  .carousel-arrow-right { right: 10px; }
+
+  .carousel-footer {
+    left: 70px;
+    right: 70px;
+    bottom: 27px;
+  }
+
+  .carousel-footer > span {
+    font-size: 5.5px;
+    letter-spacing: .12em;
+    text-align: center;
+  }
+
+  .drag-hint {
+    pointer-events: none;
+  }
+}

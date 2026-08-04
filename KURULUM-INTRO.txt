@@ -1,0 +1,18 @@
+REDPEN SHOWROOM - IŞIĞI AÇ GİRİŞİ
+
+1) Model dosyası şu yolda olmalı:
+   public/models/redpen-intro.glb
+
+2) ZIP içeriğini proje köküne çıkartın ve üzerine yazmayı onaylayın.
+
+3) PowerShell:
+   cd D:\Projects\redpen-showroom
+   npm.cmd run dev
+
+4) Tarayıcıda Ctrl + F5.
+
+Modelde algılanan isimler:
+- logo glow / logo light içeren obje veya materyaller: logo aydınlatması
+- wallwasher light / wallwasher glow içeren obje veya materyaller: wallwasher aydınlatması
+
+Model adı farklıysa IntroExperience.tsx içindeki INTRO_MODEL değerini değiştirin.

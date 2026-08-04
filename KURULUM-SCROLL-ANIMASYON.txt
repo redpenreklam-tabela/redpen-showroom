@@ -1,0 +1,31 @@
+REDPEN SCROLL ANİMASYONU KURULUMU
+=================================
+
+1) Bu ZIP içeriğini doğrudan şu klasöre çıkart:
+   D:\Projects\redpen-showroom
+
+2) Blender'dan çıkardığın animasyonlu dosya tam olarak burada olmalı:
+   D:\Projects\redpen-showroom\public\models\tabela-assembly.glb
+
+3) HDRI dosyası şu isimde olmalı:
+   D:\Projects\redpen-showroom\public\hdri\studio.hdr
+
+4) PowerShell:
+   cd D:\Projects\redpen-showroom
+   npm.cmd run dev
+
+Sunucu açıksa önce Ctrl + C yapıp yeniden başlat.
+Tarayıcıda Ctrl + F5 ile sert yenile.
+
+YENİ BÖLÜMÜN KONUMU
+- Ana 3D tabela carousel'inin hemen altında
+- Gold / pleksi / fileli krom harf kartlarının hemen üstünde
+
+ÇALIŞMA MANTIĞI
+- Kullanıcı aşağı kaydırdıkça tabela-assembly.glb içindeki ilk animasyon klibi ileri sarar.
+- Yukarı kaydırdıkça animasyon geri sarar.
+- Fareyle döndürme veya zoom yoktur.
+- Kamera hareketleri ve aşama yazıları kod tarafından scroll'a göre yönetilir.
+
+NOT
+GLB içindeki ilk animasyon klibi kullanılır. Blender'da ana animasyonu tek Action olarak tutmak en güvenli yöntemdir.

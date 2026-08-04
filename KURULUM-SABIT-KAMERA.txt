@@ -1,0 +1,40 @@
+REDPEN ASSEMBLY - SABIT BLENDER KAMERASI
+
+SORUN:
+Eski kod bütün animasyon sahnesinin sınır kutusunu hesaplayıp modeli otomatik sığdırıyordu.
+Sahne dışındaki profil, kompozit, vida vb. parçalar da hesaba katıldığı için final tabela çok küçük görünüyordu.
+
+YENI SISTEM:
+Web artık otomatik model sığdırması yapmaz.
+Blender'dan gelen WEB_CAMERA isimli kamerayı doğrudan kullanır.
+Parçalar kamera kadrajının dışında başlayabilir ve animasyon sırasında kadraja girebilir.
+
+BLENDER'DA YAPILACAKLAR:
+1. Sahneye bir Camera ekle veya mevcut kamerayı seç.
+2. Kameranın adını tam olarak WEB_CAMERA yap.
+3. İstediğin final tabela kadrajını viewport'ta ayarla.
+4. Ctrl + Alt + Numpad 0 ile aktif kamerayı mevcut görünüme hizala.
+5. Kamera sabit kalacaksa kameraya keyframe verme.
+6. GLB export ekranında Include > Cameras kutusunu AÇ.
+7. Animation ve gerekli diğer ayarlar açık kalsın.
+8. Dosyayı yeniden şu adla dışa aktar:
+   public/models/tabela-assembly.glb
+
+DOSYAYI PROJEYE KOPYALAMA:
+Bu ZIP içeriğini D:\Projects\redpen-showroom klasörüne çıkart.
+app\components\AssemblyScroll.tsx dosyasının üzerine yaz.
+
+CALISTIRMA:
+cd D:\Projects\redpen-showroom
+npm.cmd run dev
+
+Sunucu açıksa:
+Ctrl + C
+npm.cmd run dev
+
+Tarayıcı:
+Ctrl + F5
+
+NOT:
+WEB_CAMERA bulunamazsa kod GLB içindeki ilk Perspective Camera'yı kullanır.
+GLB içinde hiç kamera yoksa Canvas'ın yedek kamerası devreye girer.

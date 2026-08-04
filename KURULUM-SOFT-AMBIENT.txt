@@ -1,0 +1,11 @@
+ZIP'i D:\Projects\redpen-showroom klasorune cikartin ve dosyalarin uzerine yazilmasini onaylayin.
+
+Degisen dosyalar:
+- app/components/GlobalAmbient.tsx
+- app/globals.css
+
+Ardindan:
+cd D:\Projects\redpen-showroom
+npm.cmd run dev
+
+Tarayicida Ctrl + F5 yapin.
