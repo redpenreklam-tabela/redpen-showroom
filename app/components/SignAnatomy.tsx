@@ -168,25 +168,28 @@ export default function SignAnatomy() {
             </button>
           </div>
           <div className="anatomy-list">
-            {layers.map((layer, index) => (
-              <button
-                key={layer.title}
-                type="button"
-                className={activeLayer === index ? "is-active" : ""}
-                onMouseEnter={() => setActiveLayer(index)}
-                onFocus={() => setActiveLayer(index)}
-                onClick={() => setActiveLayer(index)}
-                style={{ "--layer-accent": layer.accent } as React.CSSProperties}
-              >
-                <span>{layer.no}</span>
-                <div>
-                  <strong>{layer.title}</strong>
-                  <p>{layer.detail}</p>
-                  <small>{layer.spec}</small>
-                </div>
-                <i>↗</i>
-              </button>
-            ))}
+            {[...layers]
+              .map((layer, index) => ({ layer, index }))
+              .reverse()
+              .map(({ layer, index }) => (
+                <button
+                  key={layer.title}
+                  type="button"
+                  className={activeLayer === index ? "is-active" : ""}
+                  onMouseEnter={() => setActiveLayer(index)}
+                  onFocus={() => setActiveLayer(index)}
+                  onClick={() => setActiveLayer(index)}
+                  style={{ "--layer-accent": layer.accent } as React.CSSProperties}
+                >
+                  <span>{layer.no}</span>
+                  <div>
+                    <strong>{layer.title}</strong>
+                    <p>{layer.detail}</p>
+                    <small>{layer.spec}</small>
+                  </div>
+                  <i>↗</i>
+                </button>
+              ))}
           </div>
           <div className="anatomy-panel-foot">
             <span>04 KATMAN</span><span>01 IŞIKLI SİSTEM</span><span>ALT → ÜST OKUMA</span>

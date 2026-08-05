@@ -951,3 +951,79 @@ html.intro-locked body {
 @media (prefers-reduced-motion: reduce) {
   .intro-experience *, .intro-experience *::before, .intro-experience *::after { animation-duration: .01ms !important; }
 }
+
+
+/* SIGN ANATOMY POSITION + LAYER CLARITY UPDATE */
+.anatomy-object {
+  top: 55%;
+}
+
+.anatomy-layer {
+  transform:
+    translate3d(
+      calc(var(--layer-index) * 18px),
+      calc(var(--layer-index) * -22px),
+      calc(var(--layer-index) * 86px)
+    );
+}
+
+.anatomy-layer:not(.is-active) {
+  filter: saturate(.55) brightness(.5);
+  opacity: .46;
+}
+
+.anatomy-layer.is-active {
+  z-index: 20;
+  border-width: 2px;
+  border-color: var(--layer-accent);
+  filter: saturate(1.08) brightness(1.28);
+  opacity: 1;
+  box-shadow:
+    0 32px 88px rgba(0,0,0,.62),
+    0 0 0 2px color-mix(in srgb, var(--layer-accent) 34%, transparent),
+    0 0 46px color-mix(in srgb, var(--layer-accent) 44%, transparent);
+}
+
+.anatomy-layer.is-active .anatomy-layer-id,
+.anatomy-layer.is-active .anatomy-layer-tab {
+  filter: brightness(1.2);
+}
+
+.anatomy-list > button {
+  transition:
+    background .28s ease,
+    box-shadow .28s ease,
+    padding .28s ease,
+    opacity .28s ease;
+}
+
+.anatomy-list > button:not(.is-active) {
+  opacity: .58;
+}
+
+.anatomy-list > button.is-active {
+  opacity: 1;
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--layer-accent) 20%, transparent),
+      rgba(255,255,255,.02) 62%,
+      transparent
+    );
+  box-shadow:
+    inset 4px 0 0 var(--layer-accent),
+    inset 0 0 44px color-mix(in srgb, var(--layer-accent) 10%, transparent),
+    0 0 28px color-mix(in srgb, var(--layer-accent) 8%, transparent);
+}
+
+.anatomy-list > button.is-active strong,
+.anatomy-list > button.is-active small,
+.anatomy-list > button.is-active > i {
+  color: var(--layer-accent);
+}
+
+@media (max-width: 1000px) {
+  .anatomy-object {
+    top: 52%;
+  }
+}
