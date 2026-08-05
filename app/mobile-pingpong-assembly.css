@@ -1,130 +1,150 @@
-/* MOBİLDE 5 BAĞIMSIZ TRANSPARAN KLİP */
+/* MOBİLDE SCROLL'DAN TAMAMEN BAĞIMSIZ NORMAL VİDEO */
 @media (pointer: coarse), (hover: none), (max-width: 1100px) {
   .assembly-scroll,
   .assembly-sticky,
-  .assembly-progress {
+  .assembly-progress,
+  .assembly-mobile-stages {
     display: none !important;
   }
 
   .assembly-mobile-placeholder {
-    min-height: 100svh;
+    min-height: 72svh;
     background: #050506;
   }
 
-  .assembly-mobile-stages {
+  .assembly-mobile-video-section {
     position: relative;
-    padding: 88px 14px 76px;
-    background:
-      radial-gradient(circle at 70% 12%, rgba(152, 21, 45, .18), transparent 34%),
-      linear-gradient(180deg, #050506, #09090b 42%, #050506);
+    padding: 82px 14px 74px;
     overflow: hidden;
+    border-top: 1px solid rgba(255,255,255,.07);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    background:
+      radial-gradient(circle at 70% 20%, rgba(159,24,48,.16), transparent 35%),
+      linear-gradient(180deg, #050506, #09090b 50%, #050506);
   }
 
-  .assembly-mobile-header {
-    padding: 0 4px 46px;
+  .assembly-mobile-video-heading {
+    position: relative;
+    z-index: 2;
+    padding: 0 4px 30px;
   }
 
-  .assembly-mobile-header h2 {
-    margin: 14px 0 18px;
-    font-size: clamp(46px, 15vw, 78px);
-    line-height: .86;
+  .assembly-mobile-video-heading .section-kicker {
+    margin-bottom: 16px;
+  }
+
+  .assembly-mobile-video-heading h2 {
+    margin: 0 0 18px;
+    font-size: clamp(47px, 15vw, 76px);
+    line-height: .84;
     letter-spacing: -.055em;
   }
 
-  .assembly-mobile-header > p:last-child {
-    max-width: 30rem;
+  .assembly-mobile-video-heading > p:last-child {
+    max-width: 31rem;
+    margin: 0;
     color: rgba(255,255,255,.62);
     font-size: 12px;
     line-height: 1.65;
   }
 
-  .assembly-mobile-stage-list {
-    display: grid;
-    gap: 22px;
-  }
-
-  .assembly-mobile-stage {
-    min-height: 86svh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border: 1px solid rgba(255,255,255,.09);
-    background:
-      linear-gradient(180deg, rgba(255,255,255,.025), transparent 32%),
-      rgba(8,8,10,.82);
-    overflow: hidden;
-  }
-
-  .assembly-mobile-stage-visual {
+  .assembly-mobile-video-frame {
     position: relative;
-    min-height: min(61vw, 370px);
+    min-height: clamp(390px, 112vw, 590px);
     display: grid;
     place-items: center;
-    border-bottom: 1px solid rgba(255,255,255,.08);
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.11);
     background:
-      radial-gradient(circle at 50% 50%, rgba(183, 28, 55, .16), transparent 54%),
-      linear-gradient(180deg, rgba(255,255,255,.018), transparent);
+      radial-gradient(circle at 50% 48%, rgba(179,29,55,.13), transparent 48%),
+      #070709;
+    box-shadow:
+      0 38px 90px rgba(0,0,0,.42),
+      inset 0 0 80px rgba(146,22,43,.06);
   }
 
-  .assembly-mobile-stage-visual video {
+  .assembly-mobile-video-grid {
+    position: absolute;
+    inset: 0;
+    opacity: .17;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at center, black, transparent 78%);
+  }
+
+  .assembly-mobile-autoplay-video {
+    position: relative;
+    z-index: 2;
     width: 100%;
-    height: min(61vw, 370px);
+    height: 100%;
+    min-height: clamp(390px, 112vw, 590px);
     display: block;
     object-fit: contain;
+    object-position: center;
+    background: #070709;
+    pointer-events: none;
+    user-select: none;
     filter: none !important;
-    background: transparent !important;
+    transform: translateZ(0);
   }
 
-  .assembly-mobile-stage-visual > span {
+  .assembly-mobile-video-badge {
     position: absolute;
-    top: 13px;
-    right: 15px;
-    color: rgba(255,255,255,.2);
-    font-size: 32px;
-    font-weight: 700;
-    line-height: 1;
-  }
-
-  .assembly-mobile-stage-copy {
-    padding: 22px 18px 25px;
-  }
-
-  .assembly-mobile-stage-copy > p {
-    margin: 0 0 10px;
-    color: #d92f4d;
-    font-size: 8px;
-    font-weight: 700;
-    letter-spacing: .19em;
-  }
-
-  .assembly-mobile-stage-copy h3 {
-    margin: 0 0 12px;
-    font-size: clamp(30px, 9vw, 46px);
-    line-height: .92;
-    letter-spacing: -.035em;
-  }
-
-  .assembly-mobile-stage-copy > div {
-    max-width: 31rem;
-    color: rgba(255,255,255,.68);
-    font-size: 12px;
-    line-height: 1.58;
-  }
-
-  .assembly-mobile-stage-copy ul {
+    z-index: 4;
+    top: 16px;
+    left: 16px;
     display: flex;
-    flex-wrap: wrap;
-    gap: 7px;
-    padding: 0;
-    margin: 18px 0 0;
-    list-style: none;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 10px;
+    border: 1px solid rgba(255,255,255,.1);
+    background: rgba(5,5,7,.68);
+    backdrop-filter: blur(9px);
   }
 
-  .assembly-mobile-stage-copy li {
-    padding: 7px 9px;
-    border: 1px solid rgba(255,255,255,.11);
-    color: rgba(255,255,255,.52);
-    font-size: 6px;
-    letter-spacing: .11em;
+  .assembly-mobile-video-badge span {
+    color: #df3654;
+    font: 700 8px/1 var(--font-geist-mono);
+  }
+
+  .assembly-mobile-video-badge strong {
+    color: rgba(255,255,255,.68);
+    font: 600 6px/1 var(--font-geist-mono);
+    letter-spacing: .16em;
+  }
+
+  .assembly-mobile-video-footer {
+    position: absolute;
+    z-index: 4;
+    left: 15px;
+    right: 15px;
+    bottom: 14px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255,255,255,.35);
+    font: 500 5.5px/1 var(--font-geist-mono);
+    letter-spacing: .14em;
+  }
+
+  .assembly-mobile-video-footer i {
+    height: 1px;
+    background: rgba(255,255,255,.12);
+  }
+}
+
+@media (max-width: 390px) {
+  .assembly-mobile-video-section {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .assembly-mobile-video-frame,
+  .assembly-mobile-autoplay-video {
+    min-height: 380px;
   }
 }

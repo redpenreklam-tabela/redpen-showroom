@@ -55,92 +55,76 @@ function isTouchMobileDevice() {
   );
 }
 
-function MobileAssemblyStages() {
-  const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
-  const cardRefs = useRef<Array<HTMLElement | null>>([]);
+function MobileAssemblyVideo() {
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    const observers: IntersectionObserver[] = [];
+    const video = videoRef.current;
+    if (!video) return;
 
-    cardRefs.current.forEach((card, index) => {
-      const video = videoRefs.current[index];
-      if (!card || !video) return;
+    video.muted = true;
+    video.defaultMuted = true;
+    video.loop = true;
 
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting && entry.intersectionRatio >= 0.58) {
-            video.currentTime = 0;
-            void video.play().catch(() => undefined);
-          } else {
-            video.pause();
-          }
-        },
-        {
-          threshold: [0, 0.25, 0.58, 0.8],
-          rootMargin: "-8% 0px -8% 0px",
-        },
-      );
+    const startPlayback = () => {
+      void video.play().catch(() => undefined);
+    };
 
-      observer.observe(card);
-      observers.push(observer);
-    });
+    startPlayback();
+    window.addEventListener("pageshow", startPlayback);
+    document.addEventListener("visibilitychange", startPlayback);
 
     return () => {
-      observers.forEach((observer) => observer.disconnect());
-      videoRefs.current.forEach((video) => video?.pause());
+      window.removeEventListener("pageshow", startPlayback);
+      document.removeEventListener("visibilitychange", startPlayback);
+      video.pause();
     };
   }, []);
 
   return (
     <section
-      className="assembly-mobile-stages"
+      className="assembly-mobile-video-section"
       data-ambient="assembly"
-      aria-label="Tabela üretim aşamaları"
+      aria-label="Tabela montaj videosu"
     >
-      <header className="assembly-mobile-header">
+      <div className="assembly-mobile-video-heading">
         <p className="section-kicker">ÜRETİMİN KATMANLARI</p>
-        <h2>PARÇA PARÇA<br />MARKAYA</h2>
+        <h2>
+          PARÇADAN<br />
+          <em>MARKAYA.</em>
+        </h2>
         <p>
-          Her aşama görünür olduğunda kendi animasyonu bir kez oynar.
+          Taşıyıcı profilden aydınlatmalı kutu harfe kadar üretim sürecinin
+          bütün katmanları.
         </p>
-      </header>
+      </div>
 
-      <div className="assembly-mobile-stage-list">
-        {stages.map((stage, index) => (
-          <article
-            key={stage.no}
-            ref={(element) => {
-              cardRefs.current[index] = element;
-            }}
-            className="assembly-mobile-stage"
-          >
-            <div className="assembly-mobile-stage-visual" aria-hidden="true">
-              <video
-                ref={(element) => {
-                  videoRefs.current[index] = element;
-                }}
-                src={stage.clip}
-                muted
-                playsInline
-                preload={index < 2 ? "auto" : "metadata"}
-                disablePictureInPicture
-                tabIndex={-1}
-              />
-              <span>{stage.no}</span>
-            </div>
+      <div className="assembly-mobile-video-frame">
+        <div className="assembly-mobile-video-grid" aria-hidden="true" />
 
-            <div className="assembly-mobile-stage-copy">
-              <p>{stage.no} / 05</p>
-              <h3>{stage.title}</h3>
-              <div>{stage.text}</div>
-              <ul>
-                {stage.specs.map((spec) => (
-                  <li key={spec}>{spec}</li>
-                ))}
-              </ul>
-            </div>
-          </article>
-        ))}
+        <video
+          ref={videoRef}
+          className="assembly-mobile-autoplay-video"
+          src="/videos/tabela-assembly-mobile.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          disablePictureInPicture
+          controls={false}
+        />
+
+        <div className="assembly-mobile-video-badge" aria-hidden="true">
+          <span>01</span>
+          <strong>MONTAJ SÜRECİ</strong>
+        </div>
+
+        <div className="assembly-mobile-video-footer" aria-hidden="true">
+          <span>OTOMATİK OYNATIM</span>
+          <i />
+          <span>REDPEN / 2026</span>
+        </div>
       </div>
     </section>
   );
@@ -384,5 +368,5 @@ export default function AssemblyScroll() {
     return <section className="assembly-mobile-placeholder" aria-hidden="true" />;
   }
 
-  return mobileMode ? <MobileAssemblyStages /> : <DesktopAssemblyScroll />;
+  return mobileMode ? <MobileAssemblyVideo /> : <DesktopAssemblyScroll />;
 }
