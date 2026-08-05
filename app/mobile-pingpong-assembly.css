@@ -1,11 +1,17 @@
-/* REDPEN MOBİL NORMAL VİDEO PING-PONG */
+/* REDPEN MOBİL NORMAL VİDEO - SCROLL'DAN TAMAMEN BAĞIMSIZ */
 @media (max-width: 780px) {
   .assembly-scroll.is-mobile-pingpong {
-    height: 145vh;
+    height: auto !important;
+    min-height: 100svh !important;
+    overflow: hidden;
   }
 
   .assembly-scroll.is-mobile-pingpong .assembly-sticky {
-    min-height: 100svh;
+    position: relative !important;
+    inset: auto !important;
+    top: auto !important;
+    height: auto !important;
+    min-height: 100svh !important;
   }
 
   .assembly-scroll.is-mobile-pingpong .assembly-video-shell {
