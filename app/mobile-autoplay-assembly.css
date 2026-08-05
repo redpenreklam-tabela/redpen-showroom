@@ -1,0 +1,66 @@
+/* REDPEN MOBİL AUTOPLAY HİBRİT */
+@media (max-width: 780px) {
+  .assembly-scroll.is-mobile-autoplay {
+    height: 230vh;
+  }
+
+  .assembly-scroll.is-mobile-autoplay .assembly-sticky {
+    min-height: 100svh;
+  }
+
+  .assembly-scroll.is-mobile-autoplay .assembly-video {
+    filter: none !important;
+    box-shadow: none !important;
+    will-change: auto !important;
+    transform: translateZ(0);
+  }
+
+  .assembly-scroll.is-mobile-autoplay .assembly-video-shell {
+    contain: layout paint style;
+  }
+
+  .assembly-scroll.is-mobile-autoplay .assembly-grain,
+  .assembly-scroll.is-mobile-autoplay .assembly-scanline,
+  .assembly-scroll.is-mobile-autoplay .assembly-orbit,
+  .assembly-scroll.is-mobile-autoplay .assembly-energy-line {
+    display: none !important;
+  }
+
+  .assembly-scroll.is-mobile-autoplay .assembly-background {
+    opacity: .38;
+  }
+
+  .assembly-scroll.is-mobile-autoplay .assembly-copy {
+    pointer-events: none;
+  }
+
+  .assembly-replay-button {
+    position: absolute;
+    z-index: 12;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 154px;
+    min-height: 48px;
+    padding: 0 22px;
+    border: 1px solid rgba(255, 112, 132, .62);
+    border-radius: 999px;
+    color: #fff;
+    font: inherit;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .17em;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(255,255,255,.16), transparent 42%),
+      linear-gradient(180deg, rgba(188,34,57,.96), rgba(91,8,25,.98));
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,.05) inset,
+      0 0 26px rgba(213,43,69,.38);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .assembly-replay-button:active {
+    transform: translate(-50%, -50%) scale(.96);
+  }
+}

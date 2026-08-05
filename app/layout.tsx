@@ -3,7 +3,7 @@ import { Cormorant_Garamond, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "./mobile.css";
 import "./mobile-video-performance.css";
-import "./mobile-frame-sequence.css";
+import "./mobile-autoplay-assembly.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
