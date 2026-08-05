@@ -105,7 +105,6 @@ function MobileAssemblyVideo() {
         <video
           ref={videoRef}
           className="assembly-mobile-autoplay-video"
-          src="/videos/tabela-assembly-mobile.mp4"
           autoPlay
           loop
           muted
@@ -113,7 +112,10 @@ function MobileAssemblyVideo() {
           preload="auto"
           disablePictureInPicture
           controls={false}
-        />
+        >
+          <source src="/videos/tabela-assembly-mobile.mp4" type="video/mp4" />
+          <source src="/videos/tabela-assembly.webm" type="video/webm" />
+        </video>
 
         <div className="assembly-mobile-video-badge" aria-hidden="true">
           <span>01</span>
@@ -145,6 +147,9 @@ function DesktopAssemblyScroll() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    const desktopQuery = window.matchMedia("(min-width: 1101px)");
+    if (!desktopQuery.matches) return;
+
     gsap.registerPlugin(ScrollTrigger);
 
     const section = sectionRef.current;
@@ -358,15 +363,14 @@ function DesktopAssemblyScroll() {
 }
 
 export default function AssemblyScroll() {
-  const [mobileMode, setMobileMode] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    setMobileMode(isTouchMobileDevice());
-  }, []);
-
-  if (mobileMode === null) {
-    return <section className="assembly-mobile-placeholder" aria-hidden="true" />;
-  }
-
-  return mobileMode ? <MobileAssemblyVideo /> : <DesktopAssemblyScroll />;
+  return (
+    <>
+      <div className="assembly-desktop-only">
+        <DesktopAssemblyScroll />
+      </div>
+      <div className="assembly-mobile-only">
+        <MobileAssemblyVideo />
+      </div>
+    </>
+  );
 }
