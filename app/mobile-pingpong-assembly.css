@@ -1,28 +1,39 @@
-/* REDPEN MOBİL NORMAL VİDEO - SCROLL'DAN TAMAMEN BAĞIMSIZ */
-@media (max-width: 780px) {
-  .assembly-scroll.is-mobile-pingpong {
+/* TOUCH CİHAZLARDA SCROLL BAĞLANTISINI ZORLA KAPAT */
+@media (pointer: coarse), (hover: none), (max-width: 1100px) {
+  .assembly-scroll.is-touch-mobile {
     height: auto !important;
     min-height: 100svh !important;
-    overflow: hidden;
+    overflow: hidden !important;
   }
 
-  .assembly-scroll.is-mobile-pingpong .assembly-sticky {
+  .assembly-scroll.is-touch-mobile .assembly-sticky {
     position: relative !important;
-    inset: auto !important;
     top: auto !important;
+    inset: auto !important;
     height: auto !important;
     min-height: 100svh !important;
   }
 
-  .assembly-scroll.is-mobile-pingpong .assembly-video-shell {
+  .assembly-scroll.is-touch-mobile .assembly-progress {
+    display: none !important;
+  }
+
+  .assembly-scroll.is-touch-mobile .assembly-video-shell {
     contain: layout paint style;
   }
 
-  .assembly-scroll.is-mobile-pingpong .assembly-video {
+  .assembly-scroll.is-touch-mobile .assembly-video {
     filter: none !important;
     box-shadow: none !important;
     will-change: opacity !important;
     transform: translateZ(0);
+  }
+
+  .assembly-scroll.is-touch-mobile .assembly-grain,
+  .assembly-scroll.is-touch-mobile .assembly-scanline,
+  .assembly-scroll.is-touch-mobile .assembly-orbit,
+  .assembly-scroll.is-touch-mobile .assembly-energy-line {
+    display: none !important;
   }
 
   .assembly-mobile-layer {
@@ -35,20 +46,5 @@
 
   .assembly-mobile-layer.is-active {
     opacity: 1;
-  }
-
-  .assembly-scroll.is-mobile-pingpong .assembly-grain,
-  .assembly-scroll.is-mobile-pingpong .assembly-scanline,
-  .assembly-scroll.is-mobile-pingpong .assembly-orbit,
-  .assembly-scroll.is-mobile-pingpong .assembly-energy-line {
-    display: none !important;
-  }
-
-  .assembly-scroll.is-mobile-pingpong .assembly-background {
-    opacity: .34;
-  }
-
-  .assembly-scroll.is-mobile-pingpong .assembly-copy {
-    pointer-events: none;
   }
 }

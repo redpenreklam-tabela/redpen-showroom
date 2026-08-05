@@ -12,37 +12,21 @@ const DESKTOP_VIDEO_FPS = 30;
 const DESKTOP_FRAME_DURATION = 1 / DESKTOP_VIDEO_FPS;
 
 const stages = [
-  {
-    no: "01",
-    title: "TAŞIYICI PROFİL",
-    text: "Ölçülendirilmiş metal iskelet, sistemin taşıyıcı geometrisini kurar.",
-    specs: ["ALÜMİNYUM PROFİL", "MİLİMETRİK KESİM", "TAŞIYICI SİSTEM"],
-  },
-  {
-    no: "02",
-    title: "KOMPOZİT YÜZEY",
-    text: "Panel profile yaklaşır; kenarlar kontrollü biçimde katlanarak gövdeyi kapatır.",
-    specs: ["3 MM KOMPOZİT", "CNC KESİM", "KENAR KATLAMA"],
-  },
-  {
-    no: "03",
-    title: "MEKANİK SABİTLEME",
-    text: "Bağlantılar ve vidalar katmanları tek bir rijit gövdede kilitler.",
-    specs: ["MEKANİK BAĞLANTI", "GİZLİ SABİTLEME", "HASSAS MONTAJ"],
-  },
-  {
-    no: "04",
-    title: "LED AYDINLATMA",
-    text: "Enerji hattı ve LED modülleri homojen ışık dağılımı için yerleşir.",
-    specs: ["LED MODÜL", "DÜŞÜK TÜKETİM", "HOMOJEN IŞIK"],
-  },
-  {
-    no: "05",
-    title: "KUTU HARF",
-    text: "Son yüzey yerine oturur; hacim, malzeme ve ışık tek bir marka imzasına dönüşür.",
-    specs: ["PLEKSİ YÜZEY", "KUTU HARF", "FİNAL KONTROL"],
-  },
+  { no: "01", title: "TAŞIYICI PROFİL", text: "Ölçülendirilmiş metal iskelet, sistemin taşıyıcı geometrisini kurar.", specs: ["ALÜMİNYUM PROFİL", "MİLİMETRİK KESİM", "TAŞIYICI SİSTEM"] },
+  { no: "02", title: "KOMPOZİT YÜZEY", text: "Panel profile yaklaşır; kenarlar kontrollü biçimde katlanarak gövdeyi kapatır.", specs: ["3 MM KOMPOZİT", "CNC KESİM", "KENAR KATLAMA"] },
+  { no: "03", title: "MEKANİK SABİTLEME", text: "Bağlantılar ve vidalar katmanları tek bir rijit gövdede kilitler.", specs: ["MEKANİK BAĞLANTI", "GİZLİ SABİTLEME", "HASSAS MONTAJ"] },
+  { no: "04", title: "LED AYDINLATMA", text: "Enerji hattı ve LED modülleri homojen ışık dağılımı için yerleşir.", specs: ["LED MODÜL", "DÜŞÜK TÜKETİM", "HOMOJEN IŞIK"] },
+  { no: "05", title: "KUTU HARF", text: "Son yüzey yerine oturur; hacim, malzeme ve ışık tek bir marka imzasına dönüşür.", specs: ["PLEKSİ YÜZEY", "KUTU HARF", "FİNAL KONTROL"] },
 ];
+
+function isTouchMobileDevice() {
+  return (
+    window.matchMedia("(pointer: coarse)").matches ||
+    window.matchMedia("(hover: none)").matches ||
+    navigator.maxTouchPoints > 0 ||
+    window.innerWidth <= 1100
+  );
+}
 
 export default function AssemblyScroll() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -58,7 +42,7 @@ export default function AssemblyScroll() {
   const visibleRef = useRef(false);
   const directionRef = useRef<"forward" | "reverse">("forward");
 
-  const [isMobile, setIsMobile] = useState<boolean | null>(null);
+  const [mobileMode, setMobileMode] = useState<boolean | null>(null);
   const [activeStage, setActiveStage] = useState(0);
   const [percent, setPercent] = useState(0);
   const [ready, setReady] = useState(false);
@@ -66,44 +50,41 @@ export default function AssemblyScroll() {
     useState<"forward" | "reverse">("forward");
 
   useEffect(() => {
-    setIsMobile(window.matchMedia("(max-width: 780px)").matches);
+    setMobileMode(isTouchMobileDevice());
   }, []);
 
   useEffect(() => {
-    if (isMobile === null) return;
+    if (mobileMode === null) return;
 
-    gsap.registerPlugin(ScrollTrigger);
     const section = sectionRef.current;
     if (!section) return;
 
     setReady(false);
 
-    if (isMobile) {
+    if (mobileMode) {
+      ScrollTrigger.getAll().forEach((trigger) => {
+        if (trigger.trigger === section) trigger.kill();
+      });
+
       const forward = forwardVideoRef.current;
       const reverse = reverseVideoRef.current;
       if (!forward || !reverse) return;
 
+      let uiTimer: number | null = null;
       let lastStage = -1;
       let lastPercent = -1;
-      let uiRaf: number | null = null;
 
-      const getActiveVideo = () =>
+      const activeVideo = () =>
         directionRef.current === "forward" ? forward : reverse;
 
       const syncUi = () => {
-        const active = getActiveVideo();
-        const duration = Number.isFinite(active.duration) ? active.duration : 0;
+        const video = activeVideo();
+        const duration = Number.isFinite(video.duration) ? video.duration : 0;
 
         if (duration > 0) {
-          const localProgress = Math.min(
-            1,
-            Math.max(0, active.currentTime / duration),
-          );
-
+          const local = Math.min(1, Math.max(0, video.currentTime / duration));
           const progress =
-            directionRef.current === "forward"
-              ? localProgress
-              : 1 - localProgress;
+            directionRef.current === "forward" ? local : 1 - local;
 
           const nextStage = Math.min(
             stages.length - 1,
@@ -122,38 +103,31 @@ export default function AssemblyScroll() {
             setPercent(nextPercent);
           }
         }
-
-        uiRaf = requestAnimationFrame(syncUi);
       };
 
       const playDirection = async (direction: "forward" | "reverse") => {
         directionRef.current = direction;
         setMobileDirection(direction);
 
-        const active = direction === "forward" ? forward : reverse;
-        const inactive = direction === "forward" ? reverse : forward;
+        const next = direction === "forward" ? forward : reverse;
+        const previous = direction === "forward" ? reverse : forward;
 
-        inactive.pause();
-        active.currentTime = 0;
+        previous.pause();
+        next.currentTime = 0;
 
         if (!visibleRef.current) return;
 
         try {
-          await active.play();
+          await next.play();
         } catch {
-          // muted + playsInline ile normalde oynar; tarayıcı engellerse görünürlük değişiminde tekrar denenir.
+          // muted + playsInline olduğu için çoğu mobil tarayıcıda doğrudan oynar.
         }
       };
 
-      const handleForwardEnd = () => {
-        void playDirection("reverse");
-      };
+      const onForwardEnded = () => void playDirection("reverse");
+      const onReverseEnded = () => void playDirection("forward");
 
-      const handleReverseEnd = () => {
-        void playDirection("forward");
-      };
-
-      const markReady = () => {
+      const onReady = () => {
         if (forward.readyState >= 2 && reverse.readyState >= 2) {
           setReady(true);
         }
@@ -162,44 +136,44 @@ export default function AssemblyScroll() {
       const observer = new IntersectionObserver(
         ([entry]) => {
           visibleRef.current =
-            entry.isIntersecting && entry.intersectionRatio >= 0.22;
+            entry.isIntersecting && entry.intersectionRatio >= 0.2;
 
           if (visibleRef.current) {
-            const active = getActiveVideo();
-            void active.play().catch(() => undefined);
+            void activeVideo().play().catch(() => undefined);
           } else {
             forward.pause();
             reverse.pause();
           }
         },
         {
-          threshold: [0, 0.22, 0.5, 0.8],
-          rootMargin: "-5% 0px -5% 0px",
+          threshold: [0, 0.2, 0.5],
         },
       );
 
-      forward.addEventListener("ended", handleForwardEnd);
-      reverse.addEventListener("ended", handleReverseEnd);
-      forward.addEventListener("canplay", markReady);
-      reverse.addEventListener("canplay", markReady);
+      forward.addEventListener("ended", onForwardEnded);
+      reverse.addEventListener("ended", onReverseEnded);
+      forward.addEventListener("canplay", onReady);
+      reverse.addEventListener("canplay", onReady);
 
       observer.observe(section);
-      markReady();
-      uiRaf = requestAnimationFrame(syncUi);
+      uiTimer = window.setInterval(syncUi, 120);
+      onReady();
 
       return () => {
         observer.disconnect();
         forward.pause();
         reverse.pause();
 
-        forward.removeEventListener("ended", handleForwardEnd);
-        reverse.removeEventListener("ended", handleReverseEnd);
-        forward.removeEventListener("canplay", markReady);
-        reverse.removeEventListener("canplay", markReady);
+        forward.removeEventListener("ended", onForwardEnded);
+        reverse.removeEventListener("ended", onReverseEnded);
+        forward.removeEventListener("canplay", onReady);
+        reverse.removeEventListener("canplay", onReady);
 
-        if (uiRaf !== null) cancelAnimationFrame(uiRaf);
+        if (uiTimer !== null) window.clearInterval(uiTimer);
       };
     }
+
+    gsap.registerPlugin(ScrollTrigger);
 
     const video = desktopVideoRef.current;
     if (!video) return;
@@ -243,12 +217,9 @@ export default function AssemblyScroll() {
         const duration = durationRef.current;
 
         if (duration > 0) {
-          const target = Math.min(
-            duration,
-            Math.max(0, targetTimeRef.current),
-          );
-
+          const target = Math.min(duration, Math.max(0, targetTimeRef.current));
           const delta = target - playheadRef.current;
+
           playheadRef.current += delta * (Math.abs(delta) > 0.8 ? 0.34 : 0.16);
 
           const frameTime =
@@ -279,10 +250,7 @@ export default function AssemblyScroll() {
       ([entry]) => {
         visibleRef.current = entry.isIntersecting;
       },
-      {
-        rootMargin: "25% 0px 25% 0px",
-        threshold: 0.01,
-      },
+      { rootMargin: "25% 0px 25% 0px", threshold: 0.01 },
     );
 
     const onMetadata = async () => {
@@ -312,9 +280,7 @@ export default function AssemblyScroll() {
     video.addEventListener("loadedmetadata", onMetadata);
     video.addEventListener("canplay", onCanPlay);
 
-    if (video.readyState >= 1) {
-      void onMetadata();
-    }
+    if (video.readyState >= 1) void onMetadata();
 
     return () => {
       trigger.kill();
@@ -328,7 +294,7 @@ export default function AssemblyScroll() {
         rafRef.current = null;
       }
     };
-  }, [isMobile]);
+  }, [mobileMode]);
 
   const stage = stages[activeStage];
 
@@ -336,7 +302,7 @@ export default function AssemblyScroll() {
     <section
       ref={sectionRef}
       className={`assembly-scroll${
-        isMobile ? " is-mobile-pingpong" : ""
+        mobileMode ? " is-mobile-pingpong is-touch-mobile" : ""
       }`}
       data-ambient="assembly"
       aria-label="Tabela üretim animasyonu"
@@ -358,7 +324,7 @@ export default function AssemblyScroll() {
           className={`assembly-video-shell${ready ? " is-ready" : ""}`}
           aria-hidden="true"
         >
-          {isMobile === true && (
+          {mobileMode === true && (
             <>
               <video
                 ref={forwardVideoRef}
@@ -388,7 +354,7 @@ export default function AssemblyScroll() {
             </>
           )}
 
-          {isMobile === false && (
+          {mobileMode === false && (
             <video
               ref={desktopVideoRef}
               className="assembly-video"
