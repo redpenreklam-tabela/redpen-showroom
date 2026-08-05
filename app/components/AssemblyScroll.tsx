@@ -5,7 +5,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, useState } from "react";
 
 const DESKTOP_VIDEO_PATH = "/videos/tabela-assembly.webm";
-const MOBILE_VIDEO_PATH = "/videos/tabela-assembly-mobile.mp4";
+const MOBILE_FORWARD_PATH = "/videos/tabela-assembly-mobile.mp4";
+const MOBILE_REVERSE_PATH = "/videos/tabela-assembly-mobile-reverse.mp4";
+
 const DESKTOP_VIDEO_FPS = 30;
 const DESKTOP_FRAME_DURATION = 1 / DESKTOP_VIDEO_FPS;
 
@@ -44,20 +46,24 @@ const stages = [
 
 export default function AssemblyScroll() {
   const sectionRef = useRef<HTMLElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const desktopVideoRef = useRef<HTMLVideoElement>(null);
+  const forwardVideoRef = useRef<HTMLVideoElement>(null);
+  const reverseVideoRef = useRef<HTMLVideoElement>(null);
+
   const durationRef = useRef(0);
   const targetTimeRef = useRef(0);
   const playheadRef = useRef(0);
   const rafRef = useRef<number | null>(null);
   const lastSeekAtRef = useRef(0);
   const visibleRef = useRef(false);
-  const hasStartedMobileRef = useRef(false);
+  const directionRef = useRef<"forward" | "reverse">("forward");
 
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
   const [activeStage, setActiveStage] = useState(0);
   const [percent, setPercent] = useState(0);
   const [ready, setReady] = useState(false);
-  const [mobileEnded, setMobileEnded] = useState(false);
+  const [mobileDirection, setMobileDirection] =
+    useState<"forward" | "reverse">("forward");
 
   useEffect(() => {
     setIsMobile(window.matchMedia("(max-width: 780px)").matches);
@@ -67,112 +73,136 @@ export default function AssemblyScroll() {
     if (isMobile === null) return;
 
     gsap.registerPlugin(ScrollTrigger);
-
     const section = sectionRef.current;
-    const video = videoRef.current;
-    if (!section || !video) return;
+    if (!section) return;
 
     setReady(false);
-    setMobileEnded(false);
 
     if (isMobile) {
+      const forward = forwardVideoRef.current;
+      const reverse = reverseVideoRef.current;
+      if (!forward || !reverse) return;
+
       let lastStage = -1;
       let lastPercent = -1;
+      let uiRaf: number | null = null;
 
-      const syncMobileUi = () => {
-        const duration = Number.isFinite(video.duration) ? video.duration : 0;
-        if (duration <= 0) return;
+      const getActiveVideo = () =>
+        directionRef.current === "forward" ? forward : reverse;
 
-        const progress = Math.min(1, Math.max(0, video.currentTime / duration));
-        const nextStage = Math.min(
-          stages.length - 1,
-          Math.floor(progress * stages.length),
-        );
-        const nextPercent = Math.round(progress * 100);
+      const syncUi = () => {
+        const active = getActiveVideo();
+        const duration = Number.isFinite(active.duration) ? active.duration : 0;
 
-        if (nextStage !== lastStage) {
-          lastStage = nextStage;
-          setActiveStage(nextStage);
+        if (duration > 0) {
+          const localProgress = Math.min(
+            1,
+            Math.max(0, active.currentTime / duration),
+          );
+
+          const progress =
+            directionRef.current === "forward"
+              ? localProgress
+              : 1 - localProgress;
+
+          const nextStage = Math.min(
+            stages.length - 1,
+            Math.floor(progress * stages.length),
+          );
+
+          const nextPercent = Math.round(progress * 100);
+
+          if (nextStage !== lastStage) {
+            lastStage = nextStage;
+            setActiveStage(nextStage);
+          }
+
+          if (nextPercent !== lastPercent) {
+            lastPercent = nextPercent;
+            setPercent(nextPercent);
+          }
         }
 
-        if (nextPercent !== lastPercent) {
-          lastPercent = nextPercent;
-          setPercent(nextPercent);
+        uiRaf = requestAnimationFrame(syncUi);
+      };
+
+      const playDirection = async (direction: "forward" | "reverse") => {
+        directionRef.current = direction;
+        setMobileDirection(direction);
+
+        const active = direction === "forward" ? forward : reverse;
+        const inactive = direction === "forward" ? reverse : forward;
+
+        inactive.pause();
+        active.currentTime = 0;
+
+        if (!visibleRef.current) return;
+
+        try {
+          await active.play();
+        } catch {
+          // muted + playsInline ile normalde oynar; tarayıcı engellerse görünürlük değişiminde tekrar denenir.
         }
       };
 
-      const tryPlay = async () => {
-        if (video.ended) return;
+      const handleForwardEnd = () => {
+        void playDirection("reverse");
+      };
 
-        try {
-          await video.play();
-          hasStartedMobileRef.current = true;
-        } catch {
-          // Mobil tarayıcı otomatik oynatmayı reddederse kullanıcı videoya dokunabilir.
+      const handleReverseEnd = () => {
+        void playDirection("forward");
+      };
+
+      const markReady = () => {
+        if (forward.readyState >= 2 && reverse.readyState >= 2) {
+          setReady(true);
         }
       };
 
       const observer = new IntersectionObserver(
         ([entry]) => {
-          const sufficientlyVisible =
-            entry.isIntersecting && entry.intersectionRatio >= 0.35;
+          visibleRef.current =
+            entry.isIntersecting && entry.intersectionRatio >= 0.22;
 
-          if (sufficientlyVisible) {
-            void tryPlay();
-          } else if (!video.paused) {
-            video.pause();
+          if (visibleRef.current) {
+            const active = getActiveVideo();
+            void active.play().catch(() => undefined);
+          } else {
+            forward.pause();
+            reverse.pause();
           }
         },
         {
-          threshold: [0, 0.2, 0.35, 0.55, 0.8],
-          rootMargin: "-8% 0px -8% 0px",
+          threshold: [0, 0.22, 0.5, 0.8],
+          rootMargin: "-5% 0px -5% 0px",
         },
       );
 
-      const onLoadedMetadata = () => {
-        setReady(true);
-        syncMobileUi();
-      };
-
-      const onCanPlay = () => {
-        setReady(true);
-      };
-
-      const onTimeUpdate = () => {
-        syncMobileUi();
-      };
-
-      const onEnded = () => {
-        setMobileEnded(true);
-        setPercent(100);
-        setActiveStage(stages.length - 1);
-      };
-
-      const onPlay = () => {
-        setMobileEnded(false);
-      };
+      forward.addEventListener("ended", handleForwardEnd);
+      reverse.addEventListener("ended", handleReverseEnd);
+      forward.addEventListener("canplay", markReady);
+      reverse.addEventListener("canplay", markReady);
 
       observer.observe(section);
-      video.addEventListener("loadedmetadata", onLoadedMetadata);
-      video.addEventListener("canplay", onCanPlay);
-      video.addEventListener("timeupdate", onTimeUpdate);
-      video.addEventListener("ended", onEnded);
-      video.addEventListener("play", onPlay);
-
-      if (video.readyState >= 1) {
-        onLoadedMetadata();
-      }
+      markReady();
+      uiRaf = requestAnimationFrame(syncUi);
 
       return () => {
         observer.disconnect();
-        video.pause();
-        video.removeEventListener("loadedmetadata", onLoadedMetadata);
-        video.removeEventListener("canplay", onCanPlay);
-        video.removeEventListener("timeupdate", onTimeUpdate);
-        video.removeEventListener("ended", onEnded);
-        video.removeEventListener("play", onPlay);
+        forward.pause();
+        reverse.pause();
+
+        forward.removeEventListener("ended", handleForwardEnd);
+        reverse.removeEventListener("ended", handleReverseEnd);
+        forward.removeEventListener("canplay", markReady);
+        reverse.removeEventListener("canplay", markReady);
+
+        if (uiRaf !== null) cancelAnimationFrame(uiRaf);
       };
     }
+
+    const video = desktopVideoRef.current;
+    if (!video) return;
 
     video.pause();
 
@@ -289,6 +319,7 @@ export default function AssemblyScroll() {
     return () => {
       trigger.kill();
       observer.disconnect();
+
       video.removeEventListener("loadedmetadata", onMetadata);
       video.removeEventListener("canplay", onCanPlay);
 
@@ -299,29 +330,13 @@ export default function AssemblyScroll() {
     };
   }, [isMobile]);
 
-  const restartMobileVideo = async () => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    video.currentTime = 0;
-    setActiveStage(0);
-    setPercent(0);
-    setMobileEnded(false);
-
-    try {
-      await video.play();
-    } catch {
-      // Kullanıcı etkileşimiyle çağrıldığı için normalde oynar.
-    }
-  };
-
   const stage = stages[activeStage];
 
   return (
     <section
       ref={sectionRef}
       className={`assembly-scroll${
-        isMobile ? " is-mobile-autoplay" : ""
+        isMobile ? " is-mobile-pingpong" : ""
       }`}
       data-ambient="assembly"
       aria-label="Tabela üretim animasyonu"
@@ -343,15 +358,44 @@ export default function AssemblyScroll() {
           className={`assembly-video-shell${ready ? " is-ready" : ""}`}
           aria-hidden="true"
         >
-          {isMobile !== null && (
+          {isMobile === true && (
+            <>
+              <video
+                ref={forwardVideoRef}
+                className={`assembly-video assembly-mobile-layer${
+                  mobileDirection === "forward" ? " is-active" : ""
+                }`}
+                src={MOBILE_FORWARD_PATH}
+                muted
+                playsInline
+                preload="auto"
+                disablePictureInPicture
+                tabIndex={-1}
+              />
+
+              <video
+                ref={reverseVideoRef}
+                className={`assembly-video assembly-mobile-layer${
+                  mobileDirection === "reverse" ? " is-active" : ""
+                }`}
+                src={MOBILE_REVERSE_PATH}
+                muted
+                playsInline
+                preload="auto"
+                disablePictureInPicture
+                tabIndex={-1}
+              />
+            </>
+          )}
+
+          {isMobile === false && (
             <video
-              key={isMobile ? MOBILE_VIDEO_PATH : DESKTOP_VIDEO_PATH}
-              ref={videoRef}
+              ref={desktopVideoRef}
               className="assembly-video"
-              src={isMobile ? MOBILE_VIDEO_PATH : DESKTOP_VIDEO_PATH}
+              src={DESKTOP_VIDEO_PATH}
               muted
               playsInline
-              preload={isMobile ? "metadata" : "auto"}
+              preload="auto"
               disablePictureInPicture
               tabIndex={-1}
             />
@@ -359,16 +403,6 @@ export default function AssemblyScroll() {
 
           {!ready && (
             <div className="assembly-video-loader">SAHNE YÜKLENİYOR</div>
-          )}
-
-          {isMobile && mobileEnded && (
-            <button
-              type="button"
-              className="assembly-replay-button"
-              onClick={restartMobileVideo}
-            >
-              TEKRAR OYNAT
-            </button>
           )}
         </div>
 

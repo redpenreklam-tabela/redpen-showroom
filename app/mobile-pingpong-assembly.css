@@ -1,0 +1,48 @@
+/* REDPEN MOBİL NORMAL VİDEO PING-PONG */
+@media (max-width: 780px) {
+  .assembly-scroll.is-mobile-pingpong {
+    height: 145vh;
+  }
+
+  .assembly-scroll.is-mobile-pingpong .assembly-sticky {
+    min-height: 100svh;
+  }
+
+  .assembly-scroll.is-mobile-pingpong .assembly-video-shell {
+    contain: layout paint style;
+  }
+
+  .assembly-scroll.is-mobile-pingpong .assembly-video {
+    filter: none !important;
+    box-shadow: none !important;
+    will-change: opacity !important;
+    transform: translateZ(0);
+  }
+
+  .assembly-mobile-layer {
+    position: absolute !important;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .14s linear;
+  }
+
+  .assembly-mobile-layer.is-active {
+    opacity: 1;
+  }
+
+  .assembly-scroll.is-mobile-pingpong .assembly-grain,
+  .assembly-scroll.is-mobile-pingpong .assembly-scanline,
+  .assembly-scroll.is-mobile-pingpong .assembly-orbit,
+  .assembly-scroll.is-mobile-pingpong .assembly-energy-line {
+    display: none !important;
+  }
+
+  .assembly-scroll.is-mobile-pingpong .assembly-background {
+    opacity: .34;
+  }
+
+  .assembly-scroll.is-mobile-pingpong .assembly-copy {
+    pointer-events: none;
+  }
+}
