@@ -1,0 +1,28 @@
+/* REDPEN MOBİL FRAME SEQUENCE */
+@media (max-width: 780px) {
+  .assembly-frame-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: none !important;
+    box-shadow: none !important;
+    will-change: auto !important;
+    transform: translateZ(0);
+  }
+
+  .assembly-scroll.is-frame-sequence .assembly-video-shell {
+    contain: layout paint style;
+  }
+
+  .assembly-scroll.is-frame-sequence .assembly-grain,
+  .assembly-scroll.is-frame-sequence .assembly-scanline,
+  .assembly-scroll.is-frame-sequence .assembly-orbit,
+  .assembly-scroll.is-frame-sequence .assembly-energy-line {
+    display: none !important;
+  }
+
+  .assembly-scroll.is-frame-sequence .assembly-background {
+    opacity: .38;
+  }
+}

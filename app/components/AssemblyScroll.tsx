@@ -5,7 +5,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, useState } from "react";
 
 const DESKTOP_VIDEO_PATH = "/videos/tabela-assembly.webm";
-const MOBILE_VIDEO_PATH = "/videos/tabela-assembly-mobile.mp4";
+const MOBILE_FRAME_COUNT = 107;
+const MOBILE_FRAME_PATH = (index: number) =>
+  `/frames/assembly-mobile/frame-${String(index).padStart(3, "0")}.webp`;
 
 const stages = [
   { no: "01", title: "TAŞIYICI PROFİL", text: "Ölçülendirilmiş metal iskelet, sistemin taşıyıcı geometrisini kurar.", specs: ["ALÜMİNYUM PROFİL", "MİLİMETRİK KESİM", "TAŞIYICI SİSTEM"] },
@@ -15,42 +17,150 @@ const stages = [
   { no: "05", title: "KUTU HARF", text: "Son yüzey yerine oturur; hacim, malzeme ve ışık tek bir marka imzasına dönüşür.", specs: ["PLEKSİ YÜZEY", "KUTU HARF", "FİNAL KONTROL"] },
 ];
 
+function drawContain(
+  context: CanvasRenderingContext2D,
+  image: HTMLImageElement,
+  canvas: HTMLCanvasElement,
+) {
+  const canvasWidth = canvas.clientWidth;
+  const canvasHeight = canvas.clientHeight;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  const pixelWidth = Math.max(1, Math.round(canvasWidth * dpr));
+  const pixelHeight = Math.max(1, Math.round(canvasHeight * dpr));
+
+  if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
+    canvas.width = pixelWidth;
+    canvas.height = pixelHeight;
+  }
+
+  context.setTransform(dpr, 0, 0, dpr, 0, 0);
+  context.clearRect(0, 0, canvasWidth, canvasHeight);
+
+  const imageRatio = image.naturalWidth / image.naturalHeight;
+  const canvasRatio = canvasWidth / canvasHeight;
+
+  let width = canvasWidth;
+  let height = canvasHeight;
+
+  if (imageRatio > canvasRatio) {
+    height = width / imageRatio;
+  } else {
+    width = height * imageRatio;
+  }
+
+  const x = (canvasWidth - width) / 2;
+  const y = (canvasHeight - height) / 2;
+
+  context.drawImage(image, x, y, width, height);
+}
+
 export default function AssemblyScroll() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const frameImagesRef = useRef<HTMLImageElement[]>([]);
+  const currentFrameRef = useRef(0);
   const durationRef = useRef(0);
   const targetTimeRef = useRef(0);
   const playheadRef = useRef(0);
   const rafRef = useRef<number | null>(null);
   const lastSeekAtRef = useRef(0);
   const visibleRef = useRef(false);
+
+  const [isMobile, setIsMobile] = useState(false);
   const [activeStage, setActiveStage] = useState(0);
   const [percent, setPercent] = useState(0);
   const [ready, setReady] = useState(false);
-  const [videoPath, setVideoPath] = useState(DESKTOP_VIDEO_PATH);
 
   useEffect(() => {
-    const mobile = window.matchMedia("(max-width: 780px)").matches;
-    setVideoPath(mobile ? MOBILE_VIDEO_PATH : DESKTOP_VIDEO_PATH);
+    setIsMobile(window.matchMedia("(max-width: 780px)").matches);
   }, []);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
     const section = sectionRef.current;
-    const video = videoRef.current;
-    if (!section || !video) return;
-
-    const mobile = window.matchMedia("(max-width: 780px)").matches;
-    const tablet = window.matchMedia("(max-width: 1100px)").matches;
-    const seekFps = mobile ? 12 : tablet ? 18 : 30;
-    const frameDuration = 1 / seekFps;
-    const percentStep = mobile ? 2 : 1;
-
-    video.pause();
+    if (!section) return;
 
     let lastStage = -1;
     let lastPercent = -1;
+
+    const drawFrame = (index: number) => {
+      const canvas = canvasRef.current;
+      const image = frameImagesRef.current[index];
+      if (!canvas || !image || !image.complete) return;
+
+      const context = canvas.getContext("2d", {
+        alpha: true,
+        desynchronized: true,
+      });
+
+      if (!context) return;
+
+      drawContain(context, image, canvas);
+      currentFrameRef.current = index;
+    };
+
+    if (isMobile) {
+      let loadedFrames = 0;
+      const images = Array.from({ length: MOBILE_FRAME_COUNT }, (_, index) => {
+        const image = new Image();
+        image.decoding = "async";
+        image.src = MOBILE_FRAME_PATH(index + 1);
+
+        image.onload = () => {
+          loadedFrames += 1;
+
+          if (index === 0) {
+            drawFrame(0);
+          }
+
+          if (loadedFrames >= Math.min(8, MOBILE_FRAME_COUNT)) {
+            setReady(true);
+          }
+        };
+
+        return image;
+      });
+
+      frameImagesRef.current = images;
+    } else {
+      const video = videoRef.current;
+
+      if (video) {
+        video.pause();
+
+        const onMetadata = async () => {
+          durationRef.current = Math.max(video.duration || 0, 0);
+
+          try {
+            video.currentTime = 0.001;
+            await video.play();
+            video.pause();
+          } catch {
+            video.pause();
+          }
+
+          setReady(true);
+          ScrollTrigger.refresh();
+        };
+
+        const onCanPlay = () => setReady(true);
+
+        video.addEventListener("loadedmetadata", onMetadata);
+        video.addEventListener("canplay", onCanPlay);
+
+        if (video.readyState >= 1) {
+          void onMetadata();
+        }
+
+        return () => {
+          video.removeEventListener("loadedmetadata", onMetadata);
+          video.removeEventListener("canplay", onCanPlay);
+        };
+      }
+    }
 
     const trigger = ScrollTrigger.create({
       trigger: section,
@@ -60,7 +170,6 @@ export default function AssemblyScroll() {
       invalidateOnRefresh: true,
       onUpdate: (self) => {
         const progress = Math.min(1, Math.max(0, self.progress));
-        targetTimeRef.current = progress * durationRef.current;
 
         const nextStage = Math.min(
           stages.length - 1,
@@ -73,50 +182,58 @@ export default function AssemblyScroll() {
         }
 
         const rawPercent = Math.round(progress * 100);
-        const nextPercent =
-          rawPercent >= 100
+        const nextPercent = isMobile
+          ? rawPercent >= 100
             ? 100
-            : Math.round(rawPercent / percentStep) * percentStep;
+            : Math.round(rawPercent / 2) * 2
+          : rawPercent;
 
         if (nextPercent !== lastPercent) {
           lastPercent = nextPercent;
           setPercent(nextPercent);
         }
+
+        if (isMobile) {
+          const nextFrame = Math.min(
+            MOBILE_FRAME_COUNT - 1,
+            Math.round(progress * (MOBILE_FRAME_COUNT - 1)),
+          );
+
+          if (nextFrame !== currentFrameRef.current) {
+            drawFrame(nextFrame);
+          }
+        } else {
+          targetTimeRef.current = progress * durationRef.current;
+        }
       },
     });
 
     const tick = (now: number) => {
-      if (!visibleRef.current) {
-        rafRef.current = requestAnimationFrame(tick);
-        return;
-      }
+      if (!isMobile && visibleRef.current) {
+        const video = videoRef.current;
+        const duration = durationRef.current;
 
-      const duration = durationRef.current;
-
-      if (duration > 0) {
-        const target = Math.min(
-          duration,
-          Math.max(0, targetTimeRef.current),
-        );
-
-        const delta = target - playheadRef.current;
-        playheadRef.current += delta * (Math.abs(delta) > 0.8 ? 0.28 : 0.12);
-
-        const frameTime =
-          Math.round(playheadRef.current * seekFps) / seekFps;
-
-        const enoughTimePassed =
-          now - lastSeekAtRef.current >= 1000 / seekFps;
-
-        const needsFrame =
-          Math.abs(video.currentTime - frameTime) >= frameDuration * 0.9;
-
-        if (enoughTimePassed && needsFrame && !video.seeking) {
-          lastSeekAtRef.current = now;
-          video.currentTime = Math.min(
-            Math.max(frameTime, 0.001),
-            Math.max(0.001, duration - 0.001),
+        if (video && duration > 0) {
+          const target = Math.min(
+            duration,
+            Math.max(0, targetTimeRef.current),
           );
+
+          const delta = target - playheadRef.current;
+          playheadRef.current += delta * (Math.abs(delta) > 0.8 ? 0.34 : 0.16);
+
+          const frameTime = Math.round(playheadRef.current * 30) / 30;
+          const enoughTimePassed = now - lastSeekAtRef.current >= 1000 / 30;
+          const needsFrame =
+            Math.abs(video.currentTime - frameTime) >= (1 / 30) * 0.72;
+
+          if (enoughTimePassed && needsFrame && !video.seeking) {
+            lastSeekAtRef.current = now;
+            video.currentTime = Math.min(
+              Math.max(frameTime, 0.001),
+              Math.max(0.001, duration - 0.001),
+            );
+          }
         }
       }
 
@@ -126,64 +243,41 @@ export default function AssemblyScroll() {
     const observer = new IntersectionObserver(
       ([entry]) => {
         visibleRef.current = entry.isIntersecting;
-
-        if (entry.isIntersecting && rafRef.current === null) {
-          rafRef.current = requestAnimationFrame(tick);
-        }
       },
-      { rootMargin: "30% 0px 30% 0px", threshold: 0.01 },
+      { rootMargin: "25% 0px 25% 0px", threshold: 0.01 },
     );
 
     observer.observe(section);
     rafRef.current = requestAnimationFrame(tick);
 
-    const onMetadata = async () => {
-      durationRef.current = Math.max(video.duration || 0, 0);
-
-      const initialTime = trigger.progress * durationRef.current;
-      targetTimeRef.current = initialTime;
-      playheadRef.current = initialTime;
-
-      try {
-        video.currentTime = 0.001;
-        await video.play();
-        video.pause();
-      } catch {
-        video.pause();
+    const onResize = () => {
+      if (isMobile) {
+        drawFrame(currentFrameRef.current);
       }
-
-      setReady(true);
-      ScrollTrigger.refresh();
     };
 
-    const onCanPlay = () => setReady(true);
-
-    video.addEventListener("loadedmetadata", onMetadata);
-    video.addEventListener("canplay", onCanPlay);
-
-    if (video.readyState >= 1) {
-      void onMetadata();
-    }
+    window.addEventListener("resize", onResize);
 
     return () => {
       trigger.kill();
       observer.disconnect();
-      video.removeEventListener("loadedmetadata", onMetadata);
-      video.removeEventListener("canplay", onCanPlay);
+      window.removeEventListener("resize", onResize);
 
       if (rafRef.current !== null) {
         cancelAnimationFrame(rafRef.current);
         rafRef.current = null;
       }
+
+      frameImagesRef.current = [];
     };
-  }, [videoPath]);
+  }, [isMobile]);
 
   const stage = stages[activeStage];
 
   return (
     <section
       ref={sectionRef}
-      className="assembly-scroll"
+      className={`assembly-scroll${isMobile ? " is-frame-sequence" : ""}`}
       data-ambient="assembly"
       aria-label="Tabela üretim animasyonu"
     >
@@ -204,17 +298,24 @@ export default function AssemblyScroll() {
           className={`assembly-video-shell${ready ? " is-ready" : ""}`}
           aria-hidden="true"
         >
-          <video
-            key={videoPath}
-            ref={videoRef}
-            className="assembly-video"
-            src={videoPath}
-            muted
-            playsInline
-            preload="auto"
-            disablePictureInPicture
-            tabIndex={-1}
-          />
+          {isMobile ? (
+            <canvas
+              ref={canvasRef}
+              className="assembly-video assembly-frame-canvas"
+            />
+          ) : (
+            <video
+              ref={videoRef}
+              className="assembly-video"
+              src={DESKTOP_VIDEO_PATH}
+              muted
+              playsInline
+              preload="auto"
+              disablePictureInPicture
+              tabIndex={-1}
+            />
+          )}
+
           {!ready && (
             <div className="assembly-video-loader">SAHNE YÜKLENİYOR</div>
           )}
@@ -222,6 +323,7 @@ export default function AssemblyScroll() {
 
         <div className="assembly-copy">
           <p className="section-kicker">ÜRETİMİN KATMANLARI</p>
+
           <div className="assembly-stage-copy" key={activeStage}>
             <span>{stage.no}</span>
             <h2>{stage.title}</h2>
