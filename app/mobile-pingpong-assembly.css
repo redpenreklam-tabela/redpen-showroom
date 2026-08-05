@@ -1,50 +1,130 @@
-/* TOUCH CİHAZLARDA SCROLL BAĞLANTISINI ZORLA KAPAT */
+/* MOBİLDE 5 BAĞIMSIZ TRANSPARAN KLİP */
 @media (pointer: coarse), (hover: none), (max-width: 1100px) {
-  .assembly-scroll.is-touch-mobile {
-    height: auto !important;
-    min-height: 100svh !important;
-    overflow: hidden !important;
-  }
-
-  .assembly-scroll.is-touch-mobile .assembly-sticky {
-    position: relative !important;
-    top: auto !important;
-    inset: auto !important;
-    height: auto !important;
-    min-height: 100svh !important;
-  }
-
-  .assembly-scroll.is-touch-mobile .assembly-progress {
+  .assembly-scroll,
+  .assembly-sticky,
+  .assembly-progress {
     display: none !important;
   }
 
-  .assembly-scroll.is-touch-mobile .assembly-video-shell {
-    contain: layout paint style;
+  .assembly-mobile-placeholder {
+    min-height: 100svh;
+    background: #050506;
   }
 
-  .assembly-scroll.is-touch-mobile .assembly-video {
+  .assembly-mobile-stages {
+    position: relative;
+    padding: 88px 14px 76px;
+    background:
+      radial-gradient(circle at 70% 12%, rgba(152, 21, 45, .18), transparent 34%),
+      linear-gradient(180deg, #050506, #09090b 42%, #050506);
+    overflow: hidden;
+  }
+
+  .assembly-mobile-header {
+    padding: 0 4px 46px;
+  }
+
+  .assembly-mobile-header h2 {
+    margin: 14px 0 18px;
+    font-size: clamp(46px, 15vw, 78px);
+    line-height: .86;
+    letter-spacing: -.055em;
+  }
+
+  .assembly-mobile-header > p:last-child {
+    max-width: 30rem;
+    color: rgba(255,255,255,.62);
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+  .assembly-mobile-stage-list {
+    display: grid;
+    gap: 22px;
+  }
+
+  .assembly-mobile-stage {
+    min-height: 86svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px solid rgba(255,255,255,.09);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.025), transparent 32%),
+      rgba(8,8,10,.82);
+    overflow: hidden;
+  }
+
+  .assembly-mobile-stage-visual {
+    position: relative;
+    min-height: min(61vw, 370px);
+    display: grid;
+    place-items: center;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    background:
+      radial-gradient(circle at 50% 50%, rgba(183, 28, 55, .16), transparent 54%),
+      linear-gradient(180deg, rgba(255,255,255,.018), transparent);
+  }
+
+  .assembly-mobile-stage-visual video {
+    width: 100%;
+    height: min(61vw, 370px);
+    display: block;
+    object-fit: contain;
     filter: none !important;
-    box-shadow: none !important;
-    will-change: opacity !important;
-    transform: translateZ(0);
+    background: transparent !important;
   }
 
-  .assembly-scroll.is-touch-mobile .assembly-grain,
-  .assembly-scroll.is-touch-mobile .assembly-scanline,
-  .assembly-scroll.is-touch-mobile .assembly-orbit,
-  .assembly-scroll.is-touch-mobile .assembly-energy-line {
-    display: none !important;
+  .assembly-mobile-stage-visual > span {
+    position: absolute;
+    top: 13px;
+    right: 15px;
+    color: rgba(255,255,255,.2);
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
   }
 
-  .assembly-mobile-layer {
-    position: absolute !important;
-    inset: 0;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .14s linear;
+  .assembly-mobile-stage-copy {
+    padding: 22px 18px 25px;
   }
 
-  .assembly-mobile-layer.is-active {
-    opacity: 1;
+  .assembly-mobile-stage-copy > p {
+    margin: 0 0 10px;
+    color: #d92f4d;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: .19em;
+  }
+
+  .assembly-mobile-stage-copy h3 {
+    margin: 0 0 12px;
+    font-size: clamp(30px, 9vw, 46px);
+    line-height: .92;
+    letter-spacing: -.035em;
+  }
+
+  .assembly-mobile-stage-copy > div {
+    max-width: 31rem;
+    color: rgba(255,255,255,.68);
+    font-size: 12px;
+    line-height: 1.58;
+  }
+
+  .assembly-mobile-stage-copy ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    padding: 0;
+    margin: 18px 0 0;
+    list-style: none;
+  }
+
+  .assembly-mobile-stage-copy li {
+    padding: 7px 9px;
+    border: 1px solid rgba(255,255,255,.11);
+    color: rgba(255,255,255,.52);
+    font-size: 6px;
+    letter-spacing: .11em;
   }
 }

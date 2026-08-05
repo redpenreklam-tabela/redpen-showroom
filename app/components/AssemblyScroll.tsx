@@ -5,18 +5,45 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, useState } from "react";
 
 const DESKTOP_VIDEO_PATH = "/videos/tabela-assembly.webm";
-const MOBILE_FORWARD_PATH = "/videos/tabela-assembly-mobile.mp4";
-const MOBILE_REVERSE_PATH = "/videos/tabela-assembly-mobile-reverse.mp4";
-
 const DESKTOP_VIDEO_FPS = 30;
 const DESKTOP_FRAME_DURATION = 1 / DESKTOP_VIDEO_FPS;
 
 const stages = [
-  { no: "01", title: "TAŞIYICI PROFİL", text: "Ölçülendirilmiş metal iskelet, sistemin taşıyıcı geometrisini kurar.", specs: ["ALÜMİNYUM PROFİL", "MİLİMETRİK KESİM", "TAŞIYICI SİSTEM"] },
-  { no: "02", title: "KOMPOZİT YÜZEY", text: "Panel profile yaklaşır; kenarlar kontrollü biçimde katlanarak gövdeyi kapatır.", specs: ["3 MM KOMPOZİT", "CNC KESİM", "KENAR KATLAMA"] },
-  { no: "03", title: "MEKANİK SABİTLEME", text: "Bağlantılar ve vidalar katmanları tek bir rijit gövdede kilitler.", specs: ["MEKANİK BAĞLANTI", "GİZLİ SABİTLEME", "HASSAS MONTAJ"] },
-  { no: "04", title: "LED AYDINLATMA", text: "Enerji hattı ve LED modülleri homojen ışık dağılımı için yerleşir.", specs: ["LED MODÜL", "DÜŞÜK TÜKETİM", "HOMOJEN IŞIK"] },
-  { no: "05", title: "KUTU HARF", text: "Son yüzey yerine oturur; hacim, malzeme ve ışık tek bir marka imzasına dönüşür.", specs: ["PLEKSİ YÜZEY", "KUTU HARF", "FİNAL KONTROL"] },
+  {
+    no: "01",
+    title: "TAŞIYICI PROFİL",
+    text: "Ölçülendirilmiş metal iskelet, sistemin taşıyıcı geometrisini kurar.",
+    specs: ["ALÜMİNYUM PROFİL", "MİLİMETRİK KESİM", "TAŞIYICI SİSTEM"],
+    clip: "/videos/assembly-stages/01-profil.webm",
+  },
+  {
+    no: "02",
+    title: "KOMPOZİT YÜZEY",
+    text: "Panel profile yaklaşır; kenarlar kontrollü biçimde katlanarak gövdeyi kapatır.",
+    specs: ["3 MM KOMPOZİT", "CNC KESİM", "KENAR KATLAMA"],
+    clip: "/videos/assembly-stages/02-kompozit.webm",
+  },
+  {
+    no: "03",
+    title: "FOREX KATMANI",
+    text: "İç yüzey katmanları kontrollü biçimde yerleşerek gövdeyi tamamlar.",
+    specs: ["FOREX YÜZEY", "HASSAS KESİM", "KATMANLI MONTAJ"],
+    clip: "/videos/assembly-stages/03-forex.webm",
+  },
+  {
+    no: "04",
+    title: "LED AYDINLATMA",
+    text: "Enerji hattı ve LED modülleri homojen ışık dağılımı için yerleşir.",
+    specs: ["LED MODÜL", "DÜŞÜK TÜKETİM", "HOMOJEN IŞIK"],
+    clip: "/videos/assembly-stages/04-led.webm",
+  },
+  {
+    no: "05",
+    title: "KUTU HARF",
+    text: "Son yüzey yerine oturur; hacim, malzeme ve ışık tek bir marka imzasına dönüşür.",
+    specs: ["PLEKSİ YÜZEY", "KUTU HARF", "FİNAL KONTROL"],
+    clip: "/videos/assembly-stages/05-harf.webm",
+  },
 ];
 
 function isTouchMobileDevice() {
@@ -28,155 +55,117 @@ function isTouchMobileDevice() {
   );
 }
 
-export default function AssemblyScroll() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const desktopVideoRef = useRef<HTMLVideoElement>(null);
-  const forwardVideoRef = useRef<HTMLVideoElement>(null);
-  const reverseVideoRef = useRef<HTMLVideoElement>(null);
+function MobileAssemblyStages() {
+  const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
+  const cardRefs = useRef<Array<HTMLElement | null>>([]);
 
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+
+    cardRefs.current.forEach((card, index) => {
+      const video = videoRefs.current[index];
+      if (!card || !video) return;
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.58) {
+            video.currentTime = 0;
+            void video.play().catch(() => undefined);
+          } else {
+            video.pause();
+          }
+        },
+        {
+          threshold: [0, 0.25, 0.58, 0.8],
+          rootMargin: "-8% 0px -8% 0px",
+        },
+      );
+
+      observer.observe(card);
+      observers.push(observer);
+    });
+
+    return () => {
+      observers.forEach((observer) => observer.disconnect());
+      videoRefs.current.forEach((video) => video?.pause());
+    };
+  }, []);
+
+  return (
+    <section
+      className="assembly-mobile-stages"
+      data-ambient="assembly"
+      aria-label="Tabela üretim aşamaları"
+    >
+      <header className="assembly-mobile-header">
+        <p className="section-kicker">ÜRETİMİN KATMANLARI</p>
+        <h2>PARÇA PARÇA<br />MARKAYA</h2>
+        <p>
+          Her aşama görünür olduğunda kendi animasyonu bir kez oynar.
+        </p>
+      </header>
+
+      <div className="assembly-mobile-stage-list">
+        {stages.map((stage, index) => (
+          <article
+            key={stage.no}
+            ref={(element) => {
+              cardRefs.current[index] = element;
+            }}
+            className="assembly-mobile-stage"
+          >
+            <div className="assembly-mobile-stage-visual" aria-hidden="true">
+              <video
+                ref={(element) => {
+                  videoRefs.current[index] = element;
+                }}
+                src={stage.clip}
+                muted
+                playsInline
+                preload={index < 2 ? "auto" : "metadata"}
+                disablePictureInPicture
+                tabIndex={-1}
+              />
+              <span>{stage.no}</span>
+            </div>
+
+            <div className="assembly-mobile-stage-copy">
+              <p>{stage.no} / 05</p>
+              <h3>{stage.title}</h3>
+              <div>{stage.text}</div>
+              <ul>
+                {stage.specs.map((spec) => (
+                  <li key={spec}>{spec}</li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function DesktopAssemblyScroll() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const durationRef = useRef(0);
   const targetTimeRef = useRef(0);
   const playheadRef = useRef(0);
   const rafRef = useRef<number | null>(null);
   const lastSeekAtRef = useRef(0);
   const visibleRef = useRef(false);
-  const directionRef = useRef<"forward" | "reverse">("forward");
 
-  const [mobileMode, setMobileMode] = useState<boolean | null>(null);
   const [activeStage, setActiveStage] = useState(0);
   const [percent, setPercent] = useState(0);
   const [ready, setReady] = useState(false);
-  const [mobileDirection, setMobileDirection] =
-    useState<"forward" | "reverse">("forward");
 
   useEffect(() => {
-    setMobileMode(isTouchMobileDevice());
-  }, []);
-
-  useEffect(() => {
-    if (mobileMode === null) return;
-
-    const section = sectionRef.current;
-    if (!section) return;
-
-    setReady(false);
-
-    if (mobileMode) {
-      ScrollTrigger.getAll().forEach((trigger) => {
-        if (trigger.trigger === section) trigger.kill();
-      });
-
-      const forward = forwardVideoRef.current;
-      const reverse = reverseVideoRef.current;
-      if (!forward || !reverse) return;
-
-      let uiTimer: number | null = null;
-      let lastStage = -1;
-      let lastPercent = -1;
-
-      const activeVideo = () =>
-        directionRef.current === "forward" ? forward : reverse;
-
-      const syncUi = () => {
-        const video = activeVideo();
-        const duration = Number.isFinite(video.duration) ? video.duration : 0;
-
-        if (duration > 0) {
-          const local = Math.min(1, Math.max(0, video.currentTime / duration));
-          const progress =
-            directionRef.current === "forward" ? local : 1 - local;
-
-          const nextStage = Math.min(
-            stages.length - 1,
-            Math.floor(progress * stages.length),
-          );
-
-          const nextPercent = Math.round(progress * 100);
-
-          if (nextStage !== lastStage) {
-            lastStage = nextStage;
-            setActiveStage(nextStage);
-          }
-
-          if (nextPercent !== lastPercent) {
-            lastPercent = nextPercent;
-            setPercent(nextPercent);
-          }
-        }
-      };
-
-      const playDirection = async (direction: "forward" | "reverse") => {
-        directionRef.current = direction;
-        setMobileDirection(direction);
-
-        const next = direction === "forward" ? forward : reverse;
-        const previous = direction === "forward" ? reverse : forward;
-
-        previous.pause();
-        next.currentTime = 0;
-
-        if (!visibleRef.current) return;
-
-        try {
-          await next.play();
-        } catch {
-          // muted + playsInline olduğu için çoğu mobil tarayıcıda doğrudan oynar.
-        }
-      };
-
-      const onForwardEnded = () => void playDirection("reverse");
-      const onReverseEnded = () => void playDirection("forward");
-
-      const onReady = () => {
-        if (forward.readyState >= 2 && reverse.readyState >= 2) {
-          setReady(true);
-        }
-      };
-
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          visibleRef.current =
-            entry.isIntersecting && entry.intersectionRatio >= 0.2;
-
-          if (visibleRef.current) {
-            void activeVideo().play().catch(() => undefined);
-          } else {
-            forward.pause();
-            reverse.pause();
-          }
-        },
-        {
-          threshold: [0, 0.2, 0.5],
-        },
-      );
-
-      forward.addEventListener("ended", onForwardEnded);
-      reverse.addEventListener("ended", onReverseEnded);
-      forward.addEventListener("canplay", onReady);
-      reverse.addEventListener("canplay", onReady);
-
-      observer.observe(section);
-      uiTimer = window.setInterval(syncUi, 120);
-      onReady();
-
-      return () => {
-        observer.disconnect();
-        forward.pause();
-        reverse.pause();
-
-        forward.removeEventListener("ended", onForwardEnded);
-        reverse.removeEventListener("ended", onReverseEnded);
-        forward.removeEventListener("canplay", onReady);
-        reverse.removeEventListener("canplay", onReady);
-
-        if (uiTimer !== null) window.clearInterval(uiTimer);
-      };
-    }
-
     gsap.registerPlugin(ScrollTrigger);
 
-    const video = desktopVideoRef.current;
-    if (!video) return;
+    const section = sectionRef.current;
+    const video = videoRef.current;
+    if (!section || !video) return;
 
     video.pause();
 
@@ -294,16 +283,14 @@ export default function AssemblyScroll() {
         rafRef.current = null;
       }
     };
-  }, [mobileMode]);
+  }, []);
 
   const stage = stages[activeStage];
 
   return (
     <section
       ref={sectionRef}
-      className={`assembly-scroll${
-        mobileMode ? " is-mobile-pingpong is-touch-mobile" : ""
-      }`}
+      className="assembly-scroll"
       data-ambient="assembly"
       aria-label="Tabela üretim animasyonu"
     >
@@ -324,48 +311,16 @@ export default function AssemblyScroll() {
           className={`assembly-video-shell${ready ? " is-ready" : ""}`}
           aria-hidden="true"
         >
-          {mobileMode === true && (
-            <>
-              <video
-                ref={forwardVideoRef}
-                className={`assembly-video assembly-mobile-layer${
-                  mobileDirection === "forward" ? " is-active" : ""
-                }`}
-                src={MOBILE_FORWARD_PATH}
-                muted
-                playsInline
-                preload="auto"
-                disablePictureInPicture
-                tabIndex={-1}
-              />
-
-              <video
-                ref={reverseVideoRef}
-                className={`assembly-video assembly-mobile-layer${
-                  mobileDirection === "reverse" ? " is-active" : ""
-                }`}
-                src={MOBILE_REVERSE_PATH}
-                muted
-                playsInline
-                preload="auto"
-                disablePictureInPicture
-                tabIndex={-1}
-              />
-            </>
-          )}
-
-          {mobileMode === false && (
-            <video
-              ref={desktopVideoRef}
-              className="assembly-video"
-              src={DESKTOP_VIDEO_PATH}
-              muted
-              playsInline
-              preload="auto"
-              disablePictureInPicture
-              tabIndex={-1}
-            />
-          )}
+          <video
+            ref={videoRef}
+            className="assembly-video"
+            src={DESKTOP_VIDEO_PATH}
+            muted
+            playsInline
+            preload="auto"
+            disablePictureInPicture
+            tabIndex={-1}
+          />
 
           {!ready && (
             <div className="assembly-video-loader">SAHNE YÜKLENİYOR</div>
@@ -374,7 +329,6 @@ export default function AssemblyScroll() {
 
         <div className="assembly-copy">
           <p className="section-kicker">ÜRETİMİN KATMANLARI</p>
-
           <div className="assembly-stage-copy" key={activeStage}>
             <span>{stage.no}</span>
             <h2>{stage.title}</h2>
@@ -417,4 +371,18 @@ export default function AssemblyScroll() {
       </div>
     </section>
   );
+}
+
+export default function AssemblyScroll() {
+  const [mobileMode, setMobileMode] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    setMobileMode(isTouchMobileDevice());
+  }, []);
+
+  if (mobileMode === null) {
+    return <section className="assembly-mobile-placeholder" aria-hidden="true" />;
+  }
+
+  return mobileMode ? <MobileAssemblyStages /> : <DesktopAssemblyScroll />;
 }
