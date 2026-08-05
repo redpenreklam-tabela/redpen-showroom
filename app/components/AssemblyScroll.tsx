@@ -60,23 +60,36 @@ function MobileAssemblyVideo() {
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
+    const section = video?.closest(".assembly-mobile-video-section");
+    if (!video || !section) return;
 
     video.muted = true;
     video.defaultMuted = true;
     video.loop = true;
 
-    const startPlayback = () => {
+    const play = () => {
       void video.play().catch(() => undefined);
     };
 
-    startPlayback();
-    window.addEventListener("pageshow", startPlayback);
-    document.addEventListener("visibilitychange", startPlayback);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          play();
+        } else {
+          video.pause();
+        }
+      },
+      {
+        root: null,
+        rootMargin: "50px 0px 50px 0px",
+        threshold: 0,
+      },
+    );
+
+    observer.observe(section);
 
     return () => {
-      window.removeEventListener("pageshow", startPlayback);
-      document.removeEventListener("visibilitychange", startPlayback);
+      observer.disconnect();
       video.pause();
     };
   }, []);
@@ -363,14 +376,26 @@ function DesktopAssemblyScroll() {
 }
 
 export default function AssemblyScroll() {
-  return (
-    <>
-      <div className="assembly-desktop-only">
-        <DesktopAssemblyScroll />
-      </div>
-      <div className="assembly-mobile-only">
-        <MobileAssemblyVideo />
-      </div>
-    </>
-  );
+  const [mobileMode, setMobileMode] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 1100px)");
+
+    const syncMode = () => {
+      setMobileMode(query.matches);
+    };
+
+    syncMode();
+    query.addEventListener("change", syncMode);
+
+    return () => {
+      query.removeEventListener("change", syncMode);
+    };
+  }, []);
+
+  if (mobileMode === null) {
+    return <div className="assembly-responsive-placeholder" aria-hidden="true" />;
+  }
+
+  return mobileMode ? <MobileAssemblyVideo /> : <DesktopAssemblyScroll />;
 }

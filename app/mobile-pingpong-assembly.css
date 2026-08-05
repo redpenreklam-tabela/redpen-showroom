@@ -20,3 +20,58 @@
   .assembly-mobile-video-footer{position:absolute;z-index:4;left:15px;right:15px;bottom:14px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;color:rgba(255,255,255,.35);font:500 5.5px/1 var(--font-geist-mono);letter-spacing:.14em}
   .assembly-mobile-video-footer i{height:1px;background:rgba(255,255,255,.12)}
 }
+
+
+/* FINAL: MOBİLDE NORMAL SAYFA AKIŞI */
+.assembly-responsive-placeholder {
+  min-height: 1px;
+}
+
+@media (max-width:1100px) {
+  .assembly-mobile-video-section,
+  .assembly-mobile-video-frame,
+  .assembly-mobile-autoplay-video {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    transform: none;
+    overflow: visible;
+    touch-action: pan-y !important;
+    pointer-events: auto;
+  }
+
+  .assembly-mobile-video-section {
+    display: block;
+    width: 100%;
+    padding: 72px 14px;
+  }
+
+  .assembly-mobile-video-frame {
+    display: block;
+    width: 100%;
+    aspect-ratio: auto;
+    overflow: hidden;
+  }
+
+  .assembly-mobile-autoplay-video {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    pointer-events: none !important;
+  }
+
+  .assembly-scroll,
+  .assembly-sticky {
+    position: static !important;
+    height: auto !important;
+    min-height: 0 !important;
+    inset: auto !important;
+    overflow: visible !important;
+  }
+}
