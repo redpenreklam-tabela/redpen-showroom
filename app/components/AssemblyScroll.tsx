@@ -376,26 +376,15 @@ function DesktopAssemblyScroll() {
 }
 
 export default function AssemblyScroll() {
-  const [mobileMode, setMobileMode] = useState<boolean | null>(null);
+  return (
+    <>
+      <div className="assembly-desktop-wrapper">
+        <DesktopAssemblyScroll />
+      </div>
 
-  useEffect(() => {
-    const query = window.matchMedia("(max-width: 1100px)");
-
-    const syncMode = () => {
-      setMobileMode(query.matches);
-    };
-
-    syncMode();
-    query.addEventListener("change", syncMode);
-
-    return () => {
-      query.removeEventListener("change", syncMode);
-    };
-  }, []);
-
-  if (mobileMode === null) {
-    return <div className="assembly-responsive-placeholder" aria-hidden="true" />;
-  }
-
-  return mobileMode ? <MobileAssemblyVideo /> : <DesktopAssemblyScroll />;
+      <div className="assembly-mobile-wrapper">
+        <MobileAssemblyVideo />
+      </div>
+    </>
+  );
 }

@@ -75,3 +75,22 @@
     overflow: visible !important;
   }
 }
+
+
+/* GERÇEK TELEFONDA KESİN MOBİL AYRIM */
+.assembly-desktop-wrapper { display:block; }
+.assembly-mobile-wrapper { display:none; }
+
+@media (max-width:1100px){
+  .assembly-desktop-wrapper{display:none!important;height:0!important;min-height:0!important;overflow:hidden!important;}
+  .assembly-desktop-wrapper .assembly-scroll,
+  .assembly-desktop-wrapper .assembly-sticky,
+  .assembly-desktop-wrapper .assembly-progress,
+  .assembly-desktop-wrapper .assembly-copy,
+  .assembly-desktop-wrapper .assembly-video-shell{display:none!important;position:static!important;height:0!important;min-height:0!important;}
+  .assembly-mobile-wrapper{display:block!important;width:100%;}
+}
+@media (min-width:1101px){
+  .assembly-desktop-wrapper{display:block!important;}
+  .assembly-mobile-wrapper{display:none!important;}
+}
