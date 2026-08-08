@@ -1,83 +1,16 @@
-/* REAL MOBILE FORCE FIX */
-.assembly-desktop-wrapper{display:block}
-.assembly-mobile-wrapper{display:none}
-
-@media (max-width:1100px),(hover:none),(pointer:coarse){
-  .assembly-desktop-wrapper,
-  .assembly-desktop-wrapper .assembly-scroll,
-  .assembly-desktop-wrapper .assembly-sticky,
-  .assembly-desktop-wrapper .assembly-progress,
-  .assembly-desktop-wrapper .assembly-copy,
-  .assembly-desktop-wrapper .assembly-video-shell,
-  .assembly-desktop-wrapper .assembly-background,
-  .assembly-desktop-wrapper .assembly-stage-list,
-  .assembly-desktop-wrapper .assembly-callout{
-    display:none!important;
-    position:static!important;
-    width:0!important;
-    height:0!important;
-    min-width:0!important;
-    min-height:0!important;
-    max-height:0!important;
-    margin:0!important;
-    padding:0!important;
-    overflow:hidden!important;
-    opacity:0!important;
-    pointer-events:none!important;
+/* Önceki mobil assembly force kuralları artık kullanılmıyor.
+   Assembly bölümü mobilde tamamen kaldırılmıştır. */
+@media (max-width: 1100px), (hover: none), (pointer: coarse) {
+  .assembly-mobile-wrapper,
+  .assembly-mobile-video-section,
+  .assembly-mobile-video-frame,
+  .assembly-mobile-autoplay-video,
+  .assembly-desktop-wrapper {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
   }
-
-  .assembly-mobile-wrapper{
-    display:block!important;
-    position:relative!important;
-    width:100%!important;
-    height:auto!important;
-    overflow:visible!important;
-  }
-
-  .assembly-mobile-video-section{
-    position:relative!important;
-    width:100%!important;
-    height:auto!important;
-    min-height:0!important;
-    padding:72px 14px!important;
-    overflow:hidden!important;
-    touch-action:pan-y!important;
-  }
-
-  .assembly-mobile-video-frame{
-    position:relative!important;
-    display:block!important;
-    width:100%!important;
-    height:auto!important;
-    min-height:0!important;
-    max-height:none!important;
-    aspect-ratio:auto!important;
-    overflow:hidden!important;
-    touch-action:pan-y!important;
-  }
-
-  .assembly-mobile-autoplay-video{
-    position:relative!important;
-    inset:auto!important;
-    display:block!important;
-    width:100%!important;
-    height:auto!important;
-    min-height:0!important;
-    max-height:none!important;
-    object-fit:contain!important;
-    transform:none!important;
-    pointer-events:none!important;
-    touch-action:pan-y!important;
-  }
-
-  html,body,.showroom,main{
-    overflow-x:clip!important;
-    overflow-y:visible!important;
-    touch-action:pan-y!important;
-  }
-}
-
-@media (min-width:1101px) and (hover:hover) and (pointer:fine){
-  .assembly-desktop-wrapper{display:block!important}
-  .assembly-mobile-wrapper{display:none!important}
 }

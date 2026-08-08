@@ -377,14 +377,8 @@ function DesktopAssemblyScroll() {
 
 export default function AssemblyScroll() {
   return (
-    <>
-      <div className="assembly-desktop-wrapper">
-        <DesktopAssemblyScroll />
-      </div>
-
-      <div className="assembly-mobile-wrapper">
-        <MobileAssemblyVideo />
-      </div>
-    </>
+    <div className="assembly-desktop-only-section">
+      <DesktopAssemblyScroll />
+    </div>
   );
 }
