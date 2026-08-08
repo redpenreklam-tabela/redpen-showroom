@@ -3,9 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const TOTAL_PAGES = 24;
-const TURN_MS = 720;
-
-type Direction = "next" | "prev";
+const VISIBLE_OFFSETS = [-2, -1, 0, 1, 2] as const;
 
 function pagePath(index: number) {
   return `/catalog/pages/page-${String(index + 1).padStart(2, "0")}.webp`;
@@ -13,9 +11,6 @@ function pagePath(index: number) {
 
 export default function CatalogViewer() {
   const [page, setPage] = useState(0);
-  const [turning, setTurning] = useState(false);
-  const [direction, setDirection] = useState<Direction>("next");
-  const [targetPage, setTargetPage] = useState(0);
   const touchStartX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
 
@@ -24,30 +19,13 @@ export default function CatalogViewer() {
     [page],
   );
 
-  const turnTo = useCallback(
-    (nextPage: number, nextDirection: Direction) => {
-      if (turning) return;
-      if (nextPage < 0 || nextPage >= TOTAL_PAGES || nextPage === page) return;
+  const goTo = useCallback((nextPage: number) => {
+    const clamped = Math.max(0, Math.min(TOTAL_PAGES - 1, nextPage));
+    setPage(clamped);
+  }, []);
 
-      setDirection(nextDirection);
-      setTargetPage(nextPage);
-      setTurning(true);
-
-      window.setTimeout(() => {
-        setPage(nextPage);
-        setTurning(false);
-      }, TURN_MS);
-    },
-    [page, turning],
-  );
-
-  const goNext = useCallback(() => {
-    turnTo(page + 1, "next");
-  }, [page, turnTo]);
-
-  const goPrev = useCallback(() => {
-    turnTo(page - 1, "prev");
-  }, [page, turnTo]);
+  const goNext = useCallback(() => goTo(page + 1), [goTo, page]);
+  const goPrev = useCallback(() => goTo(page - 1), [goTo, page]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -55,31 +33,32 @@ export default function CatalogViewer() {
         event.preventDefault();
         goNext();
       }
+
       if (event.key === "ArrowLeft" || event.key === "PageUp") {
         event.preventDefault();
         goPrev();
       }
+
       if (event.key === "Home") {
         event.preventDefault();
-        turnTo(0, "prev");
+        goTo(0);
       }
+
       if (event.key === "End") {
         event.preventDefault();
-        turnTo(TOTAL_PAGES - 1, "next");
+        goTo(TOTAL_PAGES - 1);
       }
     };
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [goNext, goPrev, turnTo]);
+  }, [goNext, goPrev, goTo]);
 
   useEffect(() => {
-    [page - 1, page + 1, page + 2]
-      .filter((index) => index >= 0 && index < TOTAL_PAGES)
-      .forEach((index) => {
-        const image = new Image();
-        image.src = pagePath(index);
-      });
+    for (let index = Math.max(0, page - 3); index <= Math.min(TOTAL_PAGES - 1, page + 3); index += 1) {
+      const image = new Image();
+      image.src = pagePath(index);
+    }
   }, [page]);
 
   const onTouchStart = (event: React.TouchEvent) => {
@@ -98,18 +77,23 @@ export default function CatalogViewer() {
     touchStartX.current = null;
     touchStartY.current = null;
 
-    if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy) * 1.25) return;
+    if (Math.abs(dx) < 46 || Math.abs(dx) < Math.abs(dy) * 1.15) return;
 
     if (dx < 0) goNext();
     else goPrev();
   };
 
+  const visiblePages = VISIBLE_OFFSETS
+    .map((offset) => ({ index: page + offset, offset }))
+    .filter(({ index }) => index >= 0 && index < TOTAL_PAGES);
+
   return (
     <main className="catalog-screen">
       <div className="catalog-atmosphere" aria-hidden="true">
-        <span className="catalog-orbit catalog-orbit-a" />
-        <span className="catalog-orbit catalog-orbit-b" />
-        <span className="catalog-beam" />
+        <span className="catalog-grid" />
+        <span className="catalog-halo catalog-halo-a" />
+        <span className="catalog-halo catalog-halo-b" />
+        <span className="catalog-red-beam" />
         <span className="catalog-grain" />
       </div>
 
@@ -136,84 +120,60 @@ export default function CatalogViewer() {
       </header>
 
       <section
-        className="catalog-stage"
+        className="catalog-showcase"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
         aria-label={`Katalog sayfası ${page + 1}`}
       >
+        <div className="catalog-stage-label" aria-hidden="true">
+          <span>REDPEN / DIGITAL ARCHIVE</span>
+          <i />
+          <b>{String(page + 1).padStart(2, "0")}</b>
+        </div>
+
         <button
-          className="catalog-arrow catalog-arrow-left"
           type="button"
+          className="catalog-nav-arrow catalog-nav-arrow-left"
           onClick={goPrev}
-          disabled={page === 0 || turning}
+          disabled={page === 0}
           aria-label="Önceki sayfa"
         >
           <span>←</span>
         </button>
 
-        <div className="catalog-book-shell">
-          <div className="catalog-book-glow" aria-hidden="true" />
+        <div className="catalog-carousel">
+          <div className="catalog-floor-glow" aria-hidden="true" />
 
-          <div
-            className={`catalog-book ${turning ? "is-turning" : ""} direction-${direction}`}
-          >
-            <div className="catalog-page catalog-page-under">
-              <img
-                src={pagePath(turning ? targetPage : page)}
-                alt=""
-                draggable={false}
-              />
-            </div>
-
-            <div
-              className="catalog-page catalog-page-current"
-              onClick={(event) => {
-                const rect = event.currentTarget.getBoundingClientRect();
-                const localX = event.clientX - rect.left;
-                if (localX > rect.width / 2) goNext();
-                else goPrev();
-              }}
+          {visiblePages.map(({ index, offset }) => (
+            <button
+              type="button"
+              key={index}
+              className={`catalog-card catalog-card-${offset === 0 ? "active" : "side"} slot-${offset}`}
+              onClick={() => goTo(index)}
+              aria-current={offset === 0 ? "page" : undefined}
+              aria-label={`Katalog sayfası ${index + 1}`}
             >
-              <img
-                src={pagePath(page)}
-                alt={`Redpen dijital katalog - sayfa ${page + 1}`}
-                draggable={false}
-              />
-              <span className="catalog-paper-shine" aria-hidden="true" />
-              <span className="catalog-page-corner" aria-hidden="true" />
-            </div>
-
-            {turning && (
-              <div
-                className={`catalog-turn-sheet ${
-                  direction === "next" ? "turn-next" : "turn-prev"
-                }`}
-                aria-hidden="true"
-              >
-                <div className="catalog-turn-face catalog-turn-front">
-                  <img src={pagePath(page)} alt="" draggable={false} />
-                  <span className="catalog-turn-shadow" />
-                </div>
-                <div className="catalog-turn-face catalog-turn-back">
-                  <img src={pagePath(targetPage)} alt="" draggable={false} />
-                  <span className="catalog-turn-shadow" />
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="catalog-book-meta" aria-hidden="true">
-            <span>RP / 2026</span>
-            <i />
-            <span>ÜRÜN KATALOĞU</span>
-          </div>
+              <span className="catalog-card-frame">
+                <img
+                  src={pagePath(index)}
+                  alt={`Redpen dijital katalog - sayfa ${index + 1}`}
+                  draggable={false}
+                />
+                <span className="catalog-card-vignette" aria-hidden="true" />
+                <span className="catalog-card-shine" aria-hidden="true" />
+                <span className="catalog-card-index" aria-hidden="true">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+              </span>
+            </button>
+          ))}
         </div>
 
         <button
-          className="catalog-arrow catalog-arrow-right"
           type="button"
+          className="catalog-nav-arrow catalog-nav-arrow-right"
           onClick={goNext}
-          disabled={page === TOTAL_PAGES - 1 || turning}
+          disabled={page === TOTAL_PAGES - 1}
           aria-label="Sonraki sayfa"
         >
           <span>→</span>
@@ -224,7 +184,7 @@ export default function CatalogViewer() {
         <div className="catalog-counter">
           <strong>{String(page + 1).padStart(2, "0")}</strong>
           <span>/</span>
-          <b>{TOTAL_PAGES}</b>
+          <b>{String(TOTAL_PAGES).padStart(2, "0")}</b>
         </div>
 
         <div className="catalog-progress" aria-hidden="true">
@@ -232,7 +192,7 @@ export default function CatalogViewer() {
         </div>
 
         <div className="catalog-hint">
-          <span className="desktop-hint">← → TUŞLARI · SAYFAYA TIKLA</span>
+          <span className="desktop-hint">YAN SAYFAYA TIKLA · ← →</span>
           <span className="mobile-hint">SAĞA / SOLA KAYDIR</span>
         </div>
       </footer>
