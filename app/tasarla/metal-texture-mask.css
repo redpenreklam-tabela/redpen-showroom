@@ -1,0 +1,111 @@
+/* REDPEN / METAL TEXTURE MASK
+   Gold ve krom harf ön yüzü artık procedural WebP reflection texture ile doldurulur.
+   Texture, background-clip:text ile harf formuna maskelenir.
+   Ekstra pseudo-text yok; ghost/çift harf üretmez.
+*/
+
+/* Önce önceki metal gradient katmanlarını görsel texture ile ez */
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  -webkit-text-stroke: 0 !important;
+
+  background-image: url("/textures/gold-reflection.webp") !important;
+  background-repeat: no-repeat !important;
+  background-size: 190% 100% !important;
+  background-position:
+    calc(50% + var(--metal-reflect-shift, 0%)) 50% !important;
+
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+
+  filter:
+    saturate(1.18)
+    contrast(1.10)
+    brightness(.98) !important;
+
+  text-shadow:
+    1px 1px 0 rgba(255,224,123,.20),
+    2px 2px 0 #8d5400,
+    4px 5px 0 #482800,
+    6px 8px 8px rgba(0,0,0,.46) !important;
+}
+
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  -webkit-text-stroke: 0 !important;
+
+  background-image: url("/textures/chrome-reflection.webp") !important;
+  background-repeat: no-repeat !important;
+  background-size: 190% 100% !important;
+  background-position:
+    calc(50% + var(--metal-reflect-shift, 0%)) 50% !important;
+
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+
+  filter:
+    contrast(1.14)
+    brightness(.98) !important;
+
+  text-shadow:
+    1px 1px 0 rgba(255,255,255,.20),
+    2px 2px 0 #747b81,
+    4px 5px 0 #23282c,
+    6px 8px 8px rgba(0,0,0,.48) !important;
+}
+
+/* Ön yüzü ikinci kez çizen tüm eski highlight katmanlarını kaldır */
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong::after,
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong::after {
+  content: none !important;
+  display: none !important;
+  animation: none !important;
+}
+
+/* Arkadan halo kalır ama texture yüzeyini yıkamaz */
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong::before {
+  opacity: .34 !important;
+  text-shadow:
+    0 0 4px rgba(255,237,177,.82),
+    0 0 9px rgba(255,209,107,.52),
+    0 0 18px rgba(255,177,58,.27) !important;
+}
+
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong::before {
+  opacity: .34 !important;
+  text-shadow:
+    0 0 4px rgba(243,250,255,.84),
+    0 0 9px rgba(207,226,241,.54),
+    0 0 18px rgba(170,201,226,.27) !important;
+}
+
+/* Harf sürüklenince zaten --metal-reflect-shift değişiyor.
+   Reflection texture böylece sahnede sabit ışık varmış gibi hafif kayar. */
+
+/* Gündüzde metal reflection daha net */
+.mode-day
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong {
+  filter:
+    saturate(1.20)
+    contrast(1.12)
+    brightness(1.04) !important;
+}
+
+.mode-day
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong {
+  filter:
+    contrast(1.18)
+    brightness(1.04) !important;
+}
+
+/* Fileli materyaller bu texture mask fixinden etkilenmez. */
