@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import SignDesigner from "./SignDesigner";
 import "./tasarla.css";
+import "./scale-real.css";
 
 export const metadata: Metadata = {
   title: "Tabelanı Tasarla | Redpen Reklam",

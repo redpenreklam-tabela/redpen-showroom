@@ -1,0 +1,140 @@
+
+/* GERÇEK ÖLÇEK OVERRIDE
+   Tabela ve 180 cm insan aynı px/cm ölçeğini kullanır. */
+.designer-board{
+  width:var(--board-px-width)!important;
+  height:var(--board-px-height)!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:none!important;
+  max-height:none!important;
+}
+
+/* Totem'in eski sabit genişlik/yükseklik zorlamasını kaldır.
+   Form çeşitlerini sonraki aşamada ayrı preset olarak ele alacağız. */
+.designer-board.type-totem{
+  width:var(--board-px-width)!important;
+  height:var(--board-px-height)!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:none!important;
+}
+
+/* Ölçü çizgileri tabelanın gerçek piksel ölçüsüyle hizalanır. */
+.designer-dimension-width{
+  left:50%!important;
+  top:calc(43% + (var(--board-px-height) / 2) + 28px)!important;
+  width:var(--board-px-width)!important;
+  transform:translateX(-50%)!important;
+}
+
+.designer-dimension-height{
+  left:calc(50% + (var(--board-px-width) / 2) + 24px)!important;
+  right:auto!important;
+  top:43%!important;
+  height:var(--board-px-height)!important;
+  transform:translateY(-50%)!important;
+}
+
+/* 180 cm referans insan da AYNI ölçeğe bağlandı. */
+.designer-human-scale{
+  --human-height:var(--human-px-height);
+  right:5%!important;
+  bottom:12%!important;
+  width:calc(var(--human-height) * .28)!important;
+  height:var(--human-height)!important;
+  min-height:20px;
+  opacity:.48!important;
+}
+
+.designer-human-scale span{
+  left:50%!important;
+  top:0!important;
+  width:calc(var(--human-height) * .13)!important;
+  height:calc(var(--human-height) * .13)!important;
+  transform:translateX(-50%);
+}
+
+.designer-human-scale i{
+  left:50%!important;
+  top:calc(var(--human-height) * .13)!important;
+  width:calc(var(--human-height) * .055)!important;
+  height:calc(var(--human-height) * .54)!important;
+  transform:translateX(-50%);
+}
+
+.designer-human-scale::before,
+.designer-human-scale::after{
+  content:"";
+  position:absolute;
+  top:calc(var(--human-height) * .64);
+  width:calc(var(--human-height) * .045);
+  height:calc(var(--human-height) * .29);
+  background:#fff;
+}
+
+.designer-human-scale::before{
+  left:39%;
+  transform:rotate(4deg);
+}
+
+.designer-human-scale::after{
+  right:39%;
+  transform:rotate(-4deg);
+}
+
+.designer-human-scale b{
+  left:50%!important;
+  bottom:-16px!important;
+  width:70px!important;
+  transform:translateX(-50%);
+  text-align:center;
+}
+
+.designer-scale-readout{
+  position:absolute;
+  left:18px;
+  top:18px;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:7px 9px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(5,5,7,.54);
+  backdrop-filter:blur(8px);
+  color:rgba(255,255,255,.38);
+  font:600 7px/1 var(--font-geist-mono);
+  letter-spacing:.09em;
+}
+
+.designer-scale-readout b{
+  color:rgba(255,255,255,.76);
+  font-size:8px;
+}
+
+@media(max-width:980px){
+  .designer-board{
+    /* Mobilde de oran tam kalır, yalnızca tüm sahne küçültülür. */
+    transform:translate(-50%,-50%) scale(.78)!important;
+  }
+
+  .designer-dimension-width,
+  .designer-dimension-height,
+  .designer-human-scale{
+    transform-origin:center;
+  }
+
+  .designer-scale-readout{
+    font-size:6px;
+  }
+}
+
+@media(max-width:620px){
+  .designer-board{
+    transform:translate(-50%,-50%) scale(.62)!important;
+  }
+  .designer-dimension-width,
+  .designer-dimension-height{
+    opacity:.55;
+  }
+}
