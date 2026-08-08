@@ -1,0 +1,258 @@
+/* REDPEN / TABELANI TASARLA / FONT KONTROLLERİ */
+
+/* Seçilen font tabela yazısına gerçekten uygulanır. */
+.designer-board-content strong {
+  font-family: var(--sign-font), sans-serif !important;
+  font-size: calc(var(--board-px-height) * var(--font-size-ratio)) !important;
+  letter-spacing: var(--letter-spacing-em) !important;
+  line-height: .9 !important;
+  font-weight: 800 !important;
+}
+
+/* Totem'in eski font-size override'ını ez. */
+.type-totem .designer-board-content strong {
+  font-family: var(--sign-font), sans-serif !important;
+  font-size: calc(var(--board-px-height) * var(--font-size-ratio)) !important;
+  letter-spacing: var(--letter-spacing-em) !important;
+}
+
+/* Dropdown */
+.designer-font-select {
+  position: relative;
+  z-index: 30;
+}
+
+.designer-font-trigger {
+  width: 100%;
+  min-height: 54px;
+  display: grid;
+  grid-template-columns: minmax(105px, .65fr) minmax(0, 1.35fr) 20px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 11px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.025);
+  color: #fff;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color .2s ease, background .2s ease;
+}
+
+.designer-font-trigger:hover,
+.designer-font-select.is-open .designer-font-trigger {
+  border-color: rgba(var(--rp-red),.58);
+  background: rgba(var(--rp-red),.055);
+}
+
+.designer-font-trigger-name {
+  color: rgba(255,255,255,.62);
+  font: 700 9px/1 var(--font-geist-mono);
+  letter-spacing: .06em;
+}
+
+.designer-font-trigger strong {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #fff;
+  font-size: 21px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.designer-font-trigger i {
+  color: rgb(var(--rp-red));
+  font: 700 18px/1 sans-serif;
+  font-style: normal;
+  text-align: center;
+  transition: transform .2s ease;
+}
+
+.designer-font-select.is-open .designer-font-trigger i {
+  transform: rotate(180deg);
+}
+
+.designer-font-menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 120;
+  max-height: 330px;
+  overflow-y: auto;
+  padding: 5px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(8,8,10,.97);
+  box-shadow:
+    0 24px 60px rgba(0,0,0,.62),
+    0 0 0 1px rgba(0,0,0,.4);
+  backdrop-filter: blur(18px);
+  scrollbar-width: thin;
+}
+
+.designer-font-menu button {
+  width: 100%;
+  min-height: 56px;
+  display: grid;
+  grid-template-columns: minmax(108px, .7fr) minmax(0, 1.3fr) 22px;
+  align-items: center;
+  gap: 11px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-bottom-color: rgba(255,255,255,.055);
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background .18s ease,
+    border-color .18s ease,
+    transform .18s ease;
+}
+
+.designer-font-menu button:last-child {
+  border-bottom-color: transparent;
+}
+
+.designer-font-menu button:hover {
+  z-index: 2;
+  border-color: rgba(var(--rp-red),.28);
+  background: rgba(var(--rp-red),.075);
+  transform: translateX(2px);
+}
+
+.designer-font-menu button.is-active {
+  border-color: rgba(var(--rp-red),.46);
+  background: rgba(var(--rp-red),.105);
+}
+
+.designer-font-menu button > span {
+  color: rgba(255,255,255,.58);
+  font: 700 9px/1.2 var(--font-geist-mono);
+  letter-spacing: .045em;
+}
+
+.designer-font-menu button > strong {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: rgba(255,255,255,.94);
+  font-size: 23px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.designer-font-menu button > i {
+  color: rgb(var(--rp-red));
+  font: 800 12px/1 var(--font-geist-mono);
+  font-style: normal;
+  text-align: center;
+}
+
+/* Slider başlıkları */
+.designer-slider-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.designer-slider-heading label {
+  margin: 0 !important;
+}
+
+.designer-slider-heading b {
+  color: rgb(var(--rp-red));
+  font: 800 10px/1 var(--font-geist-mono);
+}
+
+.designer-range {
+  width: 100%;
+  height: 22px;
+  margin: 0;
+  padding: 0;
+  border: 0 !important;
+  background: transparent !important;
+  accent-color: rgb(var(--rp-red));
+  cursor: pointer;
+}
+
+.designer-range::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 99px;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(var(--rp-red),.85),
+      rgba(255,255,255,.13)
+    );
+}
+
+.designer-range::-webkit-slider-thumb {
+  width: 16px;
+  height: 16px;
+  margin-top: -6.5px;
+  border: 3px solid #09090b;
+  border-radius: 50%;
+  background: rgb(var(--rp-red));
+  box-shadow: 0 0 0 1px rgba(var(--rp-red),.6), 0 0 14px rgba(var(--rp-red),.25);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.designer-range::-moz-range-track {
+  height: 3px;
+  border-radius: 99px;
+  background: rgba(255,255,255,.13);
+}
+
+.designer-range::-moz-range-progress {
+  height: 3px;
+  border-radius: 99px;
+  background: rgba(var(--rp-red),.85);
+}
+
+.designer-range::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: 3px solid #09090b;
+  border-radius: 50%;
+  background: rgb(var(--rp-red));
+  box-shadow: 0 0 0 1px rgba(var(--rp-red),.6);
+}
+
+.designer-range-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2px;
+  color: rgba(255,255,255,.27);
+  font: 600 7px/1 var(--font-geist-mono);
+  letter-spacing: .09em;
+}
+
+/* Çok geniş metin font değişiminde taşarsa kesilsin, zemin oranı bozulmasın. */
+.designer-board-content {
+  overflow: hidden !important;
+}
+
+.designer-board.is-lighted .designer-board-content {
+  overflow: visible !important;
+}
+
+@media (max-width: 620px) {
+  .designer-font-trigger {
+    grid-template-columns: 92px minmax(0,1fr) 18px;
+  }
+
+  .designer-font-menu button {
+    grid-template-columns: 94px minmax(0,1fr) 20px;
+  }
+
+  .designer-font-trigger strong,
+  .designer-font-menu button > strong {
+    font-size: 18px;
+  }
+}
