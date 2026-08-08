@@ -1,0 +1,195 @@
+/* REDPEN / METAL FACE FINAL TUNING
+   Gold'un kromlaşmasını engeller ve metal geçişlerini daha görünür yapar.
+   Bu dosya EN SON yüklenmelidir.
+*/
+
+/* =========================================================
+   GOLD
+   Tamamen SICAK metal paleti.
+   Gri/beyaz krom hissi veren blend kaldırıldı.
+   ========================================================= */
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong{
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+  -webkit-text-stroke:0!important;
+
+  background-image:
+    /* Dar dikey specular şeritleri */
+    linear-gradient(
+      98deg,
+      #3a2100 0%,
+      #6b3c00 7%,
+      #b87906 13%,
+      #f4bd27 18%,
+      #fff1a0 22%,
+      #d69612 26%,
+      #7d4700 31%,
+      #4a2900 36%,
+      #cc890c 42%,
+      #ffd85b 47%,
+      #fff6ba 51%,
+      #bd7907 56%,
+      #673900 61%,
+      #e1a018 68%,
+      #fff0a0 73%,
+      #b36e04 78%,
+      #573000 84%,
+      #d78f0d 91%,
+      #6b3a00 100%
+    ),
+    /* Üst-alt sıcak gold gövde */
+    linear-gradient(
+      180deg,
+      #6a3b00 0%,
+      #b77105 10%,
+      #f2b52b 20%,
+      #ffe27a 29%,
+      #a96000 39%,
+      #714000 48%,
+      #d9910f 57%,
+      #ffd85b 66%,
+      #9c5900 76%,
+      #d48609 87%,
+      #5a3100 100%
+    )!important;
+
+  background-size:165% 100%,100% 100%!important;
+  background-position:
+    calc(50% + var(--metal-reflect-shift,0%)) 50%,
+    50% 50%!important;
+
+  /* kritik: screen blend gold'u kromlaştırıyordu */
+  background-blend-mode:normal,normal!important;
+
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+
+  filter:
+    saturate(1.65)
+    contrast(1.30)
+    brightness(.97)!important;
+
+  text-shadow:
+    1px 1px 0 rgba(255,221,108,.20),
+    2px 2px 0 #8b5200,
+    4px 5px 0 #4a2900,
+    6px 8px 8px rgba(0,0,0,.46)!important;
+}
+
+/* =========================================================
+   KROM
+   Çok daha görünür siyah-gri-beyaz yansıma bantları.
+   ========================================================= */
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong{
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+  -webkit-text-stroke:0!important;
+
+  background-image:
+    linear-gradient(
+      98deg,
+      #07090a 0%,
+      #25292d 7%,
+      #6f767c 13%,
+      #d9dfe3 18%,
+      #ffffff 22%,
+      #969da3 27%,
+      #30353a 32%,
+      #111416 37%,
+      #a8b0b6 43%,
+      #eef2f4 48%,
+      #ffffff 51%,
+      #6f767c 56%,
+      #1d2125 62%,
+      #c2c9ce 69%,
+      #ffffff 74%,
+      #777e84 79%,
+      #1b1f22 85%,
+      #bbc2c7 92%,
+      #34393e 100%
+    ),
+    linear-gradient(
+      180deg,
+      #14181b 0%,
+      #656c72 11%,
+      #e9edef 21%,
+      #ffffff 28%,
+      #7b8288 38%,
+      #202428 49%,
+      #aab2b8 59%,
+      #ffffff 68%,
+      #6b7278 78%,
+      #c8ced2 88%,
+      #24282c 100%
+    )!important;
+
+  background-size:170% 100%,100% 100%!important;
+  background-position:
+    calc(50% + var(--metal-reflect-shift,0%)) 50%,
+    50% 50%!important;
+
+  background-blend-mode:normal,normal!important;
+
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+
+  filter:
+    grayscale(.02)
+    contrast(1.48)
+    brightness(.96)!important;
+
+  text-shadow:
+    1px 1px 0 rgba(255,255,255,.20),
+    2px 2px 0 #71777d,
+    4px 5px 0 #22272b,
+    6px 8px 8px rgba(0,0,0,.48)!important;
+}
+
+/* Pseudo highlight YOK. Tek harf yüzeyi. */
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong::after,
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong::after{
+  content:none!important;
+  display:none!important;
+}
+
+/* Arkadan ışık metal yüzeyi yıkamasın */
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong::before,
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong::before{
+  opacity:.34!important;
+}
+
+/* Gold arka halo sıcak, krom arka halo soğuk */
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong::before{
+  text-shadow:
+    0 0 4px rgba(255,236,170,.82),
+    0 0 9px rgba(255,207,98,.50),
+    0 0 18px rgba(255,176,51,.26)!important;
+}
+
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong::before{
+  text-shadow:
+    0 0 4px rgba(241,249,255,.84),
+    0 0 9px rgba(202,222,239,.52),
+    0 0 18px rgba(166,197,223,.26)!important;
+}
+
+/* Gündüz: metal geçişleri en net burada görünür */
+.mode-day
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong{
+  filter:saturate(1.55) contrast(1.34) brightness(1.04)!important;
+}
+
+.mode-day
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong{
+  filter:contrast(1.55) brightness(1.03)!important;
+}
