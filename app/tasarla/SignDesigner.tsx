@@ -61,6 +61,7 @@ export default function SignDesigner() {
   const [fontMenuOpen, setFontMenuOpen] = useState(false);
   const [fontSizePercent, setFontSizePercent] = useState(62);
   const [letterSpacing, setLetterSpacing] = useState(-4);
+  const [logoSizePercent, setLogoSizePercent] = useState(52);
 
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -96,6 +97,7 @@ export default function SignDesigner() {
       "--sign-font": currentFont.family,
       "--font-size-ratio": `${fontSizePercent / 100}`,
       "--letter-spacing-em": `${letterSpacing / 100}em`,
+      "--logo-size-ratio": `${logoSizePercent / 100}`,
     } as React.CSSProperties;
   }, [
     width,
@@ -106,6 +108,7 @@ export default function SignDesigner() {
     currentFont.family,
     fontSizePercent,
     letterSpacing,
+    logoSizePercent,
   ]);
 
   const facadeStyle = useMemo(
@@ -127,6 +130,7 @@ export default function SignDesigner() {
       `Yazı tipi: ${currentFont.name}`,
       `Harf boyutu: %${fontSizePercent}`,
       `Harf aralığı: ${letterSpacing}`,
+      `Logo boyutu: %${logoSizePercent}`,
       `Zemin malzemesi: ${baseMaterial}`,
       `Harf malzemesi: ${letterMaterial}`,
       `Ölçü: ${width} x ${height} cm`,
@@ -144,6 +148,7 @@ export default function SignDesigner() {
     currentFont.name,
     fontSizePercent,
     letterSpacing,
+    logoSizePercent,
     baseMaterial,
     letterMaterial,
     width,
@@ -266,15 +271,16 @@ export default function SignDesigner() {
               className="designer-range"
               type="range"
               min="30"
-              max="85"
+              max="115"
               step="1"
               value={fontSizePercent}
               onChange={(e) => setFontSizePercent(Number(e.target.value))}
             />
             <div className="designer-range-scale">
               <span>KÜÇÜK</span>
-              <span>BÜYÜK</span>
+              <span>TAŞIR</span>
             </div>
+            <p className="designer-control-note">100% üzeri değerlerde harfler tabela sınırının dışına taşabilir.</p>
           </div>
 
           <div className="designer-field">
@@ -438,6 +444,27 @@ export default function SignDesigner() {
                 </button>
               )}
             </div>
+            {logo && (
+              <div className="designer-logo-size-control">
+                <div className="designer-slider-heading">
+                  <label>LOGO BOYUTU</label>
+                  <b>%{logoSizePercent}</b>
+                </div>
+                <input
+                  className="designer-range"
+                  type="range"
+                  min="10"
+                  max="130"
+                  step="1"
+                  value={logoSizePercent}
+                  onChange={(e) => setLogoSizePercent(Number(e.target.value))}
+                />
+                <div className="designer-range-scale">
+                  <span>KÜÇÜK</span>
+                  <span>TAŞIR</span>
+                </div>
+              </div>
+            )}
           </div>
         </aside>
 

@@ -256,3 +256,70 @@
     font-size: 18px;
   }
 }
+
+
+/* ==========================================================
+   STAGE: SERBEST HARF / LOGO ÖLÇEĞİ
+   Harfler artık zemin içinde zorla tutulmaz.
+   Kullanıcı isterse %100 üzeri ile zeminden taşırabilir.
+   ========================================================== */
+
+.designer-board,
+.designer-board-content {
+  overflow: visible !important;
+}
+
+.designer-board-content strong {
+  max-width: none !important;
+  width: auto !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+  flex: 0 0 auto;
+  transform-origin: center center;
+}
+
+/* Font yüksekliği doğrudan tabela yüksekliğine bağlıdır.
+   %100 = harf yüksekliği yaklaşık tabela yüksekliği.
+   %115 = kontrollü taşma. */
+.designer-board-content strong {
+  font-size: calc(var(--board-px-height) * var(--font-size-ratio)) !important;
+}
+
+/* Logo için eski %22 / %66 limitlerini kaldır. */
+.designer-logo-preview {
+  width: auto !important;
+  height: calc(var(--board-px-height) * var(--logo-size-ratio)) !important;
+  max-width: none !important;
+  max-height: none !important;
+  flex: 0 0 auto;
+  object-fit: contain !important;
+  transform-origin: center center;
+}
+
+/* Logo slider alanı */
+.designer-logo-size-control {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.07);
+}
+
+.designer-control-note {
+  margin: 8px 0 0;
+  color: rgba(255,255,255,.34);
+  font: 600 7px/1.45 var(--font-geist-mono);
+  letter-spacing: .04em;
+}
+
+/* Harf + logo beraber büyürken iç container bunları kırpmasın. */
+.designer-board-content {
+  inset: 0 !important;
+  padding: 0 4%;
+  gap: 3%;
+}
+
+/* Işıklı halde de taşan glow kırpılmasın. */
+.designer-board.is-lighted,
+.designer-board.is-lighted .designer-board-content {
+  overflow: visible !important;
+}
