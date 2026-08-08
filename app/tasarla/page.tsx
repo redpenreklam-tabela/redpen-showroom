@@ -2,11 +2,16 @@ import type { Metadata } from "next";
 import {
   Anton,
   Archivo_Black,
+  Barlow_Condensed,
   Bebas_Neue,
+  League_Spartan,
+  Lobster,
   Montserrat,
   Oswald,
+  Pacifico,
   Poppins,
   Roboto_Condensed,
+  Rubik,
 } from "next/font/google";
 import SignDesigner from "./SignDesigner";
 import "./tasarla.css";
@@ -56,6 +61,36 @@ const anton = Anton({
   variable: "--font-sign-anton",
 });
 
+const barlowCondensed = Barlow_Condensed({
+  subsets: ["latin", "latin-ext"],
+  weight: ["600", "700", "800", "900"],
+  variable: "--font-sign-barlow-condensed",
+});
+
+const leagueSpartan = League_Spartan({
+  subsets: ["latin", "latin-ext"],
+  weight: ["600", "700", "800", "900"],
+  variable: "--font-sign-league-spartan",
+});
+
+const rubik = Rubik({
+  subsets: ["latin", "latin-ext"],
+  weight: ["600", "700", "800", "900"],
+  variable: "--font-sign-rubik",
+});
+
+const lobster = Lobster({
+  subsets: ["latin", "latin-ext"],
+  weight: "400",
+  variable: "--font-sign-lobster",
+});
+
+const pacifico = Pacifico({
+  subsets: ["latin", "latin-ext"],
+  weight: "400",
+  variable: "--font-sign-pacifico",
+});
+
 export const metadata: Metadata = {
   title: "Tabelanı Tasarla | Redpen Reklam",
   description:
@@ -71,6 +106,11 @@ export default function TasarlaPage() {
     robotoCondensed.variable,
     archivoBlack.variable,
     anton.variable,
+    barlowCondensed.variable,
+    leagueSpartan.variable,
+    rubik.variable,
+    lobster.variable,
+    pacifico.variable,
   ].join(" ");
 
   return (

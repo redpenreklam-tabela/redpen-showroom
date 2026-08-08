@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type SignType = "KUTU HARF" | "IŞIKLI PANEL" | "TOTEM" | "CEPHE";
 type Material = "PLEKSİ" | "ALÜMİNYUM" | "KROM" | "KOMPOZİT";
@@ -12,7 +12,12 @@ type FontId =
   | "poppins"
   | "roboto-condensed"
   | "archivo-black"
-  | "anton";
+  | "anton"
+  | "barlow-condensed"
+  | "league-spartan"
+  | "rubik"
+  | "lobster"
+  | "pacifico";
 
 const signTypes: SignType[] = ["KUTU HARF", "IŞIKLI PANEL", "TOTEM", "CEPHE"];
 const materials: Material[] = ["PLEKSİ", "ALÜMİNYUM", "KROM", "KOMPOZİT"];
@@ -25,6 +30,11 @@ const fonts: Array<{ id: FontId; name: string; family: string }> = [
   { id: "roboto-condensed", name: "Roboto Condensed", family: "var(--font-sign-roboto-condensed)" },
   { id: "archivo-black", name: "Archivo Black", family: "var(--font-sign-archivo-black)" },
   { id: "anton", name: "Anton", family: "var(--font-sign-anton)" },
+  { id: "barlow-condensed", name: "Barlow Condensed", family: "var(--font-sign-barlow-condensed)" },
+  { id: "league-spartan", name: "League Spartan", family: "var(--font-sign-league-spartan)" },
+  { id: "rubik", name: "Rubik", family: "var(--font-sign-rubik)" },
+  { id: "lobster", name: "Lobster", family: "var(--font-sign-lobster)" },
+  { id: "pacifico", name: "Pacifico", family: "var(--font-sign-pacifico)" },
 ];
 
 const letterColors = [
@@ -62,6 +72,18 @@ export default function SignDesigner() {
   const [fontSizePercent, setFontSizePercent] = useState(62);
   const [letterSpacing, setLetterSpacing] = useState(-4);
   const [logoSizePercent, setLogoSizePercent] = useState(52);
+
+  const [textOffset, setTextOffset] = useState({ x: 0, y: 0 });
+  const [logoOffset, setLogoOffset] = useState({ x: 0, y: 0 });
+  const dragRef = useRef<{
+    type: "text" | "logo";
+    startX: number;
+    startY: number;
+    startOffsetX: number;
+    startOffsetY: number;
+    boardWidth: number;
+    boardHeight: number;
+  } | null>(null);
 
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -131,6 +153,8 @@ export default function SignDesigner() {
       `Harf boyutu: %${fontSizePercent}`,
       `Harf aralığı: ${letterSpacing}`,
       `Logo boyutu: %${logoSizePercent}`,
+      `Yazı konumu: X ${textOffset.x.toFixed(0)} / Y ${textOffset.y.toFixed(0)}`,
+      `Logo konumu: X ${logoOffset.x.toFixed(0)} / Y ${logoOffset.y.toFixed(0)}`,
       `Zemin malzemesi: ${baseMaterial}`,
       `Harf malzemesi: ${letterMaterial}`,
       `Ölçü: ${width} x ${height} cm`,
@@ -149,6 +173,8 @@ export default function SignDesigner() {
     fontSizePercent,
     letterSpacing,
     logoSizePercent,
+    textOffset,
+    logoOffset,
     baseMaterial,
     letterMaterial,
     width,
@@ -157,6 +183,72 @@ export default function SignDesigner() {
     baseColor,
     letterColor,
   ]);
+
+
+  useEffect(() => {
+    const handlePointerMove = (event: PointerEvent) => {
+      const drag = dragRef.current;
+      if (!drag) return;
+
+      const deltaXPercent = ((event.clientX - drag.startX) / drag.boardWidth) * 100;
+      const deltaYPercent = ((event.clientY - drag.startY) / drag.boardHeight) * 100;
+
+      const next = {
+        x: Math.max(-65, Math.min(65, drag.startOffsetX + deltaXPercent)),
+        y: Math.max(-85, Math.min(85, drag.startOffsetY + deltaYPercent)),
+      };
+
+      if (drag.type === "text") {
+        setTextOffset(next);
+      } else {
+        setLogoOffset(next);
+      }
+    };
+
+    const handlePointerUp = () => {
+      dragRef.current = null;
+      document.body.classList.remove("designer-is-dragging");
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+    };
+  }, []);
+
+  const startDrag = (
+    event: React.PointerEvent<HTMLElement>,
+    type: "text" | "logo",
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const board = event.currentTarget.closest(".designer-board");
+    if (!(board instanceof HTMLElement)) return;
+
+    const rect = board.getBoundingClientRect();
+    const offset = type === "text" ? textOffset : logoOffset;
+
+    dragRef.current = {
+      type,
+      startX: event.clientX,
+      startY: event.clientY,
+      startOffsetX: offset.x,
+      startOffsetY: offset.y,
+      boardWidth: Math.max(rect.width, 1),
+      boardHeight: Math.max(rect.height, 1),
+    };
+
+    document.body.classList.add("designer-is-dragging");
+  };
+
+  const resetPositions = () => {
+    setTextOffset({ x: 0, y: 0 });
+    setLogoOffset({ x: 0, y: 0 });
+  };
 
   const onLogo = (file?: File) => {
     if (!file) return;
@@ -301,6 +393,19 @@ export default function SignDesigner() {
               <span>SIKI</span>
               <span>GENİŞ</span>
             </div>
+          </div>
+
+          <div className="designer-field designer-position-field">
+            <div className="designer-slider-heading">
+              <label>SAHNE KONUMU</label>
+              <b>SÜRÜKLE</b>
+            </div>
+            <p className="designer-control-note">
+              Yazıyı ve logoyu sahnede fareyle tutup istediğin yere sürükleyebilirsin.
+            </p>
+            <button type="button" className="designer-position-reset" onClick={resetPositions}>
+              KONUMU ORTALA
+            </button>
           </div>
 
           <div className="designer-field">
@@ -491,8 +596,27 @@ export default function SignDesigner() {
             >
               <span className="designer-board-edge" aria-hidden="true" />
               <div className="designer-board-content">
-                {logo && <img src={logo} alt="" className="designer-logo-preview" />}
-                <strong>{normalizedText}</strong>
+                {logo && (
+                  <img
+                    src={logo}
+                    alt=""
+                    className="designer-logo-preview designer-draggable-element"
+                    onPointerDown={(event) => startDrag(event, "logo")}
+                    style={{
+                      transform: `translate(${logoOffset.x}%, ${logoOffset.y}%)`,
+                    }}
+                    draggable={false}
+                  />
+                )}
+                <strong
+                  className="designer-draggable-element"
+                  onPointerDown={(event) => startDrag(event, "text")}
+                  style={{
+                    transform: `translate(${textOffset.x}%, ${textOffset.y}%)`,
+                  }}
+                >
+                  {normalizedText}
+                </strong>
               </div>
               <span className="designer-board-glow" aria-hidden="true" />
             </div>

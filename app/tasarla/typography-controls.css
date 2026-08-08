@@ -323,3 +323,94 @@
 .designer-board.is-lighted .designer-board-content {
   overflow: visible !important;
 }
+
+
+/* ==========================================================
+   FONT ZENGİNLEŞTİRME + SÜRÜKLENEBİLİR YAZI / LOGO
+   ========================================================== */
+
+.designer-font-menu {
+  max-height: 430px;
+}
+
+/* El yazısı fontları büyük önizlemede rahat okunsun */
+.designer-font-menu button > strong,
+.designer-font-trigger strong {
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+}
+
+/* Yazı ve logo doğrudan sahnede sürüklenebilir */
+.designer-draggable-element {
+  cursor: grab !important;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  will-change: transform;
+}
+
+.designer-draggable-element:active,
+body.designer-is-dragging .designer-draggable-element {
+  cursor: grabbing !important;
+}
+
+body.designer-is-dragging {
+  cursor: grabbing !important;
+  user-select: none !important;
+}
+
+.designer-board-content {
+  pointer-events: auto;
+}
+
+/* transform artık sürükleme için kullanılıyor, önceki özel transformlar ezilmesin */
+.designer-board-content strong {
+  transition:
+    color .25s ease,
+    filter .2s ease,
+    text-shadow .2s ease !important;
+}
+
+.designer-logo-preview {
+  transition:
+    filter .2s ease,
+    opacity .2s ease !important;
+}
+
+/* Konum yardım alanı */
+.designer-position-field {
+  background:
+    linear-gradient(90deg, rgba(var(--rp-red), .035), transparent 72%);
+}
+
+.designer-position-reset {
+  width: 100%;
+  height: 38px;
+  margin-top: 11px;
+  border: 1px solid rgba(255,255,255,.11);
+  background: rgba(255,255,255,.025);
+  color: rgba(255,255,255,.68);
+  font: 700 8px/1 var(--font-geist-mono);
+  letter-spacing: .1em;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.designer-position-reset:hover {
+  color: #fff;
+  border-color: rgba(var(--rp-red),.5);
+  background: rgba(var(--rp-red),.08);
+}
+
+/* Drag sırasında ışık efekti takip etsin ama pahalı geçişler takılmasın */
+body.designer-is-dragging .designer-board-content strong,
+body.designer-is-dragging .designer-logo-preview {
+  transition: none !important;
+}
+
+@media(max-width:620px){
+  .designer-font-menu{
+    max-height:350px;
+  }
+}
