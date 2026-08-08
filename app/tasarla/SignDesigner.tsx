@@ -144,6 +144,7 @@ export default function SignDesigner() {
       "--font-size-ratio": `${fontSizePercent / 100}`,
       "--letter-spacing-em": `${letterSpacing / 100}em`,
       "--logo-size-ratio": `${logoSizePercent / 100}`,
+      "--metal-reflect-shift": `${Math.max(-18, Math.min(18, textOffset.x * 0.28))}%`,
     } as React.CSSProperties;
   }, [
     width,
@@ -155,6 +156,7 @@ export default function SignDesigner() {
     fontSizePercent,
     letterSpacing,
     logoSizePercent,
+    textOffset,
   ]);
 
   const facadeStyle = useMemo(
