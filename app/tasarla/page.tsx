@@ -19,6 +19,7 @@ import "./scale-real.css";
 import "./light-real.css";
 import "./typography-controls.css";
 import "./letter-materials.css";
+import "./metal-face-fix.css";
 
 const montserrat = Montserrat({
   subsets: ["latin", "latin-ext"],

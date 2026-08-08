@@ -1,0 +1,189 @@
+/* REDPEN / METAL ÖN YÜZ ÖNCELİK FIX
+   Sorun: light-real.css içindeki daha yüksek specificity'li genel
+   .designer-board.is-lighted ... kuralı gold/krom yüzeyi beyaza eziyordu.
+   Bu dosya metal malzemeleri açıkça daha yüksek specificity ile kilitler.
+*/
+
+/* =========================================================
+   GOLD KAPLAMA
+   ÖN YÜZ = AYNALI / PARLAK GOLD
+   IŞIK = SADECE ARKADA
+   ========================================================= */
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  -webkit-text-stroke: 0 !important;
+
+  background:
+    linear-gradient(
+      104deg,
+      #3d2602 0%,
+      #7e4d05 7%,
+      #d99e1c 15%,
+      #fff0a0 23%,
+      #c9840d 31%,
+      #6d3f03 40%,
+      #f6c93e 49%,
+      #fff4a9 56%,
+      #a96608 65%,
+      #f1bd2b 75%,
+      #714102 86%,
+      #d79c19 100%
+    ) !important;
+
+  background-size: 180% 100% !important;
+  background-position: 42% 50% !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+
+  filter:
+    saturate(1.35)
+    contrast(1.18)
+    brightness(.96) !important;
+
+  text-shadow:
+    1px 1px 0 rgba(255,244,166,.34),
+    2px 2px 0 rgba(118,69,4,.75),
+    4px 5px 0 rgba(57,34,3,.88),
+    7px 9px 9px rgba(0,0,0,.46) !important;
+}
+
+/* Gold metal üzerinde ışık ön yüzden GELMEZ */
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong::after {
+  content: none !important;
+}
+
+/* =========================================================
+   KROM KAPLAMA
+   ÖN YÜZ = AYNA KROM
+   IŞIK = SADECE ARKADA
+   ========================================================= */
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  -webkit-text-stroke: 0 !important;
+
+  background:
+    linear-gradient(
+      103deg,
+      #111315 0%,
+      #4e5357 8%,
+      #e9edef 16%,
+      #ffffff 22%,
+      #777d82 30%,
+      #24282c 39%,
+      #f8fafb 48%,
+      #ffffff 54%,
+      #747b81 64%,
+      #d9dde0 73%,
+      #33383d 84%,
+      #b8bdc1 93%,
+      #52575c 100%
+    ) !important;
+
+  background-size: 185% 100% !important;
+  background-position: 45% 50% !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+
+  filter:
+    grayscale(.15)
+    contrast(1.30)
+    brightness(.93) !important;
+
+  text-shadow:
+    1px 1px 0 rgba(255,255,255,.42),
+    2px 2px 0 rgba(126,132,138,.70),
+    4px 5px 0 rgba(31,35,39,.92),
+    7px 9px 9px rgba(0,0,0,.48) !important;
+}
+
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong::after {
+  content: none !important;
+}
+
+/* =========================================================
+   ARKADAN HALO
+   Pseudo text metal yüzeyin ARKASINDA kalır.
+   Blur değeri bilinçli olarak daha düşük.
+   Ön yüzü beyaza boğmamalı.
+   ========================================================= */
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong::before,
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong::before {
+  content: attr(data-text) !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: -2 !important;
+
+  font: inherit !important;
+  line-height: inherit !important;
+  letter-spacing: inherit !important;
+  white-space: nowrap !important;
+
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  -webkit-text-stroke: 0 !important;
+  background: none !important;
+
+  pointer-events: none !important;
+  opacity: .76 !important;
+  transform: translate(0, 2px) !important;
+  filter: none !important;
+}
+
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong::before {
+  text-shadow:
+    0 0 4px rgba(255,247,218,.92),
+    0 0 9px rgba(255,229,161,.70),
+    0 0 18px rgba(255,201,92,.42),
+    0 0 30px rgba(255,175,54,.20) !important;
+}
+
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong::before {
+  text-shadow:
+    0 0 4px rgba(248,252,255,.94),
+    0 0 9px rgba(222,235,246,.72),
+    0 0 18px rgba(189,211,231,.42),
+    0 0 30px rgba(154,188,218,.20) !important;
+}
+
+/* Genel board glow metal ön yüzü yıkamasın */
+.designer-board.letter-material-gold-kaplama.lighting-backlit::after,
+.designer-board.letter-material-krom-kaplama.lighting-backlit::after {
+  opacity: .22 !important;
+  filter: blur(21px) !important;
+  left: 12% !important;
+  right: 12% !important;
+  top: 24% !important;
+  bottom: 16% !important;
+}
+
+/* Gündüzde metal daha görünür, halo daha az */
+.mode-day
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong,
+.mode-day
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong {
+  opacity: 1 !important;
+}
+
+.mode-day
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong::before,
+.mode-day
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong::before {
+  opacity: .28 !important;
+}
+
+/* Fileli seçeneklere dokunmuyoruz:
+   onlar beyaz ön yüz + metal çerçeve + ön/arka ışık olarak kalır. */
