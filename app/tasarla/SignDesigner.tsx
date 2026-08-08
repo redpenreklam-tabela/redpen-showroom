@@ -94,14 +94,21 @@ export default function SignDesigner() {
 
   const lightingMode = useMemo(() => {
     if (letterMaterial === "FOREX") return "off";
+
     if (
       letterMaterial === "GOLD KAPLAMA" ||
-      letterMaterial === "KROM KAPLAMA" ||
-      letterMaterial === "FİLELİ KROM" ||
-      letterMaterial === "FİLELİ GOLD"
+      letterMaterial === "KROM KAPLAMA"
     ) {
       return "backlit";
     }
+
+    if (
+      letterMaterial === "FİLELİ KROM" ||
+      letterMaterial === "FİLELİ GOLD"
+    ) {
+      return "dual";
+    }
+
     return lighted ? "frontlit" : "off";
   }, [letterMaterial, lighted]);
 
@@ -175,7 +182,15 @@ export default function SignDesigner() {
       `Zemin malzemesi: ${baseMaterial}`,
       `Harf malzemesi: ${letterMaterial}`,
       `Ölçü: ${width} x ${height} cm`,
-      `Aydınlatma: ${lightingMode === "backlit" ? "Arkadan ışıklı" : lightingMode === "frontlit" ? "Önden ışıklı" : "Işıksız"}`,
+      `Aydınlatma: ${
+        lightingMode === "backlit"
+          ? "Arkadan ışıklı"
+          : lightingMode === "dual"
+            ? "Önden + arkadan ışıklı"
+            : lightingMode === "frontlit"
+              ? "Önden ışıklı"
+              : "Işıksız"
+      }`,
       `Zemin rengi: ${baseColor}`,
       `Harf rengi: ${letterColor}`,
       "",
@@ -547,7 +562,13 @@ export default function SignDesigner() {
                 <span />
                 <div>
                   <small>MALZEME AYARI</small>
-                  <b>{lightingMode === "backlit" ? "ARKADAN IŞIKLI" : "IŞIKSIZ"}</b>
+                  <b>
+                    {lightingMode === "backlit"
+                      ? "ARKADAN IŞIKLI"
+                      : lightingMode === "dual"
+                        ? "ÖNDEN + ARKADAN IŞIKLI"
+                        : "IŞIKSIZ"}
+                  </b>
                 </div>
               </div>
             )}
