@@ -1,16 +1,43 @@
-/* Önceki mobil assembly force kuralları artık kullanılmıyor.
-   Assembly bölümü mobilde tamamen kaldırılmıştır. */
+/* LEGACY REAL-DEVICE FORCE CLEANUP
+   Eski kural mobil video/frame'i display:none ile öldürüyordu.
+   Artık yalnızca eski desktop wrapper kalıntılarını gizliyoruz.
+*/
 @media (max-width: 1100px), (hover: none), (pointer: coarse) {
-  .assembly-mobile-wrapper,
-  .assembly-mobile-video-section,
-  .assembly-mobile-video-frame,
-  .assembly-mobile-autoplay-video,
-  .assembly-desktop-wrapper {
+  .assembly-desktop-wrapper,
+  .assembly-desktop-only-section {
     display: none !important;
     height: 0 !important;
     min-height: 0 !important;
+    max-height: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
     overflow: hidden !important;
+    pointer-events: none !important;
+  }
+
+  .assembly-mobile-video-only,
+  .assembly-mobile-video-section,
+  .assembly-mobile-video-frame,
+  .assembly-mobile-autoplay-video {
+    display: block !important;
+  }
+
+  .assembly-mobile-video-only,
+  .assembly-mobile-video-section,
+  .assembly-mobile-video-frame {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+  }
+
+  .assembly-mobile-autoplay-video {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 }
