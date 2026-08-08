@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Geist, Geist_Mono } from "next/font/google";
+import CatalogNavInjector from "./components/CatalogNavInjector";
 import "./globals.css";
 import "./mobile.css";
 import "./mobile-video-performance.css";
@@ -23,7 +24,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="tr" className={`${geistSans.variable} ${geistMono.variable} ${display.variable}`}>
-      <body>{children}</body>
+      <body>
+        <CatalogNavInjector />
+        {children}
+      </body>
     </html>
   );
 }
