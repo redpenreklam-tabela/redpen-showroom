@@ -1,0 +1,88 @@
+/* REDPEN / METAL FRONT FACE STRONG
+   Texture gerçekten ön yüzde görünsün diye:
+   - reflection bands daha sık
+   - texture kelimeye göre küçültülür
+   - fill'i ezen tüm önceki background kuralları son katmanda override edilir
+   - sides/depth ayrı kalır
+*/
+
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong{
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+  -webkit-text-stroke:0!important;
+
+  background-image:url("/textures/gold-reflection-strong.webp")!important;
+  background-repeat:repeat-x!important;
+
+  /* Kritik fark: 190% yerine 72%.
+     Böylece tek kelimenin önünde birkaç ayrı reflection bandı görünür. */
+  background-size:72% 100%!important;
+  background-position:
+    calc(50% + var(--metal-reflect-shift,0%)) 50%!important;
+
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+
+  filter:saturate(1.28) contrast(1.28) brightness(1.00)!important;
+
+  /* Derinlik var ama ön yüzün texture'ını boğmuyor */
+  text-shadow:
+    1px 1px 0 #b67605,
+    3px 4px 0 #6d3d00,
+    6px 8px 8px rgba(0,0,0,.46)!important;
+}
+
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong{
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+  -webkit-text-stroke:0!important;
+
+  background-image:url("/textures/chrome-reflection-strong.webp")!important;
+  background-repeat:repeat-x!important;
+  background-size:72% 100%!important;
+  background-position:
+    calc(50% + var(--metal-reflect-shift,0%)) 50%!important;
+
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+
+  filter:contrast(1.34) brightness(1.00)!important;
+
+  text-shadow:
+    1px 1px 0 #8e959b,
+    3px 4px 0 #3b4146,
+    6px 8px 8px rgba(0,0,0,.48)!important;
+}
+
+/* Pseudo yüzeyleri tamamen iptal et.
+   Ön yüzde TEK gerçek texture fill var. */
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong::after,
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong::after{
+  content:none!important;
+  display:none!important;
+}
+
+/* Halo yalnızca arkada. Ön face'i beyazlaştırmasın. */
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong::before,
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong::before{
+  opacity:.24!important;
+}
+
+/* Gündüzde yüzey geçişi daha da net */
+.mode-day
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong{
+  filter:saturate(1.34) contrast(1.32) brightness(1.04)!important;
+}
+
+.mode-day
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong{
+  filter:contrast(1.38) brightness(1.04)!important;
+}
