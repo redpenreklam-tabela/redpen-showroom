@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type SignType = "KUTU HARF" | "IŞIKLI PANEL" | "TOTEM" | "CEPHE";
-type Material = "PLEKSİ" | "ALÜMİNYUM" | "KROM" | "KOMPOZİT";
+type BaseMaterial = "PLEKSİ" | "ALÜMİNYUM" | "KROM" | "KOMPOZİT";
+type LetterMaterial = "PLEKSİ" | "GOLD KAPLAMA" | "KROM KAPLAMA" | "FİLELİ KROM" | "FİLELİ GOLD" | "FOREX";
 type SceneMode = "day" | "night";
 type FontId =
   | "montserrat"
@@ -20,7 +21,8 @@ type FontId =
   | "pacifico";
 
 const signTypes: SignType[] = ["KUTU HARF", "IŞIKLI PANEL", "TOTEM", "CEPHE"];
-const materials: Material[] = ["PLEKSİ", "ALÜMİNYUM", "KROM", "KOMPOZİT"];
+const baseMaterials: BaseMaterial[] = ["PLEKSİ", "ALÜMİNYUM", "KROM", "KOMPOZİT"];
+const letterMaterials: LetterMaterial[] = ["PLEKSİ", "GOLD KAPLAMA", "KROM KAPLAMA", "FİLELİ KROM", "FİLELİ GOLD", "FOREX"];
 
 const fonts: Array<{ id: FontId; name: string; family: string }> = [
   { id: "montserrat", name: "Montserrat", family: "var(--font-sign-montserrat)" },
@@ -57,8 +59,8 @@ const baseColors = [
 export default function SignDesigner() {
   const [text, setText] = useState("REDPEN");
   const [signType, setSignType] = useState<SignType>("KUTU HARF");
-  const [letterMaterial, setLetterMaterial] = useState<Material>("PLEKSİ");
-  const [baseMaterial, setBaseMaterial] = useState<Material>("KOMPOZİT");
+  const [letterMaterial, setLetterMaterial] = useState<LetterMaterial>("PLEKSİ");
+  const [baseMaterial, setBaseMaterial] = useState<BaseMaterial>("KOMPOZİT");
   const [letterColor, setLetterColor] = useState(letterColors[0].value);
   const [baseColor, setBaseColor] = useState(baseColors[0].value);
   const [width, setWidth] = useState(300);
@@ -89,6 +91,21 @@ export default function SignDesigner() {
 
   const normalizedText = (text.trim() || "MARKANIZ").slice(0, 24).toUpperCase();
   const currentFont = fonts.find((font) => font.id === selectedFont) ?? fonts[0];
+
+  const lightingMode = useMemo(() => {
+    if (letterMaterial === "FOREX") return "off";
+    if (
+      letterMaterial === "GOLD KAPLAMA" ||
+      letterMaterial === "KROM KAPLAMA" ||
+      letterMaterial === "FİLELİ KROM" ||
+      letterMaterial === "FİLELİ GOLD"
+    ) {
+      return "backlit";
+    }
+    return lighted ? "frontlit" : "off";
+  }, [letterMaterial, lighted]);
+
+  const effectiveLighted = lightingMode !== "off";
 
   const sceneScale = useMemo(() => {
     const safeWidth = Math.max(1, width);
@@ -158,7 +175,7 @@ export default function SignDesigner() {
       `Zemin malzemesi: ${baseMaterial}`,
       `Harf malzemesi: ${letterMaterial}`,
       `Ölçü: ${width} x ${height} cm`,
-      `Aydınlatma: ${lighted ? "Işıklı" : "Işıksız"}`,
+      `Aydınlatma: ${lightingMode === "backlit" ? "Arkadan ışıklı" : lightingMode === "frontlit" ? "Önden ışıklı" : "Işıksız"}`,
       `Zemin rengi: ${baseColor}`,
       `Harf rengi: ${letterColor}`,
       "",
@@ -180,6 +197,7 @@ export default function SignDesigner() {
     width,
     height,
     lighted,
+    lightingMode,
     baseColor,
     letterColor,
   ]);
@@ -427,7 +445,7 @@ export default function SignDesigner() {
           <div className="designer-field">
             <label>ZEMİN MALZEMESİ</label>
             <div className="designer-material-row">
-              {materials.map((item) => (
+              {baseMaterials.map((item) => (
                 <button
                   type="button"
                   key={`base-${item}`}
@@ -460,7 +478,7 @@ export default function SignDesigner() {
           <div className="designer-field">
             <label>HARF MALZEMESİ</label>
             <div className="designer-material-row">
-              {materials.map((item) => (
+              {letterMaterials.map((item) => (
                 <button
                   type="button"
                   key={`letter-${item}`}
@@ -515,14 +533,24 @@ export default function SignDesigner() {
 
           <div className="designer-field">
             <label>AYDINLATMA</label>
-            <button
-              type="button"
-              className={`designer-toggle ${lighted ? "is-on" : ""}`}
-              onClick={() => setLighted((v) => !v)}
-            >
-              <span />
-              <b>{lighted ? "IŞIKLI" : "IŞIKSIZ"}</b>
-            </button>
+            {letterMaterial === "PLEKSİ" ? (
+              <button
+                type="button"
+                className={`designer-toggle ${lighted ? "is-on" : ""}`}
+                onClick={() => setLighted((v) => !v)}
+              >
+                <span />
+                <b>{lighted ? "ÖNDEN IŞIKLI" : "IŞIKSIZ"}</b>
+              </button>
+            ) : (
+              <div className={`designer-lighting-readout mode-${lightingMode}`}>
+                <span />
+                <div>
+                  <small>MALZEME AYARI</small>
+                  <b>{lightingMode === "backlit" ? "ARKADAN IŞIKLI" : "IŞIKSIZ"}</b>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="designer-field">
@@ -591,7 +619,21 @@ export default function SignDesigner() {
             <div
               className={`designer-board material-${baseMaterial.toLowerCase()} type-${signType
                 .toLowerCase()
-                .replaceAll(" ", "-")} ${lighted ? "is-lighted" : ""}`}
+                .replaceAll(" ", "-")} letter-material-${letterMaterial
+                .toLowerCase()
+                .replaceAll(" ", "-")
+                .replaceAll("İ", "i")
+                .replaceAll("ı", "i")
+                .replaceAll("Ş", "s")
+                .replaceAll("ş", "s")
+                .replaceAll("Ö", "o")
+                .replaceAll("ö", "o")
+                .replaceAll("Ü", "u")
+                .replaceAll("ü", "u")
+                .replaceAll("Ğ", "g")
+                .replaceAll("ğ", "g")
+                .replaceAll("Ç", "c")
+                .replaceAll("ç", "c")} ${effectiveLighted ? "is-lighted" : ""} lighting-${lightingMode}`}
               style={boardStyle}
             >
               <span className="designer-board-edge" aria-hidden="true" />
@@ -610,6 +652,7 @@ export default function SignDesigner() {
                 )}
                 <strong
                   className="designer-draggable-element"
+                  data-text={normalizedText}
                   onPointerDown={(event) => startDrag(event, "text")}
                   style={{
                     transform: `translate(${textOffset.x}%, ${textOffset.y}%)`,

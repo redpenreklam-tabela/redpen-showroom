@@ -1,0 +1,270 @@
+/* REDPEN TABELANI TASARLA / HARF MALZEMELERİ
+   Malzeme seçimi artık sahneyi gerçekten değiştirir.
+*/
+
+.designer-board-content strong{
+  position:relative;
+  isolation:isolate;
+}
+
+/* ----------------------------------------------------------
+   PLEKSİ
+   Mevcut davranış korunur: renk seçimi + önden ışıklı/ışıksız.
+   ---------------------------------------------------------- */
+.letter-material-pleksi .designer-board-content strong{
+  color:var(--letter-color)!important;
+  -webkit-text-fill-color:var(--letter-color)!important;
+  background:none!important;
+}
+
+/* ----------------------------------------------------------
+   GOLD KAPLAMA
+   Altın metal yüzey + arkadan halo.
+   Ön yüz kendi kendine neon gibi parlamaz.
+   ---------------------------------------------------------- */
+.letter-material-gold-kaplama .designer-board-content strong,
+.letter-material-fileli-gold .designer-board-content strong{
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+  background:
+    linear-gradient(
+      105deg,
+      #5f420d 0%,
+      #c99b31 15%,
+      #fff0a8 31%,
+      #b77d18 48%,
+      #ffe58a 64%,
+      #8b5c0d 82%,
+      #e8bd56 100%
+    )!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  filter:saturate(1.08) contrast(1.03)!important;
+  text-shadow:
+    1px 1px 0 rgba(255,242,166,.18),
+    3px 4px 0 rgba(58,38,5,.78),
+    5px 7px 8px rgba(0,0,0,.42)!important;
+}
+
+/* ----------------------------------------------------------
+   KROM KAPLAMA
+   Parlak soğuk gri / krom yüzey + arkadan halo.
+   ---------------------------------------------------------- */
+.letter-material-krom-kaplama .designer-board-content strong,
+.letter-material-fileli-krom .designer-board-content strong{
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+  background:
+    linear-gradient(
+      105deg,
+      #303337 0%,
+      #e6e8e8 16%,
+      #777c81 30%,
+      #fafafa 43%,
+      #585d62 58%,
+      #d8dcde 73%,
+      #3d4248 88%,
+      #afb4b8 100%
+    )!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  filter:contrast(1.08)!important;
+  text-shadow:
+    1px 1px 0 rgba(255,255,255,.22),
+    3px 4px 0 rgba(32,35,39,.82),
+    5px 7px 8px rgba(0,0,0,.44)!important;
+}
+
+/* ----------------------------------------------------------
+   ARKADAN IŞIK
+   Gold / krom / fileli seçeneklerinde malzeme bunu zorlar.
+   Ön yüz parlak kalır, duvara yumuşak beyaz-sıcak halo düşer.
+   ---------------------------------------------------------- */
+.lighting-backlit .designer-board-content strong::before{
+  content:attr(data-text)!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:-2!important;
+  font:inherit!important;
+  letter-spacing:inherit!important;
+  line-height:inherit!important;
+  white-space:nowrap!important;
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+  background:none!important;
+  text-shadow:
+    0 0 5px rgba(255,247,220,.88),
+    0 0 11px rgba(255,239,188,.68),
+    0 0 22px rgba(255,222,140,.42),
+    0 0 38px rgba(255,206,105,.22)!important;
+  filter:blur(.2px)!important;
+  transform:translate(0,2px);
+  pointer-events:none;
+}
+
+.letter-material-krom-kaplama.lighting-backlit .designer-board-content strong::before,
+.letter-material-fileli-krom.lighting-backlit .designer-board-content strong::before{
+  text-shadow:
+    0 0 5px rgba(245,249,255,.92),
+    0 0 12px rgba(221,232,242,.70),
+    0 0 24px rgba(195,212,228,.42),
+    0 0 38px rgba(175,198,218,.22)!important;
+}
+
+.lighting-backlit .designer-board-content strong{
+  /* generic front-light kurallarını kır */
+  filter:none!important;
+}
+
+.lighting-backlit::after{
+  content:"";
+  position:absolute;
+  left:8%;
+  right:8%;
+  top:18%;
+  bottom:18%;
+  z-index:0;
+  pointer-events:none;
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(255,238,190,.12) 0%,
+      rgba(255,227,158,.055) 42%,
+      transparent 74%
+    );
+  filter:blur(18px);
+  opacity:.62;
+}
+
+/* ----------------------------------------------------------
+   FİLELİ KROM / GOLD
+   Metal kaplama üstünde ince delikli-fileli doku.
+   ---------------------------------------------------------- */
+.letter-material-fileli-krom .designer-board-content strong{
+  background:
+    radial-gradient(circle, rgba(16,18,20,.72) 0 1.1px, transparent 1.35px) 0 0/5px 5px,
+    linear-gradient(
+      105deg,
+      #34383c,
+      #e9ebec 18%,
+      #777d82 34%,
+      #f8f8f8 48%,
+      #62676c 65%,
+      #c9ced1 82%,
+      #44494e
+    )!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+}
+
+.letter-material-fileli-gold .designer-board-content strong{
+  background:
+    radial-gradient(circle, rgba(70,43,4,.72) 0 1.1px, transparent 1.35px) 0 0/5px 5px,
+    linear-gradient(
+      105deg,
+      #64430a,
+      #e0b33c 17%,
+      #fff1a4 31%,
+      #ae7714 50%,
+      #ffe279 68%,
+      #8e5d0c 84%,
+      #d5a73b
+    )!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+}
+
+/* ----------------------------------------------------------
+   FOREX
+   Mat, ışık almayan harf. Renk seçimi çalışmaya devam eder.
+   ---------------------------------------------------------- */
+.letter-material-forex .designer-board-content strong{
+  color:var(--letter-color)!important;
+  -webkit-text-fill-color:var(--letter-color)!important;
+  background:none!important;
+  filter:saturate(.88) brightness(.94)!important;
+  text-shadow:
+    1px 1px 0 rgba(255,255,255,.06),
+    3px 4px 0 color-mix(in srgb,var(--letter-color) 42%,#080808),
+    5px 7px 8px rgba(0,0,0,.38)!important;
+}
+
+.letter-material-forex .designer-board-content strong::before{
+  display:none!important;
+}
+
+.letter-material-forex::after{
+  display:none!important;
+}
+
+/* Malzemeye göre generic glow'u iptal et */
+.lighting-backlit .designer-board-glow,
+.letter-material-forex .designer-board-glow{
+  display:none!important;
+}
+
+/* ----------------------------------------------------------
+   AYDINLATMA BİLGİ KARTI
+   ---------------------------------------------------------- */
+.designer-lighting-readout{
+  width:100%;
+  min-height:44px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:8px 12px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.025);
+}
+
+.designer-lighting-readout>span{
+  width:10px;
+  height:10px;
+  flex:0 0 auto;
+  border-radius:50%;
+  background:rgba(255,255,255,.18);
+}
+
+.designer-lighting-readout>div{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+
+.designer-lighting-readout small{
+  color:rgba(255,255,255,.30);
+  font:600 7px/1 var(--font-geist-mono);
+  letter-spacing:.10em;
+}
+
+.designer-lighting-readout b{
+  color:rgba(255,255,255,.76);
+  font:800 9px/1 var(--font-geist-mono);
+  letter-spacing:.08em;
+}
+
+.designer-lighting-readout.mode-backlit{
+  border-color:rgba(255,214,126,.25);
+  background:linear-gradient(90deg,rgba(255,205,105,.065),rgba(255,255,255,.018));
+}
+
+.designer-lighting-readout.mode-backlit>span{
+  background:#ffe5a0;
+  box-shadow:0 0 11px rgba(255,222,135,.75);
+}
+
+.designer-lighting-readout.mode-off>span{
+  background:#55585b;
+  box-shadow:none;
+}
+
+/* 6 seçenek olduğu için harf malzeme gridini 2x3 tut */
+.designer-field:has(.designer-material-row) .designer-material-row{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+}
+
+@media(max-width:620px){
+  .designer-lighting-readout{
+    min-height:42px;
+  }
+}
