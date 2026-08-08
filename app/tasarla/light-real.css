@@ -1,0 +1,143 @@
+
+/* REDPEN TABELA TASARLA - GERÇEKÇİ AYDINLATMA
+   Eski neon-benzeri aşırı text-shadow yerine:
+   1) net harf yüzeyi
+   2) harf kenarında kısa bloom
+   3) tabela zemini üzerinde yumuşak ışık yayılımı
+*/
+
+.designer-board-content{
+  overflow:visible!important;
+  isolation:isolate;
+}
+
+.designer-board-content strong{
+  position:relative!important;
+  z-index:5!important;
+  filter:none!important;
+  text-shadow:
+    0 2px 0 rgba(0,0,0,.72),
+    0 4px 7px rgba(0,0,0,.34)!important;
+}
+
+/* IŞIKLI: harfin kendisi net kalır */
+.designer-board.is-lighted .designer-board-content strong{
+  filter:none!important;
+  text-shadow:
+    0 0 1px rgba(255,255,255,.92),
+    0 0 3px color-mix(in srgb,var(--letter-color) 90%,white),
+    0 0 7px color-mix(in srgb,var(--letter-color) 72%,transparent),
+    0 2px 1px rgba(0,0,0,.62)!important;
+}
+
+/* Harflerin çevresindeki küçük bloom */
+.designer-board.is-lighted .designer-board-content strong::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:-10% -5%;
+  pointer-events:none;
+  border-radius:18%;
+  background:
+    radial-gradient(
+      ellipse at center,
+      color-mix(in srgb,var(--letter-color) 28%,transparent) 0%,
+      color-mix(in srgb,var(--letter-color) 13%,transparent) 38%,
+      transparent 72%
+    );
+  filter:blur(9px);
+  opacity:.9;
+}
+
+/* Zemine vuran daha geniş, daha hafif ışık */
+.designer-board.is-lighted::after{
+  content:"";
+  position:absolute;
+  z-index:1;
+  left:12%;
+  right:12%;
+  top:26%;
+  bottom:18%;
+  pointer-events:none;
+  background:
+    radial-gradient(
+      ellipse at center,
+      color-mix(in srgb,var(--letter-color) 22%,transparent) 0%,
+      color-mix(in srgb,var(--letter-color) 9%,transparent) 38%,
+      transparent 72%
+    );
+  filter:blur(22px);
+  opacity:.72;
+}
+
+/* Eski aşağı doğru kırmızı sis bandını iptal ediyoruz */
+.designer-board-glow{
+  display:none!important;
+}
+
+/* Beyaz/altın gibi açık renklerde patlamayı azalt */
+.designer-board.is-lighted .designer-board-content strong{
+  color:var(--letter-color)!important;
+}
+
+/* Gündüz modunda ışık belirgin ama çok daha zayıf */
+.mode-day .designer-board.is-lighted .designer-board-content strong{
+  text-shadow:
+    0 0 1px rgba(255,255,255,.9),
+    0 0 3px color-mix(in srgb,var(--letter-color) 45%,white),
+    0 2px 2px rgba(0,0,0,.34)!important;
+}
+
+.mode-day .designer-board.is-lighted::after{
+  opacity:.24;
+  filter:blur(17px);
+}
+
+/* IŞIKSIZ: tamamen boya/malzeme hissi */
+.designer-board:not(.is-lighted) .designer-board-content strong{
+  text-shadow:
+    0 2px 0 rgba(0,0,0,.55),
+    0 4px 7px rgba(0,0,0,.30)!important;
+}
+
+/* Kutu harfte hafif derinlik. Neon tabela gibi düz parlamasın. */
+.type-kutu-harf .designer-board-content strong{
+  transform:translateZ(0);
+}
+
+.type-kutu-harf.is-lighted .designer-board-content strong{
+  text-shadow:
+    0 0 1px rgba(255,255,255,.95),
+    0 0 4px color-mix(in srgb,var(--letter-color) 88%,white),
+    0 0 8px color-mix(in srgb,var(--letter-color) 55%,transparent),
+    2px 3px 0 color-mix(in srgb,var(--letter-color) 48%,#080808),
+    4px 6px 6px rgba(0,0,0,.44)!important;
+}
+
+/* Işıklı panelde ışık kaynağı panelin tamamıdır; harf neon gibi parlamaz */
+.type-ışıklı-panel.is-lighted{
+  box-shadow:
+    0 0 10px color-mix(in srgb,var(--letter-color) 18%,transparent),
+    0 0 24px color-mix(in srgb,var(--letter-color) 9%,transparent),
+    0 22px 42px rgba(0,0,0,.42)!important;
+}
+
+.type-ışıklı-panel.is-lighted::after{
+  left:0;
+  right:0;
+  top:0;
+  bottom:0;
+  opacity:.20;
+  filter:blur(12px);
+}
+
+/* Çok büyük ölçekte glow kalınlığı devleşmesin */
+@media (min-width:1400px){
+  .designer-board.is-lighted .designer-board-content strong{
+    text-shadow:
+      0 0 1px rgba(255,255,255,.92),
+      0 0 3px color-mix(in srgb,var(--letter-color) 90%,white),
+      0 0 6px color-mix(in srgb,var(--letter-color) 68%,transparent),
+      0 2px 1px rgba(0,0,0,.62)!important;
+  }
+}
