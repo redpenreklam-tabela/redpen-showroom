@@ -29,8 +29,8 @@ body:has(.catalog-screen) {
   isolation: isolate;
   color: #fff;
   background:
-    radial-gradient(circle at 50% 47%, rgba(var(--catalog-red), .14), transparent 33%),
-    radial-gradient(circle at 50% 120%, rgba(var(--catalog-red), .13), transparent 38%),
+    radial-gradient(circle at 50% 47%, rgba(var(--catalog-red), .12), transparent 36%),
+    radial-gradient(circle at 50% 120%, rgba(var(--catalog-red), .11), transparent 40%),
     linear-gradient(180deg, #09090b 0%, #050506 100%);
 }
 
@@ -45,10 +45,10 @@ body:has(.catalog-screen) {
 .catalog-grid {
   position: absolute;
   inset: 0;
-  opacity: .13;
+  opacity: .11;
   background-image:
-    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+    linear-gradient(rgba(255,255,255,.032) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.032) 1px, transparent 1px);
   background-size: 52px 52px;
   mask-image: radial-gradient(circle at center, #000 0, transparent 76%);
 }
@@ -57,7 +57,7 @@ body:has(.catalog-screen) {
   position: absolute;
   left: 50%;
   top: 50%;
-  border: 1px solid rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.035);
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
@@ -72,7 +72,7 @@ body:has(.catalog-screen) {
   width: min(58vw, 800px);
   aspect-ratio: 1;
   border-style: dashed;
-  opacity: .52;
+  opacity: .46;
   animation: catalogOrbit 24s linear infinite reverse;
 }
 
@@ -83,14 +83,14 @@ body:has(.catalog-screen) {
   width: min(52vw, 760px);
   height: 130%;
   transform: translateX(-50%) rotate(5deg);
-  background: linear-gradient(180deg, rgba(var(--catalog-red),.04), rgba(var(--catalog-red),.015) 48%, transparent 86%);
+  background: linear-gradient(180deg, rgba(var(--catalog-red),.035), rgba(var(--catalog-red),.014) 48%, transparent 86%);
   filter: blur(20px);
 }
 
 .catalog-grain {
   position: absolute;
   inset: 0;
-  opacity: .04;
+  opacity: .035;
   background:
     radial-gradient(circle at 20% 30%, rgba(255,255,255,.7) 0 1px, transparent 1.2px),
     radial-gradient(circle at 76% 60%, rgba(255,255,255,.42) 0 1px, transparent 1.2px);
@@ -181,6 +181,40 @@ body:has(.catalog-screen) {
   touch-action: pan-y;
 }
 
+/* SAYFANIN ÜST / ALT WALLWASHER IŞIĞI */
+.catalog-showcase::before,
+.catalog-showcase::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 8%;
+  width: 84%;
+  height: 150px;
+  pointer-events: none;
+  opacity: .9;
+  filter: blur(18px);
+}
+
+.catalog-showcase::before {
+  top: -92px;
+  background:
+    radial-gradient(ellipse at 50% 100%,
+      rgba(var(--catalog-red), .72) 0%,
+      rgba(var(--catalog-red), .32) 28%,
+      rgba(var(--catalog-red), .10) 54%,
+      transparent 74%);
+}
+
+.catalog-showcase::after {
+  bottom: -96px;
+  background:
+    radial-gradient(ellipse at 50% 0%,
+      rgba(var(--catalog-red), .68) 0%,
+      rgba(var(--catalog-red), .30) 28%,
+      rgba(var(--catalog-red), .09) 54%,
+      transparent 74%);
+}
+
 .catalog-stage-label {
   position: absolute;
   z-index: 20;
@@ -207,6 +241,7 @@ body:has(.catalog-screen) {
 
 .catalog-carousel {
   position: relative;
+  z-index: 3;
   width: min(1200px, 96vw);
   height: min(72svh, 760px);
   min-height: 470px;
@@ -220,15 +255,16 @@ body:has(.catalog-screen) {
   position: absolute;
   left: 19%;
   right: 19%;
-  bottom: 3%;
-  height: 12%;
+  bottom: 2%;
+  height: 13%;
   border-radius: 50%;
-  background: rgba(var(--catalog-red), .27);
-  filter: blur(55px);
-  opacity: .62;
+  background: rgba(var(--catalog-red), .30);
+  filter: blur(58px);
+  opacity: .58;
   transform: rotateX(72deg);
 }
 
+/* KARTLAR */
 .catalog-card {
   position: absolute;
   left: 50%;
@@ -237,7 +273,7 @@ body:has(.catalog-screen) {
   aspect-ratio: 1;
   padding: 0;
   border: 0;
-  background: transparent;
+  background: transparent !important;
   cursor: pointer;
   transform-style: preserve-3d;
   transition:
@@ -247,82 +283,80 @@ body:has(.catalog-screen) {
   will-change: transform, opacity;
 }
 
+/* ÇERÇEVE VE SİYAH ZEMİN KALDIRILDI */
 .catalog-card-frame {
   position: absolute;
   inset: 0;
   display: block;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,.13);
-  background: #111;
-  box-shadow:
-    0 28px 80px rgba(0,0,0,.54),
-    0 12px 30px rgba(0,0,0,.35);
+  overflow: visible;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
   transition:
-    border-color .35s ease,
-    box-shadow .45s ease,
-    filter .45s ease;
+    filter .45s ease,
+    opacity .45s ease;
 }
 
+/* TRANSPARAN WEBP'NİN ALFASI AYNEN KORUNUR */
 .catalog-card img {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain !important;
+  background: transparent !important;
   user-select: none;
   -webkit-user-drag: none;
-}
-
-.catalog-card-vignette,
-.catalog-card-shine {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
+  filter:
+    drop-shadow(0 28px 46px rgba(0,0,0,.44))
+    drop-shadow(0 10px 18px rgba(0,0,0,.28));
 }
 
 .catalog-card-vignette {
-  background:
-    linear-gradient(90deg, rgba(0,0,0,.22), transparent 8%, transparent 92%, rgba(0,0,0,.24)),
-    linear-gradient(180deg, transparent 76%, rgba(0,0,0,.22));
+  display: none !important;
 }
 
 .catalog-card-shine {
-  opacity: .55;
-  background: linear-gradient(115deg, transparent 0 35%, rgba(255,255,255,.06) 47%, transparent 59%);
+  position: absolute;
+  inset: 4%;
+  pointer-events: none;
+  opacity: .34;
+  background: linear-gradient(115deg, transparent 0 36%, rgba(255,255,255,.045) 48%, transparent 60%);
+  mask-image: linear-gradient(#000,#000);
   transform: translateX(-45%);
   transition: transform .7s cubic-bezier(.16,1,.3,1);
 }
 
 .catalog-card-index {
   position: absolute;
-  left: 12px;
-  bottom: 11px;
+  left: 4%;
+  bottom: 4%;
   z-index: 4;
   min-width: 28px;
   height: 22px;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(255,255,255,.1);
-  background: rgba(5,5,7,.72);
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(5,5,7,.58);
   color: rgba(255,255,255,.5);
   font: 600 6px/1 var(--font-geist-mono);
   letter-spacing: .1em;
   backdrop-filter: blur(8px);
 }
 
+/* AKTİF SAYFA %100 */
 .catalog-card-active {
   z-index: 10;
   opacity: 1;
   transform: translate(-50%,-50%) translateX(0) translateZ(120px) scale(1.06);
-  filter: saturate(1.04) brightness(1.03);
+  filter: saturate(1.03) brightness(1.02);
   cursor: default;
 }
 
 .catalog-card-active .catalog-card-frame {
-  border-color: rgba(var(--catalog-red), .74);
-  box-shadow:
-    0 0 0 1px rgba(var(--catalog-red),.2),
-    0 0 36px rgba(var(--catalog-red),.22),
-    0 42px 100px rgba(0,0,0,.65);
+  filter:
+    drop-shadow(0 0 18px rgba(var(--catalog-red),.14))
+    drop-shadow(0 0 42px rgba(var(--catalog-red),.10));
 }
 
 .catalog-card-active .catalog-card-shine {
@@ -331,40 +365,42 @@ body:has(.catalog-screen) {
 
 .catalog-card-active .catalog-card-index {
   color: rgb(var(--catalog-red));
-  border-color: rgba(var(--catalog-red), .45);
+  border-color: rgba(var(--catalog-red), .42);
 }
 
+/* YAN SAYFALAR ~%50 */
 .catalog-card.slot--1 {
   z-index: 7;
   opacity: .52;
   transform: translate(-50%,-50%) translateX(-57%) translateZ(0) rotateY(12deg) scale(.88);
-  filter: saturate(.72) brightness(.75);
+  filter: saturate(.72) brightness(.78);
 }
 
 .catalog-card.slot-1 {
   z-index: 7;
   opacity: .52;
   transform: translate(-50%,-50%) translateX(57%) translateZ(0) rotateY(-12deg) scale(.88);
-  filter: saturate(.72) brightness(.75);
+  filter: saturate(.72) brightness(.78);
 }
 
+/* DIŞ SAYFALAR ~%25 */
 .catalog-card.slot--2 {
   z-index: 4;
-  opacity: .24;
+  opacity: .25;
   transform: translate(-50%,-50%) translateX(-104%) translateZ(-120px) rotateY(17deg) scale(.76);
-  filter: saturate(.45) brightness(.55);
+  filter: saturate(.45) brightness(.60);
 }
 
 .catalog-card.slot-2 {
   z-index: 4;
-  opacity: .24;
+  opacity: .25;
   transform: translate(-50%,-50%) translateX(104%) translateZ(-120px) rotateY(-17deg) scale(.76);
-  filter: saturate(.45) brightness(.55);
+  filter: saturate(.45) brightness(.60);
 }
 
 .catalog-card-side:hover {
-  opacity: .8;
-  filter: saturate(.95) brightness(.95);
+  opacity: .84;
+  filter: saturate(.95) brightness(.98);
 }
 
 .catalog-card.slot--1:hover {
@@ -376,12 +412,12 @@ body:has(.catalog-screen) {
 }
 
 .catalog-card.slot--2:hover {
-  opacity: .45;
+  opacity: .48;
   transform: translate(-50%,-50%) translateX(-101%) translateZ(-70px) rotateY(13deg) scale(.79);
 }
 
 .catalog-card.slot-2:hover {
-  opacity: .45;
+  opacity: .48;
   transform: translate(-50%,-50%) translateX(101%) translateZ(-70px) rotateY(-13deg) scale(.79);
 }
 
@@ -535,6 +571,17 @@ body:has(.catalog-screen) {
     font-size: 5px;
   }
 
+  .catalog-showcase::before,
+  .catalog-showcase::after {
+    left: 0;
+    width: 100%;
+    height: 110px;
+    filter: blur(16px);
+  }
+
+  .catalog-showcase::before { top: -76px; }
+  .catalog-showcase::after { bottom: -78px; }
+
   .catalog-carousel {
     width: 100vw;
     height: min(74svh, 650px);
@@ -560,12 +607,12 @@ body:has(.catalog-screen) {
   }
 
   .catalog-card.slot--2 {
-    opacity: .22;
+    opacity: .24;
     transform: translate(-50%,-50%) translateX(-118%) translateZ(-110px) rotateY(15deg) scale(.64);
   }
 
   .catalog-card.slot-2 {
-    opacity: .22;
+    opacity: .24;
     transform: translate(-50%,-50%) translateX(118%) translateZ(-110px) rotateY(-15deg) scale(.64);
   }
 
