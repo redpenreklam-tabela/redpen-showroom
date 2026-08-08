@@ -1,19 +1,11 @@
-/* ASSEMBLY: SADECE MASAÜSTÜNDE GÖRÜNÜR */
-.assembly-desktop-only-section {
-  display: block;
-}
+/* ASSEMBLY: MASAÜSTÜ SCROLL + MOBİL NORMAL VİDEO */
+.assembly-desktop-only-section { display: block; }
+.assembly-mobile-video-only { display: none; }
 
-/* Telefon / tablet / dokunmatik cihazlarda bölüm tamamen kaldırılır. */
 @media (max-width: 1100px), (hover: none), (pointer: coarse) {
   .assembly-desktop-only-section,
   .assembly-desktop-only-section .assembly-scroll,
-  .assembly-desktop-only-section .assembly-sticky,
-  .assembly-desktop-only-section .assembly-progress,
-  .assembly-desktop-only-section .assembly-copy,
-  .assembly-desktop-only-section .assembly-video-shell,
-  .assembly-desktop-only-section .assembly-background,
-  .assembly-desktop-only-section .assembly-stage-list,
-  .assembly-desktop-only-section .assembly-callout {
+  .assembly-desktop-only-section .assembly-sticky {
     display: none !important;
     height: 0 !important;
     min-height: 0 !important;
@@ -21,14 +13,149 @@
     margin: 0 !important;
     padding: 0 !important;
     overflow: hidden !important;
-    opacity: 0 !important;
     pointer-events: none !important;
+  }
+
+  .assembly-mobile-video-only {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  .assembly-mobile-video-section {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 72px 14px !important;
+    overflow: hidden !important;
+    touch-action: pan-y !important;
+    border-top: 1px solid rgba(255,255,255,.07);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    background:
+      radial-gradient(circle at 70% 20%, rgba(159,24,48,.16), transparent 35%),
+      linear-gradient(180deg,#050506,#09090b 50%,#050506);
+  }
+
+  .assembly-mobile-video-heading {
+    position: relative;
+    z-index: 2;
+    padding: 0 4px 28px;
+  }
+
+  .assembly-mobile-video-heading .section-kicker {
+    margin-bottom: 16px;
+  }
+
+  .assembly-mobile-video-heading h2 {
+    margin: 0 0 18px;
+    font-size: clamp(47px,15vw,76px);
+    line-height: .84;
+    letter-spacing: -.055em;
+  }
+
+  .assembly-mobile-video-heading > p:last-child {
+    max-width: 31rem;
+    margin: 0;
+    color: rgba(255,255,255,.62);
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+  .assembly-mobile-video-frame {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: auto !important;
+    overflow: hidden !important;
+    touch-action: pan-y !important;
+    border: 1px solid rgba(255,255,255,.11);
+    background: #070709;
+  }
+
+  .assembly-mobile-autoplay-video {
+    position: relative !important;
+    inset: auto !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    transform: none !important;
+    pointer-events: none !important;
+    touch-action: pan-y !important;
+    background: #070709;
+  }
+
+  .assembly-mobile-video-grid {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: .17;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+    background-size: 44px 44px;
+  }
+
+  .assembly-mobile-video-badge {
+    position: absolute;
+    z-index: 4;
+    top: 16px;
+    left: 16px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 10px;
+    border: 1px solid rgba(255,255,255,.1);
+    background: rgba(5,5,7,.68);
+    pointer-events: none;
+  }
+
+  .assembly-mobile-video-badge span {
+    color: #df3654;
+    font: 700 8px/1 var(--font-geist-mono);
+  }
+
+  .assembly-mobile-video-badge strong {
+    color: rgba(255,255,255,.68);
+    font: 600 6px/1 var(--font-geist-mono);
+    letter-spacing: .16em;
+  }
+
+  .assembly-mobile-video-footer {
+    position: absolute;
+    z-index: 4;
+    left: 15px;
+    right: 15px;
+    bottom: 14px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255,255,255,.35);
+    font: 500 5.5px/1 var(--font-geist-mono);
+    letter-spacing: .14em;
+    pointer-events: none;
+  }
+
+  .assembly-mobile-video-footer i {
+    height: 1px;
+    background: rgba(255,255,255,.12);
   }
 }
 
-/* Sadece gerçek masaüstü */
 @media (min-width: 1101px) and (hover: hover) and (pointer: fine) {
-  .assembly-desktop-only-section {
-    display: block !important;
-  }
+  .assembly-desktop-only-section { display: block !important; }
+  .assembly-mobile-video-only { display: none !important; }
 }

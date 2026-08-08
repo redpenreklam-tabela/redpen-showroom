@@ -46,15 +46,6 @@ const stages = [
   },
 ];
 
-function isTouchMobileDevice() {
-  return (
-    window.matchMedia("(pointer: coarse)").matches ||
-    window.matchMedia("(hover: none)").matches ||
-    navigator.maxTouchPoints > 0 ||
-    window.innerWidth <= 1100
-  );
-}
-
 function MobileAssemblyVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -122,7 +113,7 @@ function MobileAssemblyVideo() {
           loop
           muted
           playsInline
-          preload="auto"
+          preload="metadata"
           disablePictureInPicture
           controls={false}
         >
@@ -377,8 +368,14 @@ function DesktopAssemblyScroll() {
 
 export default function AssemblyScroll() {
   return (
-    <div className="assembly-desktop-only-section">
-      <DesktopAssemblyScroll />
-    </div>
+    <>
+      <div className="assembly-desktop-only-section">
+        <DesktopAssemblyScroll />
+      </div>
+
+      <div className="assembly-mobile-video-only">
+        <MobileAssemblyVideo />
+      </div>
+    </>
   );
 }

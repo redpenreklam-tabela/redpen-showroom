@@ -1,7 +1,4 @@
-/* MOBİL SCROLL KİLİDİNİ KESİN OLARAK DEVRE DIŞI BIRAK
-   IntroExperience inline overflow:hidden yazsa bile !important ile mobilde scroll açık kalır.
-   Masaüstüne dokunmaz.
-*/
+/* MOBİL SCROLL KİLİDİNİ KESİN OLARAK DEVRE DIŞI BIRAK */
 @media (max-width: 1100px), (hover: none), (pointer: coarse) {
   html,
   body {
@@ -27,11 +24,8 @@
     touch-action: pan-y !important;
   }
 
-  /* Assembly mobilde zaten kaldırılmış durumda; burada tekrar garanti altına alıyoruz. */
-  .assembly-desktop-only-section,
-  .assembly-desktop-wrapper,
-  .assembly-mobile-wrapper,
-  .assembly-mobile-video-section {
+  /* Mobilde desktop assembly kapanır, normal video açık kalır. */
+  .assembly-desktop-only-section {
     display: none !important;
     height: 0 !important;
     min-height: 0 !important;
@@ -40,5 +34,20 @@
     padding: 0 !important;
     overflow: hidden !important;
     pointer-events: none !important;
+  }
+
+  .assembly-mobile-video-only,
+  .assembly-mobile-video-section {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    touch-action: pan-y !important;
+    pointer-events: auto !important;
+  }
+
+  .assembly-mobile-video-section {
+    overflow: hidden !important;
   }
 }
