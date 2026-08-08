@@ -1,0 +1,172 @@
+/* REDPEN / METAL FACE BANDING V3
+   Gold ve krom ön yüzünde gerçek metal hissi için:
+   - yatay koyu/açık yansıma bantları
+   - dikey highlight şeritleri
+   - üst/alt ton farkı
+   - TEK yazı katmanı, ghost text yok
+*/
+
+/* GOLD */
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong{
+  background-image:
+    /* Dikey parlama / çevre yansıması */
+    linear-gradient(
+      102deg,
+      transparent 0%,
+      rgba(77,42,0,.75) 8%,
+      transparent 15%,
+      rgba(255,245,184,.68) 23%,
+      rgba(255,255,223,.92) 27%,
+      rgba(154,90,0,.55) 34%,
+      transparent 43%,
+      rgba(255,225,116,.62) 51%,
+      rgba(255,250,196,.86) 55%,
+      rgba(100,55,0,.56) 64%,
+      transparent 73%,
+      rgba(255,230,132,.54) 84%,
+      rgba(73,39,0,.70) 100%
+    ),
+    /* Üst-alt metal tonu */
+    linear-gradient(
+      180deg,
+      #7a4500 0%,
+      #d58c0e 14%,
+      #ffe27a 26%,
+      #9f5c02 40%,
+      #f0b62b 53%,
+      #fff0a1 64%,
+      #a35e02 77%,
+      #e6a51e 89%,
+      #6b3900 100%
+    )!important;
+
+  background-size:
+    180% 100%,
+    100% 100%!important;
+
+  background-position:
+    calc(50% + var(--metal-reflect-shift, 0%)) 50%,
+    50% 50%!important;
+
+  background-blend-mode:
+    screen,
+    normal!important;
+
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+
+  filter:
+    saturate(1.42)
+    contrast(1.22)
+    brightness(.95)!important;
+}
+
+/* KROM */
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong{
+  background-image:
+    /* Dikey ışık / çevre yansımaları */
+    linear-gradient(
+      102deg,
+      transparent 0%,
+      rgba(8,10,12,.82) 8%,
+      transparent 15%,
+      rgba(235,243,249,.74) 23%,
+      rgba(255,255,255,.96) 27%,
+      rgba(78,85,91,.60) 34%,
+      transparent 43%,
+      rgba(216,226,233,.66) 51%,
+      rgba(255,255,255,.92) 55%,
+      rgba(42,48,53,.66) 64%,
+      transparent 73%,
+      rgba(226,235,241,.58) 84%,
+      rgba(17,20,23,.78) 100%
+    ),
+    /* Üst-alt krom tonu */
+    linear-gradient(
+      180deg,
+      #1c2024 0%,
+      #80878d 13%,
+      #f3f6f8 24%,
+      #72797f 38%,
+      #24292e 49%,
+      #d4dbe0 61%,
+      #ffffff 68%,
+      #747b81 80%,
+      #c5cbd0 90%,
+      #272c31 100%
+    )!important;
+
+  background-size:
+    184% 100%,
+    100% 100%!important;
+
+  background-position:
+    calc(50% + var(--metal-reflect-shift, 0%)) 50%,
+    50% 50%!important;
+
+  background-blend-mode:
+    screen,
+    normal!important;
+
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+
+  filter:
+    grayscale(.06)
+    contrast(1.34)
+    brightness(.94)!important;
+}
+
+/* Gold / kromda yüzeyde hafif kenar keskinliği */
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong,
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong{
+  text-shadow:
+    1px 1px 0 rgba(255,255,255,.18),
+    2px 2px 0 rgba(65,65,65,.30),
+    4px 5px 0 rgba(18,18,18,.72),
+    6px 8px 8px rgba(0,0,0,.42)!important;
+}
+
+/* Ön yüzde ışık yok; arka halo tek başına kalır */
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong::after,
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong::after{
+  content:none!important;
+  display:none!important;
+}
+
+/* Halo metal dokuyu yıkamasın */
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong::before,
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong::before{
+  opacity:.48!important;
+}
+
+/* Gündüzde yansıma daha belirgin, halo daha az */
+.mode-day
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong,
+.mode-day
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong{
+  filter:contrast(1.36) brightness(1.02)!important;
+}
+
+.mode-day
+.designer-board.letter-material-gold-kaplama.lighting-backlit
+.designer-board-content strong::before,
+.mode-day
+.designer-board.letter-material-krom-kaplama.lighting-backlit
+.designer-board-content strong::before{
+  opacity:.18!important;
+}
