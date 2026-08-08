@@ -1,0 +1,44 @@
+/* MOBİL SCROLL KİLİDİNİ KESİN OLARAK DEVRE DIŞI BIRAK
+   IntroExperience inline overflow:hidden yazsa bile !important ile mobilde scroll açık kalır.
+   Masaüstüne dokunmaz.
+*/
+@media (max-width: 1100px), (hover: none), (pointer: coarse) {
+  html,
+  body {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-x: none !important;
+    overscroll-behavior-y: auto !important;
+    touch-action: pan-y !important;
+    height: auto !important;
+    min-height: 100% !important;
+  }
+
+  body {
+    position: static !important;
+  }
+
+  .showroom,
+  main,
+  .rp-intro-shell,
+  .rp-showroom-content {
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    touch-action: pan-y !important;
+  }
+
+  /* Assembly mobilde zaten kaldırılmış durumda; burada tekrar garanti altına alıyoruz. */
+  .assembly-desktop-only-section,
+  .assembly-desktop-wrapper,
+  .assembly-mobile-wrapper,
+  .assembly-mobile-video-section {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+  }
+}

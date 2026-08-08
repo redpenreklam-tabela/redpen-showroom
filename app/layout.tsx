@@ -5,6 +5,7 @@ import "./mobile.css";
 import "./mobile-video-performance.css";
 import "./mobile-pingpong-assembly.css";
 import "./mobile-real-device-force.css";
+import "./mobile-scroll-unlock.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
