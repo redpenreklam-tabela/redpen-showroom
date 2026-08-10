@@ -124,22 +124,36 @@ body.designer-is-dragging .designer-metal-svg-wrap{
 }
 
 /* =========================================================
-   FİLELİ GOLD / FİLELİ KROM
-   Metal çerçeve SVG stroke olarak çizilir ve aynı harf glyph'i ile
-   clip edilir. Böylece stroke'un dış yarısı tamamen kesilir:
-   dış ölçü büyümez, metal çerçeve yalnızca İÇE doğru ilerler.
-   Köşelerde round join kullanılmaz; miter + düşük miter limit ile
-   çerçeve harf geometrisini düz ve kontrollü takip eder.
+   FİLELİ GOLD / FİLELİ KROM — STROKE YOK
+
+   Eski SVG stroke yaklaşımı glyph'in konkav/keskin köşelerinde
+   (özellikle R / P / N) join artefaktları üretiyordu.
+
+   Yeni yapı:
+   - tam harf = metal shell
+   - feMorphology(erode) ile küçültülmüş iç alpha = beyaz pleksi
+   - dolayısıyla metal çerçeve sadece içeri doğru kalır
+   - dış silüet tam olarak orijinal harf ölçüsüdür
    ========================================================= */
-.designer-fileli-front{
-  paint-order:fill stroke;
-  stroke-linejoin:miter;
-  stroke-linecap:butt;
-  stroke-miterlimit:2;
-  filter:none!important;
+.designer-fileli-metal-shell,
+.designer-fileli-plexi-core{
+  stroke:none!important;
+  paint-order:fill!important;
 }
 
-/* Fileli ürünlerin ışıklı pleksi merkezi varsayılan olarak beyazdır. */
+.designer-fileli-metal-shell{
+  filter:contrast(1.08) saturate(1.06);
+}
+
+.designer-metal-svg-wrap.is-chrome .designer-fileli-metal-shell{
+  filter:contrast(1.10);
+}
+
+.designer-fileli-plexi-core{
+  fill:#fff!important;
+}
+
+/* Fileli ürünlerin ışıklı pleksi merkezi ve arkadaki halo beyazdır. */
 .designer-metal-halo.is-fileli-halo{
   fill:#ffffff!important;
   opacity:.72;

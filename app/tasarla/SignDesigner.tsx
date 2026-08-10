@@ -113,9 +113,9 @@ export default function SignDesigner() {
     ? "redpen-gold-halo"
     : "redpen-chrome-halo";
 
-  const fileliClipId = isGoldMetal
-    ? "redpen-fileli-gold-clip"
-    : "redpen-fileli-chrome-clip";
+  const fileliInsetId = isGoldMetal
+    ? "redpen-fileli-gold-inset"
+    : "redpen-fileli-chrome-inset";
 
   const metalPatternShift = Math.max(
     -120,
@@ -751,17 +751,34 @@ export default function SignDesigner() {
                         </filter>
 
                         {isFileliMetalFace && (
-                          <clipPath id={fileliClipId}>
-                            <text
-                              className="designer-metal-text"
-                              x="50%"
-                              y="50%"
-                              dominantBaseline="middle"
-                              textAnchor="middle"
-                            >
-                              {normalizedText}
-                            </text>
-                          </clipPath>
+                          <filter
+                            id={fileliInsetId}
+                            x="-15%"
+                            y="-20%"
+                            width="130%"
+                            height="140%"
+                            colorInterpolationFilters="sRGB"
+                          >
+                            {/*
+                              Stroke ile iç kontur üretmek keskin/konkav harflerde
+                              sivri artefaktlar oluşturuyor. Bunun yerine glyph alpha'sını
+                              birkaç px erozyona uğratıp beyaz pleksi merkezi üretiyoruz.
+                              Metal yüz altta tam ölçüsünde kalıyor; beyaz merkez yalnızca
+                              içeri çekiliyor. Böylece dış silüete hiçbir şey taşmıyor.
+                            */}
+                            <feMorphology
+                              in="SourceAlpha"
+                              operator="erode"
+                              radius="2.35"
+                              result="insetAlpha"
+                            />
+                            <feFlood floodColor="#ffffff" result="whiteFill" />
+                            <feComposite
+                              in="whiteFill"
+                              in2="insetAlpha"
+                              operator="in"
+                            />
+                          </filter>
                         )}
                       </defs>
 
@@ -803,24 +820,35 @@ export default function SignDesigner() {
                       </text>
 
                       {isFileliMetalFace ? (
-                        /* Fileli harf: beyaz pleksi merkez + SADECE İÇE doğru metal çerçeve.
-                           Stroke aynı glyph ile clip edildiği için dış silüetin dışına taşamaz. */
-                        <text
-                          className="designer-metal-text designer-fileli-front"
-                          x="50%"
-                          y="50%"
-                          dominantBaseline="middle"
-                          textAnchor="middle"
-                          fill="#ffffff"
-                          stroke={`url(#${metalPatternId})`}
-                          strokeWidth="5.5"
-                          strokeLinejoin="miter"
-                          strokeLinecap="butt"
-                          strokeMiterlimit="2"
-                          clipPath={`url(#${fileliClipId})`}
-                        >
-                          {normalizedText}
-                        </text>
+                        <>
+                          {/*
+                            Fileli harf iki gerçek yüzey gibi çizilir:
+                            1) Tam glyph = gold/krom metal çerçeve.
+                            2) Erode edilmiş glyph = beyaz pleksi merkez.
+                            Stroke kullanılmadığı için R/P/N gibi harflerde sivri taşma oluşmaz.
+                          */}
+                          <text
+                            className="designer-metal-text designer-fileli-metal-shell"
+                            x="50%"
+                            y="50%"
+                            dominantBaseline="middle"
+                            textAnchor="middle"
+                            fill={`url(#${metalPatternId})`}
+                          >
+                            {normalizedText}
+                          </text>
+                          <text
+                            className="designer-metal-text designer-fileli-plexi-core"
+                            x="50%"
+                            y="50%"
+                            dominantBaseline="middle"
+                            textAnchor="middle"
+                            fill="#ffffff"
+                            filter={`url(#${fileliInsetId})`}
+                          >
+                            {normalizedText}
+                          </text>
+                        </>
                       ) : (
                         /* Solid metal ön yüz: texture doğrudan SVG text fill. */
                         <text
