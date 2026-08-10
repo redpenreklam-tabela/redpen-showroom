@@ -128,9 +128,14 @@ body.designer-is-dragging .designer-metal-svg-wrap{
    Metal çerçeve SVG stroke olarak çizilir ve aynı harf glyph'i ile
    clip edilir. Böylece stroke'un dış yarısı tamamen kesilir:
    dış ölçü büyümez, metal çerçeve yalnızca İÇE doğru ilerler.
+   Köşelerde round join kullanılmaz; miter + düşük miter limit ile
+   çerçeve harf geometrisini düz ve kontrollü takip eder.
    ========================================================= */
 .designer-fileli-front{
   paint-order:fill stroke;
+  stroke-linejoin:miter;
+  stroke-linecap:butt;
+  stroke-miterlimit:2;
   filter:none!important;
 }
 

@@ -814,7 +814,9 @@ export default function SignDesigner() {
                           fill="#ffffff"
                           stroke={`url(#${metalPatternId})`}
                           strokeWidth="5.5"
-                          strokeLinejoin="round"
+                          strokeLinejoin="miter"
+                          strokeLinecap="butt"
+                          strokeMiterlimit="2"
                           clipPath={`url(#${fileliClipId})`}
                         >
                           {normalizedText}
