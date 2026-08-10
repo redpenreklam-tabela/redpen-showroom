@@ -39,9 +39,7 @@
   font-size:calc(var(--board-px-height) * var(--font-size-ratio));
   font-weight:800;
   letter-spacing:var(--letter-spacing-em);
-  /* Solid gold/chrome faces are edge-to-edge metal plates.
-     No outline is painted around the front face. */
-  paint-order:fill;
+  paint-order:stroke fill;
 }
 
 /* Arka halo */
@@ -81,28 +79,17 @@
 
 /* Ön yüz tamamen texture. Burada düz gold/gri fill YOK. */
 .designer-metal-front{
-  stroke:none!important;
-  stroke-width:0!important;
-  paint-order:fill!important;
-  vector-effect:non-scaling-stroke;
+  stroke-width:.7px;
 }
 
 .designer-metal-svg-wrap.is-gold .designer-metal-front{
-  stroke:none!important;
+  stroke:#c9870d;
   filter:contrast(1.08) saturate(1.12);
 }
 
 .designer-metal-svg-wrap.is-chrome .designer-metal-front{
-  stroke:none!important;
+  stroke:#b8c0c6;
   filter:contrast(1.10);
-}
-
-/* Fileli harflerde ileride kullanılacak metal çerçeve ayrı tutulacak.
-   Solid GOLD/KROM bu kuralları kullanmaz. */
-.designer-metal-svg-wrap.is-fileli-gold .designer-metal-front,
-.designer-metal-svg-wrap.is-fileli-chrome .designer-metal-front{
-  stroke-width:1.1px!important;
-  paint-order:stroke fill!important;
 }
 
 /* Gold/krom board için eski CSS text highlight katmanlarını anlamsız hale getir.
@@ -134,4 +121,25 @@ body.designer-is-dragging .designer-metal-svg-wrap{
     width:150%;
     height:155%;
   }
+}
+
+/* =========================================================
+   FİLELİ GOLD / FİLELİ KROM
+   Metal çerçeve SVG stroke olarak çizilir ve aynı harf glyph'i ile
+   clip edilir. Böylece stroke'un dış yarısı tamamen kesilir:
+   dış ölçü büyümez, metal çerçeve yalnızca İÇE doğru ilerler.
+   ========================================================= */
+.designer-fileli-front{
+  paint-order:fill stroke;
+  filter:none!important;
+}
+
+/* Fileli ürünlerin ışıklı pleksi merkezi varsayılan olarak beyazdır. */
+.designer-metal-halo.is-fileli-halo{
+  fill:#ffffff!important;
+  opacity:.72;
+}
+
+.mode-day .designer-metal-halo.is-fileli-halo{
+  opacity:.24;
 }

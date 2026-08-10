@@ -61,7 +61,7 @@ export default function SignDesigner() {
   const [signType, setSignType] = useState<SignType>("KUTU HARF");
   const [letterMaterial, setLetterMaterial] = useState<LetterMaterial>("PLEKSİ");
   const [baseMaterial, setBaseMaterial] = useState<BaseMaterial>("KOMPOZİT");
-  const [letterColor, setLetterColor] = useState(letterColors[0].value);
+  const [letterColor, setLetterColor] = useState(letterColors[1].value);
   const [baseColor, setBaseColor] = useState(baseColors[0].value);
   const [width, setWidth] = useState(300);
   const [height, setHeight] = useState(80);
@@ -95,17 +95,31 @@ export default function SignDesigner() {
   const isSolidMetalFace =
     letterMaterial === "GOLD KAPLAMA" || letterMaterial === "KROM KAPLAMA";
 
-  const metalPrefix =
-    letterMaterial === "GOLD KAPLAMA" ? "redpen-gold" : "redpen-chrome";
+  const isFileliMetalFace =
+    letterMaterial === "FİLELİ GOLD" || letterMaterial === "FİLELİ KROM";
 
-  const metalBaseGradientId = `${metalPrefix}-base-gradient`;
-  const metalSweepGradientId = `${metalPrefix}-sweep-gradient`;
-  const metalBevelId = `${metalPrefix}-bevel`;
-  const metalHaloId = `${metalPrefix}-halo`;
+  const isGoldMetal =
+    letterMaterial === "GOLD KAPLAMA" || letterMaterial === "FİLELİ GOLD";
 
-  const metalSweepShift = Math.max(
-    -26,
-    Math.min(26, textOffset.x * 0.45),
+  const metalTexture = isGoldMetal
+    ? "/textures/gold-reflection-strong.webp"
+    : "/textures/chrome-reflection-strong.webp";
+
+  const metalPatternId = isGoldMetal
+    ? "redpen-gold-metal-pattern"
+    : "redpen-chrome-metal-pattern";
+
+  const metalHaloId = isGoldMetal
+    ? "redpen-gold-halo"
+    : "redpen-chrome-halo";
+
+  const fileliClipId = isGoldMetal
+    ? "redpen-fileli-gold-clip"
+    : "redpen-fileli-chrome-clip";
+
+  const metalPatternShift = Math.max(
+    -120,
+    Math.min(120, textOffset.x * 3.2),
   );
 
   const lightingMode = useMemo(() => {
@@ -690,10 +704,10 @@ export default function SignDesigner() {
                   />
                 )}
 
-                {isSolidMetalFace ? (
+                {isSolidMetalFace || isFileliMetalFace ? (
                   <div
                     className={`designer-metal-svg-wrap designer-draggable-element ${
-                      letterMaterial === "GOLD KAPLAMA" ? "is-gold" : "is-chrome"
+                      isGoldMetal ? "is-gold" : "is-chrome"
                     }`}
                     onPointerDown={(event) => startDrag(event, "text")}
                     style={{
@@ -709,86 +723,22 @@ export default function SignDesigner() {
                       role="img"
                     >
                       <defs>
-                        <linearGradient
-                          id={metalBaseGradientId}
-                          x1="0%"
-                          y1="0%"
-                          x2="100%"
-                          y2="0%"
+                        <pattern
+                          id={metalPatternId}
+                          patternUnits="userSpaceOnUse"
+                          width="460"
+                          height="1000"
+                          patternTransform={`translate(${metalPatternShift} 0)`}
                         >
-                          {letterMaterial === "GOLD KAPLAMA" ? (
-                            <>
-                              <stop offset="0%" stopColor="#241300" />
-                              <stop offset="7%" stopColor="#704000" />
-                              <stop offset="15%" stopColor="#e7aa16" />
-                              <stop offset="22%" stopColor="#fff0a0" />
-                              <stop offset="29%" stopColor="#a46100" />
-                              <stop offset="39%" stopColor="#321a00" />
-                              <stop offset="49%" stopColor="#c78308" />
-                              <stop offset="57%" stopColor="#ffe58a" />
-                              <stop offset="64%" stopColor="#f7ca48" />
-                              <stop offset="73%" stopColor="#754000" />
-                              <stop offset="82%" stopColor="#281500" />
-                              <stop offset="91%" stopColor="#dda41a" />
-                              <stop offset="100%" stopColor="#684000" />
-                            </>
-                          ) : (
-                            <>
-                              <stop offset="0%" stopColor="#111416" />
-                              <stop offset="7%" stopColor="#4e565c" />
-                              <stop offset="15%" stopColor="#bac2c8" />
-                              <stop offset="22%" stopColor="#ffffff" />
-                              <stop offset="29%" stopColor="#8f989f" />
-                              <stop offset="39%" stopColor="#252a2e" />
-                              <stop offset="49%" stopColor="#929ca3" />
-                              <stop offset="57%" stopColor="#f8fbfd" />
-                              <stop offset="64%" stopColor="#d8dde1" />
-                              <stop offset="73%" stopColor="#5b6369" />
-                              <stop offset="82%" stopColor="#171b1e" />
-                              <stop offset="91%" stopColor="#b8c1c7" />
-                              <stop offset="100%" stopColor="#50585e" />
-                            </>
-                          )}
-                        </linearGradient>
-
-                        <linearGradient
-                          id={metalSweepGradientId}
-                          x1={`${metalSweepShift}%`}
-                          y1="0%"
-                          x2={`${100 + metalSweepShift}%`}
-                          y2="0%"
-                        >
-                          <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
-                          <stop offset="32%" stopColor="#ffffff" stopOpacity="0" />
-                          <stop offset="43%" stopColor="#ffffff" stopOpacity="0.12" />
-                          <stop offset="49%" stopColor="#ffffff" stopOpacity="0.88" />
-                          <stop offset="53%" stopColor="#ffffff" stopOpacity="0.22" />
-                          <stop offset="61%" stopColor="#ffffff" stopOpacity="0" />
-                          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
-                        </linearGradient>
-
-                        <filter
-                          id={metalBevelId}
-                          x="-15%"
-                          y="-20%"
-                          width="130%"
-                          height="140%"
-                          colorInterpolationFilters="sRGB"
-                        >
-                          <feGaussianBlur in="SourceAlpha" stdDeviation="1.15" result="softAlpha" />
-                          <feSpecularLighting
-                            in="softAlpha"
-                            surfaceScale="3.2"
-                            specularConstant="0.95"
-                            specularExponent="22"
-                            lightingColor="#ffffff"
-                            result="specular"
-                          >
-                            <feDistantLight azimuth="225" elevation="52" />
-                          </feSpecularLighting>
-                          <feComposite in="specular" in2="SourceAlpha" operator="in" result="specularCut" />
-                          <feBlend in="SourceGraphic" in2="specularCut" mode="screen" />
-                        </filter>
+                          <image
+                            href={metalTexture}
+                            x="-120"
+                            y="0"
+                            width="920"
+                            height="1000"
+                            preserveAspectRatio="none"
+                          />
+                        </pattern>
 
                         <filter
                           id={metalHaloId}
@@ -799,11 +749,25 @@ export default function SignDesigner() {
                         >
                           <feGaussianBlur stdDeviation="7.5" />
                         </filter>
+
+                        {isFileliMetalFace && (
+                          <clipPath id={fileliClipId}>
+                            <text
+                              className="designer-metal-text"
+                              x="50%"
+                              y="50%"
+                              dominantBaseline="middle"
+                              textAnchor="middle"
+                            >
+                              {normalizedText}
+                            </text>
+                          </clipPath>
+                        )}
                       </defs>
 
                       {/* Arkadaki gerçek halo. Ön yüzün üstüne beyaz fill bindirmez. */}
                       <text
-                        className="designer-metal-text designer-metal-halo"
+                        className={`designer-metal-text designer-metal-halo ${isFileliMetalFace ? "is-fileli-halo" : ""}`}
                         x="50%"
                         y="50%"
                         dominantBaseline="middle"
@@ -818,8 +782,8 @@ export default function SignDesigner() {
                         className="designer-metal-text designer-metal-depth designer-metal-depth-far"
                         x="50%"
                         y="50%"
-                        dx="6"
-                        dy="8"
+                        dx="7"
+                        dy="9"
                         dominantBaseline="middle"
                         textAnchor="middle"
                       >
@@ -830,37 +794,44 @@ export default function SignDesigner() {
                         className="designer-metal-text designer-metal-depth designer-metal-depth-near"
                         x="50%"
                         y="50%"
-                        dx="2.2"
-                        dy="3"
+                        dx="3"
+                        dy="4"
                         dominantBaseline="middle"
                         textAnchor="middle"
                       >
                         {normalizedText}
                       </text>
 
-                      {/* GERÇEK ÖN YÜZ: texture doğrudan SVG text fill. */}
-                      <text
-                        className="designer-metal-text designer-metal-front"
-                        x="50%"
-                        y="50%"
-                        dominantBaseline="middle"
-                        textAnchor="middle"
-                        fill={`url(#${metalBaseGradientId})`}
-                        filter={`url(#${metalBevelId})`}
-                      >
-                        {normalizedText}
-                      </text>
-
-                      <text
-                        className="designer-metal-text designer-metal-sweep"
-                        x="50%"
-                        y="50%"
-                        dominantBaseline="middle"
-                        textAnchor="middle"
-                        fill={`url(#${metalSweepGradientId})`}
-                      >
-                        {normalizedText}
-                      </text>
+                      {isFileliMetalFace ? (
+                        /* Fileli harf: beyaz pleksi merkez + SADECE İÇE doğru metal çerçeve.
+                           Stroke aynı glyph ile clip edildiği için dış silüetin dışına taşamaz. */
+                        <text
+                          className="designer-metal-text designer-fileli-front"
+                          x="50%"
+                          y="50%"
+                          dominantBaseline="middle"
+                          textAnchor="middle"
+                          fill="#ffffff"
+                          stroke={`url(#${metalPatternId})`}
+                          strokeWidth="5.5"
+                          strokeLinejoin="round"
+                          clipPath={`url(#${fileliClipId})`}
+                        >
+                          {normalizedText}
+                        </text>
+                      ) : (
+                        /* Solid metal ön yüz: texture doğrudan SVG text fill. */
+                        <text
+                          className="designer-metal-text designer-metal-front"
+                          x="50%"
+                          y="50%"
+                          dominantBaseline="middle"
+                          textAnchor="middle"
+                          fill={`url(#${metalPatternId})`}
+                        >
+                          {normalizedText}
+                        </text>
+                      )}
                     </svg>
                   </div>
                 ) : (
