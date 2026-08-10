@@ -123,65 +123,75 @@
 
 /* =========================================================
    FİLELİ KROM / FİLELİ GOLD
-   Gerçekte kullanıcının referansındaki gibi:
-   - ön yüz beyaz/pleksi ışıklı
-   - dış hat metal çerçeve
-   - arkada halo
-   CSS ile metal çerçeveyi kalın stroke + gölgeyle simüle ediyoruz.
+   Gerçek fileli harf mantığı:
+   - dış silüet değişmez
+   - metal çerçeve harfin DIŞINA taşmaz
+   - beyaz/pleksi merkez biraz küçültülerek metal halka İÇERİDE bırakılır
+   - arkada halo ayrı katmanda kalır
    ========================================================= */
 .letter-material-fileli-krom .designer-board-content strong,
 .letter-material-fileli-gold .designer-board-content strong{
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
+  position:relative;
+  isolation:isolate;
   background:none!important;
   filter:none!important;
-  text-shadow:
-    0 0 2px rgba(255,255,255,.98),
-    0 0 5px rgba(255,255,255,.90),
-    0 0 10px rgba(245,250,255,.62),
-    3px 4px 0 rgba(31,34,37,.82),
-    5px 7px 8px rgba(0,0,0,.42)!important;
-}
+  -webkit-text-stroke:0!important;
 
-.letter-material-fileli-krom .designer-board-content strong{
-  -webkit-text-stroke:3px #aeb4b9;
+  /* Ana katman artık dış metal silüet. */
+  color:#aeb4b9!important;
+  -webkit-text-fill-color:#aeb4b9!important;
+  text-shadow:
+    1px 1px 0 rgba(255,255,255,.35),
+    3px 4px 0 rgba(31,34,37,.78),
+    5px 7px 8px rgba(0,0,0,.40)!important;
 }
 
 .letter-material-fileli-gold .designer-board-content strong{
-  -webkit-text-stroke:3px #c99a28;
+  color:#c99a28!important;
+  -webkit-text-fill-color:#c99a28!important;
+  text-shadow:
+    1px 1px 0 rgba(255,232,146,.48),
+    3px 4px 0 rgba(91,57,7,.78),
+    5px 7px 8px rgba(0,0,0,.40)!important;
 }
 
-/* Metal çerçeveye biraz parlaklık */
+/*
+   Beyaz pleksi yüzey aynı harfin biraz küçültülmüş kopyasıdır.
+   Böylece metal çerçeve dışarı doğru stroke olmaz; harfin mevcut
+   sınırlarının İÇİNDE görünür. Fileli ürün için kritik fark bu.
+*/
 .letter-material-fileli-krom .designer-board-content strong::after,
 .letter-material-fileli-gold .designer-board-content strong::after{
   content:attr(data-text);
   position:absolute;
   inset:0;
-  z-index:-1;
+  z-index:2;
   font:inherit;
   line-height:inherit;
   letter-spacing:inherit;
   white-space:nowrap;
-  color:transparent;
-  -webkit-text-fill-color:transparent;
+  color:#fff;
+  -webkit-text-fill-color:#fff;
+  -webkit-text-stroke:0;
   background:none;
   pointer-events:none;
-}
 
-.letter-material-fileli-krom .designer-board-content strong::after{
-  -webkit-text-stroke:5px #34393e;
+  /* %96.2 = çok ince ama okunabilir iç metal halka. */
+  transform:scale(.962);
+  transform-origin:50% 52%;
+
   text-shadow:
-    1px 1px 0 #f5f7f8,
-    -1px -1px 0 #6d7378,
-    3px 4px 5px rgba(0,0,0,.38);
+    0 0 2px rgba(255,255,255,.98),
+    0 0 5px rgba(255,255,255,.88),
+    0 0 10px rgba(245,250,255,.56);
 }
 
+/* Gold filelide pleksi yine beyazdır; sadece çevresindeki halka gold kalır. */
 .letter-material-fileli-gold .designer-board-content strong::after{
-  -webkit-text-stroke:5px #7d5209;
   text-shadow:
-    1px 1px 0 #ffe892,
-    -1px -1px 0 #9a650c,
-    3px 4px 5px rgba(0,0,0,.38);
+    0 0 2px rgba(255,255,255,.98),
+    0 0 5px rgba(255,249,231,.90),
+    0 0 10px rgba(255,238,190,.56);
 }
 
 /* Fileli tiplerde ARKADAN halo da açık */
