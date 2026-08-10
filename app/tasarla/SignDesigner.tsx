@@ -818,8 +818,8 @@ export default function SignDesigner() {
                         className="designer-metal-text designer-metal-depth designer-metal-depth-far"
                         x="50%"
                         y="50%"
-                        dx="7"
-                        dy="9"
+                        dx="6"
+                        dy="8"
                         dominantBaseline="middle"
                         textAnchor="middle"
                       >
@@ -830,8 +830,8 @@ export default function SignDesigner() {
                         className="designer-metal-text designer-metal-depth designer-metal-depth-near"
                         x="50%"
                         y="50%"
-                        dx="3"
-                        dy="4"
+                        dx="2.2"
+                        dy="3"
                         dominantBaseline="middle"
                         textAnchor="middle"
                       >

@@ -36,7 +36,7 @@
   font-size:calc(var(--board-px-height) * var(--font-size-ratio));
   font-weight:800;
   letter-spacing:var(--letter-spacing-em);
-  paint-order:stroke fill;
+  paint-order:fill;
 }
 
 /* Gerçek arkadan ışık. Metal ön yüz kendi kendine neon gibi parlamaz. */
@@ -54,15 +54,21 @@
 .designer-metal-svg-wrap.is-chrome .designer-metal-depth-far{fill:#101315}
 .designer-metal-svg-wrap.is-chrome .designer-metal-depth-near{fill:#454c52}
 
-/* Metal ön yüz. Fill TSX içindeki çok bantlı gradient'ten gelir. */
+/* Metal ön yüz. Gerçek kutu harfte ön yüz ile yan bant arasında
+   çizilmiş bir kontur yoktur. Yüzey ve kasa sıfıra sıfır birleşir. */
 .designer-metal-front{
-  stroke-width:1.05px;
+  stroke:none!important;
+  stroke-width:0!important;
 }
-.designer-metal-svg-wrap.is-gold .designer-metal-front{
-  stroke:#f2c04b;
-}
+.designer-metal-svg-wrap.is-gold .designer-metal-front,
 .designer-metal-svg-wrap.is-chrome .designer-metal-front{
-  stroke:#e2e7ea;
+  stroke:none!important;
+}
+
+/* Sweep de yalnızca yüzeyin içinde kalır; dış hat çizmez. */
+.designer-metal-sweep{
+  stroke:none!important;
+  stroke-width:0!important;
 }
 
 /* Ayrı reflection sweep. Yüzeyde net bir ışık kaynağı/refleksiyon hissi verir. */
