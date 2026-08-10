@@ -92,6 +92,22 @@ export default function SignDesigner() {
   const normalizedText = (text.trim() || "MARKANIZ").slice(0, 24).toUpperCase();
   const currentFont = fonts.find((font) => font.id === selectedFont) ?? fonts[0];
 
+  const isSolidMetalFace =
+    letterMaterial === "GOLD KAPLAMA" || letterMaterial === "KROM KAPLAMA";
+
+  const metalPrefix =
+    letterMaterial === "GOLD KAPLAMA" ? "redpen-gold" : "redpen-chrome";
+
+  const metalBaseGradientId = `${metalPrefix}-base-gradient`;
+  const metalSweepGradientId = `${metalPrefix}-sweep-gradient`;
+  const metalBevelId = `${metalPrefix}-bevel`;
+  const metalHaloId = `${metalPrefix}-halo`;
+
+  const metalSweepShift = Math.max(
+    -26,
+    Math.min(26, textOffset.x * 0.45),
+  );
+
   const lightingMode = useMemo(() => {
     if (letterMaterial === "FOREX") return "off";
 
@@ -673,16 +689,192 @@ export default function SignDesigner() {
                     draggable={false}
                   />
                 )}
-                <strong
-                  className="designer-draggable-element"
-                  data-text={normalizedText}
-                  onPointerDown={(event) => startDrag(event, "text")}
-                  style={{
-                    transform: `translate(${textOffset.x}%, ${textOffset.y}%)`,
-                  }}
-                >
-                  {normalizedText}
-                </strong>
+
+                {isSolidMetalFace ? (
+                  <div
+                    className={`designer-metal-svg-wrap designer-draggable-element ${
+                      letterMaterial === "GOLD KAPLAMA" ? "is-gold" : "is-chrome"
+                    }`}
+                    onPointerDown={(event) => startDrag(event, "text")}
+                    style={{
+                      left: `${50 + textOffset.x}%`,
+                      top: `${50 + textOffset.y}%`,
+                    }}
+                  >
+                    <svg
+                      className="designer-metal-svg"
+                      width="100%"
+                      height="100%"
+                      aria-label={normalizedText}
+                      role="img"
+                    >
+                      <defs>
+                        <linearGradient
+                          id={metalBaseGradientId}
+                          x1="0%"
+                          y1="0%"
+                          x2="100%"
+                          y2="0%"
+                        >
+                          {letterMaterial === "GOLD KAPLAMA" ? (
+                            <>
+                              <stop offset="0%" stopColor="#241300" />
+                              <stop offset="7%" stopColor="#704000" />
+                              <stop offset="15%" stopColor="#e7aa16" />
+                              <stop offset="22%" stopColor="#fff0a0" />
+                              <stop offset="29%" stopColor="#a46100" />
+                              <stop offset="39%" stopColor="#321a00" />
+                              <stop offset="49%" stopColor="#c78308" />
+                              <stop offset="57%" stopColor="#ffe58a" />
+                              <stop offset="64%" stopColor="#f7ca48" />
+                              <stop offset="73%" stopColor="#754000" />
+                              <stop offset="82%" stopColor="#281500" />
+                              <stop offset="91%" stopColor="#dda41a" />
+                              <stop offset="100%" stopColor="#684000" />
+                            </>
+                          ) : (
+                            <>
+                              <stop offset="0%" stopColor="#111416" />
+                              <stop offset="7%" stopColor="#4e565c" />
+                              <stop offset="15%" stopColor="#bac2c8" />
+                              <stop offset="22%" stopColor="#ffffff" />
+                              <stop offset="29%" stopColor="#8f989f" />
+                              <stop offset="39%" stopColor="#252a2e" />
+                              <stop offset="49%" stopColor="#929ca3" />
+                              <stop offset="57%" stopColor="#f8fbfd" />
+                              <stop offset="64%" stopColor="#d8dde1" />
+                              <stop offset="73%" stopColor="#5b6369" />
+                              <stop offset="82%" stopColor="#171b1e" />
+                              <stop offset="91%" stopColor="#b8c1c7" />
+                              <stop offset="100%" stopColor="#50585e" />
+                            </>
+                          )}
+                        </linearGradient>
+
+                        <linearGradient
+                          id={metalSweepGradientId}
+                          x1={`${metalSweepShift}%`}
+                          y1="0%"
+                          x2={`${100 + metalSweepShift}%`}
+                          y2="0%"
+                        >
+                          <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
+                          <stop offset="32%" stopColor="#ffffff" stopOpacity="0" />
+                          <stop offset="43%" stopColor="#ffffff" stopOpacity="0.12" />
+                          <stop offset="49%" stopColor="#ffffff" stopOpacity="0.88" />
+                          <stop offset="53%" stopColor="#ffffff" stopOpacity="0.22" />
+                          <stop offset="61%" stopColor="#ffffff" stopOpacity="0" />
+                          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+                        </linearGradient>
+
+                        <filter
+                          id={metalBevelId}
+                          x="-15%"
+                          y="-20%"
+                          width="130%"
+                          height="140%"
+                          colorInterpolationFilters="sRGB"
+                        >
+                          <feGaussianBlur in="SourceAlpha" stdDeviation="1.15" result="softAlpha" />
+                          <feSpecularLighting
+                            in="softAlpha"
+                            surfaceScale="3.2"
+                            specularConstant="0.95"
+                            specularExponent="22"
+                            lightingColor="#ffffff"
+                            result="specular"
+                          >
+                            <feDistantLight azimuth="225" elevation="52" />
+                          </feSpecularLighting>
+                          <feComposite in="specular" in2="SourceAlpha" operator="in" result="specularCut" />
+                          <feBlend in="SourceGraphic" in2="specularCut" mode="screen" />
+                        </filter>
+
+                        <filter
+                          id={metalHaloId}
+                          x="-70%"
+                          y="-90%"
+                          width="240%"
+                          height="280%"
+                        >
+                          <feGaussianBlur stdDeviation="7.5" />
+                        </filter>
+                      </defs>
+
+                      {/* Arkadaki gerçek halo. Ön yüzün üstüne beyaz fill bindirmez. */}
+                      <text
+                        className="designer-metal-text designer-metal-halo"
+                        x="50%"
+                        y="50%"
+                        dominantBaseline="middle"
+                        textAnchor="middle"
+                        filter={`url(#${metalHaloId})`}
+                      >
+                        {normalizedText}
+                      </text>
+
+                      {/* Harfin yan/derinlik hissi. */}
+                      <text
+                        className="designer-metal-text designer-metal-depth designer-metal-depth-far"
+                        x="50%"
+                        y="50%"
+                        dx="7"
+                        dy="9"
+                        dominantBaseline="middle"
+                        textAnchor="middle"
+                      >
+                        {normalizedText}
+                      </text>
+
+                      <text
+                        className="designer-metal-text designer-metal-depth designer-metal-depth-near"
+                        x="50%"
+                        y="50%"
+                        dx="3"
+                        dy="4"
+                        dominantBaseline="middle"
+                        textAnchor="middle"
+                      >
+                        {normalizedText}
+                      </text>
+
+                      {/* GERÇEK ÖN YÜZ: texture doğrudan SVG text fill. */}
+                      <text
+                        className="designer-metal-text designer-metal-front"
+                        x="50%"
+                        y="50%"
+                        dominantBaseline="middle"
+                        textAnchor="middle"
+                        fill={`url(#${metalBaseGradientId})`}
+                        filter={`url(#${metalBevelId})`}
+                      >
+                        {normalizedText}
+                      </text>
+
+                      <text
+                        className="designer-metal-text designer-metal-sweep"
+                        x="50%"
+                        y="50%"
+                        dominantBaseline="middle"
+                        textAnchor="middle"
+                        fill={`url(#${metalSweepGradientId})`}
+                      >
+                        {normalizedText}
+                      </text>
+                    </svg>
+                  </div>
+                ) : (
+                  <strong
+                    className="designer-draggable-element"
+                    data-text={normalizedText}
+                    onPointerDown={(event) => startDrag(event, "text")}
+                    style={{
+                      transform: `translate(${textOffset.x}%, ${textOffset.y}%)`,
+                    }}
+                  >
+                    {normalizedText}
+                  </strong>
+                )}
               </div>
               <span className="designer-board-glow" aria-hidden="true" />
             </div>

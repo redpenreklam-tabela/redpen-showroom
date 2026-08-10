@@ -1,26 +1,55 @@
-REDPEN SHOWROOM - MOBİL V3 / MODEL KONTROLLERİ
+REDPEN - GOLD/KROM SVG METAL FACE
 
-ZIP içeriğini şu klasöre çıkar:
+Bu sürümde gold/krom render yöntemi değiştirildi.
+
+ESKİ:
+HTML <strong>
++ background-clip:text
++ çok sayıda CSS override
+
+YENİ:
+SVG <text>
++ SVG <pattern>
++ texture doğrudan text fill
+
+Yani texture artık gerçekten ön yüzün boyasıdır.
+
+KORUNAN:
+- Gold / krom texture
+- font seçimi
+- harf boyutu
+- harf aralığı
+- yazıyı sürükleme
+- logo sürükleme / boyutlandırma
+- gerçek tabela ölçüsü
+- arkadan halo
+- malzeme seçenekleri
+
+GOLD/KROM:
+- Ön yüzde procedural WebP reflection texture
+- Arkada ayrı halo text layer
+- Ayrı koyu yan/derinlik katmanları
+- CSS ghost/pseudo highlight yok
+
+DOSYALAR:
+public/textures/gold-reflection-strong.webp
+public/textures/chrome-reflection-strong.webp
+
+NOT:
+page.tsx eski metal deneme CSS'lerini artık import etmez.
+Gold/krom için metal-svg-face.css kullanılır.
+
+KURULUM:
+ZIP'i:
 D:\Projects\redpen-showroom
+içine çıkar ve üzerine yaz.
 
-Üzerine yazılacak ve eklenecek dosyalar:
-app\layout.tsx
-app\mobile.css
-app\components\Showroom.tsx
-app\components\ModelShowcase.tsx
-
-PowerShell:
+BUILD:
 cd D:\Projects\redpen-showroom
-Ctrl + C
-npm.cmd run dev
+npm.cmd run build
 
-Tarayıcı:
-Ctrl + Shift + M
-Ctrl + F5
-
-Mobil davranış:
-- Model alanında sağa/sola sürüklemek artık yan modele geçirmez.
-- Tek parmak hareketi 3D modeli döndürmeye ayrılır.
-- İki parmakla yakınlaştırma/uzaklaştırma OrbitControls üzerinden devam eder.
-- Model alanında sayfa kaydırma ve tarayıcı dokunma jestleri engellenir.
-- Modeller arasında yalnızca sol/sağ ok düğmeleriyle geçilir.
+PUSH:
+git restore KURULUM.txt
+git add app/tasarla/SignDesigner.tsx app/tasarla/page.tsx app/tasarla/metal-svg-face.css public/textures
+git commit -m "Render gold and chrome faces with SVG textures"
+git push
