@@ -77,7 +77,7 @@ export default function SignDesigner() {
   const [extraFontSizePercent, setExtraFontSizePercent] = useState(24);
   const [extraLetterSpacing, setExtraLetterSpacing] = useState(8);
   const [extraTextColor, setExtraTextColor] = useState("#f5f5f3");
-  const [extraOffset, setExtraOffset] = useState({ x: 0, y: 28 });
+  const [extraOffset, setExtraOffset] = useState({ x: 0, y: 32 });
 
   const [selectedFont, setSelectedFont] = useState<FontId>("montserrat");
   const [fontMenuOpen, setFontMenuOpen] = useState(false);
@@ -343,7 +343,7 @@ export default function SignDesigner() {
   const resetPositions = () => {
     setTextOffset({ x: 0, y: 0 });
     setLogoOffset({ x: 0, y: 0 });
-    setExtraOffset({ x: 0, y: 28 });
+    setExtraOffset({ x: 0, y: 32 });
   };
 
   const onLogo = (file?: File) => {
@@ -475,8 +475,8 @@ export default function SignDesigner() {
                 />
 
                 <div className="designer-extra-placement">
-                  <button type="button" onClick={() => setExtraOffset({ x: 0, y: -28 })}>ÜSTE AL</button>
-                  <button type="button" onClick={() => setExtraOffset({ x: 0, y: 28 })}>ALTA AL</button>
+                  <button type="button" onClick={() => setExtraOffset({ x: 0, y: -32 })}>ÜSTE AL</button>
+                  <button type="button" onClick={() => setExtraOffset({ x: 0, y: 32 })}>ALTA AL</button>
                   <span>Sahnede sürükleyerek serbestçe konumlandırabilirsin.</span>
                 </div>
 
@@ -1006,7 +1006,7 @@ export default function SignDesigner() {
                 )}
 
                 {extraTextEnabled && (
-                  <strong
+                  <div
                     className={`designer-extra-text-preview designer-draggable-element ${effectiveLighted ? "is-lighted" : ""}`}
                     onPointerDown={(event) => startDrag(event, "extra")}
                     style={{
@@ -1019,7 +1019,7 @@ export default function SignDesigner() {
                     }}
                   >
                     {normalizedExtraText}
-                  </strong>
+                  </div>
                 )}
               </div>
               <span className="designer-board-glow" aria-hidden="true" />

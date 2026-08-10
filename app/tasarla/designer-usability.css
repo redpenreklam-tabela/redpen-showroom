@@ -366,3 +366,17 @@ body.designer-is-dragging .designer-extra-text-preview{cursor:grabbing;}
   .designer-extra-copy-controls{padding:12px;}
   .designer-extra-toggle{min-height:42px;}
 }
+
+/* v11 — Ek metni ana harfin global <strong> kurallarından tamamen ayır.
+   Böylece ana HARF BOYUTU / HARF ARALIĞI sliderları ikinci metni etkileyemez. */
+.designer-board-content .designer-extra-text-preview{
+  position:absolute!important;
+  z-index:18!important;
+  width:max-content!important;
+  max-width:none!important;
+  overflow:visible!important;
+  white-space:nowrap!important;
+  flex:none!important;
+  transform:translate(-50%,-50%)!important;
+  line-height:.92!important;
+}
