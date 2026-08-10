@@ -380,3 +380,46 @@ body.designer-is-dragging .designer-extra-text-preview{cursor:grabbing;}
   transform:translate(-50%,-50%)!important;
   line-height:.92!important;
 }
+
+/* v12 — Gerçek serbest yerleşim: tek sınır tabela kanvası. */
+.designer-board{
+  overflow:hidden!important;
+}
+.designer-board-content{
+  inset:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  display:block!important;
+}
+
+/* Ana normal harf, logo ve ek metin aynı koordinat sistemini kullanır. */
+.designer-board-content > strong.designer-draggable-element,
+.designer-board-content .designer-logo-preview,
+.designer-board-content .designer-extra-text-preview{
+  position:absolute!important;
+  margin:0!important;
+  transform:translate(-50%,-50%)!important;
+  transform-origin:center center!important;
+}
+
+.designer-board-content > strong.designer-draggable-element{
+  z-index:10!important;
+  max-width:none!important;
+  white-space:nowrap!important;
+}
+
+.designer-board-content .designer-logo-preview{
+  z-index:12!important;
+}
+
+/* Glow board dışına taşmasın. Kullanıcının gördüğü canvas gerçekten son sınır olsun. */
+.designer-board.is-lighted,
+.designer-board.is-lighted .designer-board-content{
+  overflow:hidden!important;
+}
+
+/* Sliderların artık preset değil serbest aralık olduğunu kullanıcıya belli et. */
+.designer-range-scale span:last-child::after{
+  content:" / KANVAS SINIRI";
+  opacity:.55;
+}

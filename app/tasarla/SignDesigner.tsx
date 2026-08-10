@@ -98,6 +98,10 @@ export default function SignDesigner() {
   } | null>(null);
 
   const fileRef = useRef<HTMLInputElement>(null);
+  const boardRef = useRef<HTMLDivElement>(null);
+  const mainTextRef = useRef<HTMLElement | SVGTextElement | null>(null);
+  const extraTextRef = useRef<HTMLDivElement>(null);
+  const logoRef = useRef<HTMLImageElement>(null);
 
   const normalizedText = (text.trim() || "MARKANIZ").slice(0, 24).toUpperCase();
   const currentFont = fonts.find((font) => font.id === selectedFont) ?? fonts[0];
@@ -278,6 +282,44 @@ export default function SignDesigner() {
   ]);
 
 
+  const getDragElement = (type: DragType): Element | null => {
+    if (type === "text") return mainTextRef.current;
+    if (type === "extra") return extraTextRef.current;
+    return logoRef.current;
+  };
+
+  const clampOffsetToBoard = (type: DragType, next: { x: number; y: number }) => {
+    const board = boardRef.current;
+    const element = getDragElement(type);
+    if (!board || !element) return next;
+
+    const boardRect = board.getBoundingClientRect();
+    const elementRect = element.getBoundingClientRect();
+    if (!boardRect.width || !boardRect.height) return next;
+
+    // Elemanın tamamı tabela kanvasında kalır. Tek gerçek sınır board kenarıdır.
+    const halfWidthPercent = Math.min(50, (elementRect.width / boardRect.width) * 50);
+    const halfHeightPercent = Math.min(50, (elementRect.height / boardRect.height) * 50);
+    const maxX = Math.max(0, 50 - halfWidthPercent);
+    const maxY = Math.max(0, 50 - halfHeightPercent);
+
+    return {
+      x: Math.max(-maxX, Math.min(maxX, next.x)),
+      y: Math.max(-maxY, Math.min(maxY, next.y)),
+    };
+  };
+
+  const keepElementsInsideBoard = () => {
+    setTextOffset((value) => clampOffsetToBoard("text", value));
+    setExtraOffset((value) => clampOffsetToBoard("extra", value));
+    setLogoOffset((value) => clampOffsetToBoard("logo", value));
+  };
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(keepElementsInsideBoard);
+    return () => cancelAnimationFrame(frame);
+  }, [fontSizePercent, letterSpacing, extraFontSizePercent, extraLetterSpacing, logoSizePercent, width, height, selectedFont, extraFont, normalizedText, normalizedExtraText]);
+
   useEffect(() => {
     const handlePointerMove = (event: PointerEvent) => {
       const drag = dragRef.current;
@@ -286,10 +328,10 @@ export default function SignDesigner() {
       const deltaXPercent = ((event.clientX - drag.startX) / drag.boardWidth) * 100;
       const deltaYPercent = ((event.clientY - drag.startY) / drag.boardHeight) * 100;
 
-      const next = {
-        x: Math.max(-65, Math.min(65, drag.startOffsetX + deltaXPercent)),
-        y: Math.max(-85, Math.min(85, drag.startOffsetY + deltaYPercent)),
-      };
+      const next = clampOffsetToBoard(drag.type, {
+        x: drag.startOffsetX + deltaXPercent,
+        y: drag.startOffsetY + deltaYPercent,
+      });
 
       if (drag.type === "text") {
         setTextOffset(next);
@@ -496,8 +538,8 @@ export default function SignDesigner() {
                 <input
                   className="designer-range"
                   type="range"
-                  min="10"
-                  max="65"
+                  min="5"
+                  max="160"
                   step="1"
                   value={extraFontSizePercent}
                   onChange={(e) => setExtraFontSizePercent(Number(e.target.value))}
@@ -510,8 +552,8 @@ export default function SignDesigner() {
                 <input
                   className="designer-range"
                   type="range"
-                  min="-5"
-                  max="35"
+                  min="-20"
+                  max="100"
                   step="1"
                   value={extraLetterSpacing}
                   onChange={(e) => setExtraLetterSpacing(Number(e.target.value))}
@@ -543,8 +585,8 @@ export default function SignDesigner() {
             <input
               className="designer-range"
               type="range"
-              min="30"
-              max="115"
+              min="8"
+              max="180"
               step="1"
               value={fontSizePercent}
               onChange={(e) => setFontSizePercent(Number(e.target.value))}
@@ -553,7 +595,7 @@ export default function SignDesigner() {
               <span>KÜÇÜK</span>
               <span>TAŞIR</span>
             </div>
-            <p className="designer-control-note">100% üzeri değerlerde harfler tabela sınırının dışına taşabilir.</p>
+            <p className="designer-control-note">Boyutu istediğin kadar büyütebilirsin; sistem harfi tabela kanvasının içinde tutar.</p>
           </div>
 
           <div className="designer-field">
@@ -564,8 +606,8 @@ export default function SignDesigner() {
             <input
               className="designer-range"
               type="range"
-              min="-8"
-              max="20"
+              min="-20"
+              max="100"
               step="1"
               value={letterSpacing}
               onChange={(e) => setLetterSpacing(Number(e.target.value))}
@@ -798,6 +840,7 @@ export default function SignDesigner() {
             </div>
 
             <div
+              ref={boardRef}
               className={`designer-board material-${baseMaterial.toLowerCase()} type-${signType
                 .toLowerCase()
                 .replaceAll(" ", "-")} letter-material-${letterMaterial
@@ -821,12 +864,14 @@ export default function SignDesigner() {
               <div className="designer-board-content">
                 {logo && (
                   <img
+                    ref={logoRef}
                     src={logo}
                     alt=""
                     className="designer-logo-preview designer-draggable-element"
                     onPointerDown={(event) => startDrag(event, "logo")}
                     style={{
-                      transform: `translate(${logoOffset.x}%, ${logoOffset.y}%)`,
+                      left: `${50 + logoOffset.x}%`,
+                      top: `${50 + logoOffset.y}%`,
                     }}
                     draggable={false}
                   />
@@ -956,6 +1001,7 @@ export default function SignDesigner() {
                             Stroke kullanılmadığı için R/P/N gibi harflerde sivri taşma oluşmaz.
                           */}
                           <text
+                            ref={(node) => { mainTextRef.current = node; }}
                             className="designer-metal-text designer-fileli-metal-shell"
                             x="50%"
                             y="50%"
@@ -980,6 +1026,7 @@ export default function SignDesigner() {
                       ) : (
                         /* Solid metal ön yüz: texture doğrudan SVG text fill. */
                         <text
+                          ref={(node) => { mainTextRef.current = node; }}
                           className="designer-metal-text designer-metal-front"
                           x="50%"
                           y="50%"
@@ -994,11 +1041,13 @@ export default function SignDesigner() {
                   </div>
                 ) : (
                   <strong
+                    ref={(node) => { mainTextRef.current = node; }}
                     className="designer-draggable-element"
                     data-text={normalizedText}
                     onPointerDown={(event) => startDrag(event, "text")}
                     style={{
-                      transform: `translate(${textOffset.x}%, ${textOffset.y}%)`,
+                      left: `${50 + textOffset.x}%`,
+                      top: `${50 + textOffset.y}%`,
                     }}
                   >
                     {normalizedText}
@@ -1007,6 +1056,7 @@ export default function SignDesigner() {
 
                 {extraTextEnabled && (
                   <div
+                    ref={extraTextRef}
                     className={`designer-extra-text-preview designer-draggable-element ${effectiveLighted ? "is-lighted" : ""}`}
                     onPointerDown={(event) => startDrag(event, "extra")}
                     style={{
