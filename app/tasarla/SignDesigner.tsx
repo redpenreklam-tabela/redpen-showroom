@@ -66,6 +66,7 @@ export default function SignDesigner() {
   const [width, setWidth] = useState(300);
   const [height, setHeight] = useState(80);
   const [lighted, setLighted] = useState(true);
+  const [fileliBacklight, setFileliBacklight] = useState(true);
   const [scene, setScene] = useState<SceneMode>("night");
   const [logo, setLogo] = useState<string | null>(null);
 
@@ -123,7 +124,7 @@ export default function SignDesigner() {
   );
 
   const lightingMode = useMemo(() => {
-    if (letterMaterial === "FOREX") return "off";
+    if (letterMaterial === "FOREX" || !lighted) return "off";
 
     if (
       letterMaterial === "GOLD KAPLAMA" ||
@@ -136,11 +137,11 @@ export default function SignDesigner() {
       letterMaterial === "FİLELİ KROM" ||
       letterMaterial === "FİLELİ GOLD"
     ) {
-      return "dual";
+      return fileliBacklight ? "dual" : "frontlit";
     }
 
-    return lighted ? "frontlit" : "off";
-  }, [letterMaterial, lighted]);
+    return "frontlit";
+  }, [letterMaterial, lighted, fileliBacklight]);
 
   const effectiveLighted = lightingMode !== "off";
 
@@ -244,6 +245,7 @@ export default function SignDesigner() {
     width,
     height,
     lighted,
+    fileliBacklight,
     lightingMode,
     baseColor,
     letterColor,
@@ -579,34 +581,6 @@ export default function SignDesigner() {
           </div>
 
           <div className="designer-field">
-            <label>AYDINLATMA</label>
-            {letterMaterial === "PLEKSİ" ? (
-              <button
-                type="button"
-                className={`designer-toggle ${lighted ? "is-on" : ""}`}
-                onClick={() => setLighted((v) => !v)}
-              >
-                <span />
-                <b>{lighted ? "ÖNDEN IŞIKLI" : "IŞIKSIZ"}</b>
-              </button>
-            ) : (
-              <div className={`designer-lighting-readout mode-${lightingMode}`}>
-                <span />
-                <div>
-                  <small>MALZEME AYARI</small>
-                  <b>
-                    {lightingMode === "backlit"
-                      ? "ARKADAN IŞIKLI"
-                      : lightingMode === "dual"
-                        ? "ÖNDEN + ARKADAN IŞIKLI"
-                        : "IŞIKSIZ"}
-                  </b>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="designer-field">
             <label>LOGO / OPSİYONEL</label>
             <input
               ref={fileRef}
@@ -668,6 +642,46 @@ export default function SignDesigner() {
 
           <div className="designer-facade" style={facadeStyle}>
             <div className="designer-wall-grid" />
+
+            <div className="designer-preview-light-controls" aria-label="Aydınlatma kontrolleri">
+              {letterMaterial === "FOREX" ? (
+                <div className="designer-preview-light-fixed">
+                  <span>AYDINLATMA</span>
+                  <b>IŞIKSIZ / FOREX</b>
+                </div>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    className={`designer-preview-light-button ${lighted ? "is-on" : ""}`}
+                    onClick={() => setLighted((value) => !value)}
+                    aria-pressed={lighted}
+                  >
+                    <span className="designer-light-icon" aria-hidden="true">☼</span>
+                    <span>
+                      <small>HARF IŞIĞI</small>
+                      <b>{lighted ? "AÇIK" : "KAPALI"}</b>
+                    </span>
+                  </button>
+
+                  {isFileliMetalFace && (
+                    <button
+                      type="button"
+                      className={`designer-preview-light-button designer-preview-backlight-button ${lighted && fileliBacklight ? "is-on" : ""}`}
+                      onClick={() => setFileliBacklight((value) => !value)}
+                      aria-pressed={fileliBacklight}
+                      disabled={!lighted}
+                    >
+                      <span className="designer-light-icon designer-backlight-icon" aria-hidden="true">◉</span>
+                      <span>
+                        <small>ARKA IŞIK</small>
+                        <b>{fileliBacklight ? "AÇIK" : "KAPALI"}</b>
+                      </span>
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
 
             <div
               className={`designer-board material-${baseMaterial.toLowerCase()} type-${signType
