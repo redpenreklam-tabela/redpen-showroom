@@ -6,6 +6,7 @@ type SignType = "KUTU HARF" | "IŞIKLI PANEL" | "TOTEM" | "CEPHE";
 type BaseMaterial = "PLEKSİ" | "ALÜMİNYUM" | "KROM" | "KOMPOZİT";
 type LetterMaterial = "PLEKSİ" | "GOLD KAPLAMA" | "KROM KAPLAMA" | "FİLELİ KROM" | "FİLELİ GOLD" | "FOREX";
 type SceneMode = "day" | "night";
+type DragType = "text" | "logo" | "extra";
 type FontId =
   | "montserrat"
   | "oswald"
@@ -70,6 +71,14 @@ export default function SignDesigner() {
   const [scene, setScene] = useState<SceneMode>("night");
   const [logo, setLogo] = useState<string | null>(null);
 
+  const [extraTextEnabled, setExtraTextEnabled] = useState(false);
+  const [extraText, setExtraText] = useState("RETAIL SOLUTIONS");
+  const [extraFont, setExtraFont] = useState<FontId>("montserrat");
+  const [extraFontSizePercent, setExtraFontSizePercent] = useState(24);
+  const [extraLetterSpacing, setExtraLetterSpacing] = useState(8);
+  const [extraTextColor, setExtraTextColor] = useState("#f5f5f3");
+  const [extraOffset, setExtraOffset] = useState({ x: 0, y: 28 });
+
   const [selectedFont, setSelectedFont] = useState<FontId>("montserrat");
   const [fontMenuOpen, setFontMenuOpen] = useState(false);
   const [fontSizePercent, setFontSizePercent] = useState(62);
@@ -79,7 +88,7 @@ export default function SignDesigner() {
   const [textOffset, setTextOffset] = useState({ x: 0, y: 0 });
   const [logoOffset, setLogoOffset] = useState({ x: 0, y: 0 });
   const dragRef = useRef<{
-    type: "text" | "logo";
+    type: DragType;
     startX: number;
     startY: number;
     startOffsetX: number;
@@ -92,6 +101,8 @@ export default function SignDesigner() {
 
   const normalizedText = (text.trim() || "MARKANIZ").slice(0, 24).toUpperCase();
   const currentFont = fonts.find((font) => font.id === selectedFont) ?? fonts[0];
+  const currentExtraFont = fonts.find((font) => font.id === extraFont) ?? fonts[0];
+  const normalizedExtraText = (extraText.trim() || "EK METİN").slice(0, 32).toUpperCase();
 
   const isSolidMetalFace =
     letterMaterial === "GOLD KAPLAMA" || letterMaterial === "KROM KAPLAMA";
@@ -212,6 +223,14 @@ export default function SignDesigner() {
       `Logo boyutu: %${logoSizePercent}`,
       `Yazı konumu: X ${textOffset.x.toFixed(0)} / Y ${textOffset.y.toFixed(0)}`,
       `Logo konumu: X ${logoOffset.x.toFixed(0)} / Y ${logoOffset.y.toFixed(0)}`,
+      ...(extraTextEnabled ? [
+        `Ek metin: ${normalizedExtraText}`,
+        `Ek metin fontu: ${currentExtraFont.name}`,
+        `Ek metin boyutu: %${extraFontSizePercent}`,
+        `Ek metin harf aralığı: ${extraLetterSpacing}`,
+        `Ek metin konumu: X ${extraOffset.x.toFixed(0)} / Y ${extraOffset.y.toFixed(0)}`,
+        `Ek metin rengi: ${extraTextColor}`,
+      ] : []),
       `Zemin malzemesi: ${baseMaterial}`,
       `Harf malzemesi: ${letterMaterial}`,
       `Ölçü: ${width} x ${height} cm`,
@@ -240,6 +259,13 @@ export default function SignDesigner() {
     logoSizePercent,
     textOffset,
     logoOffset,
+    extraTextEnabled,
+    normalizedExtraText,
+    currentExtraFont.name,
+    extraFontSizePercent,
+    extraLetterSpacing,
+    extraOffset,
+    extraTextColor,
     baseMaterial,
     letterMaterial,
     width,
@@ -267,6 +293,8 @@ export default function SignDesigner() {
 
       if (drag.type === "text") {
         setTextOffset(next);
+      } else if (drag.type === "extra") {
+        setExtraOffset(next);
       } else {
         setLogoOffset(next);
       }
@@ -288,7 +316,7 @@ export default function SignDesigner() {
 
   const startDrag = (
     event: React.PointerEvent<HTMLElement>,
-    type: "text" | "logo",
+    type: DragType,
   ) => {
     event.preventDefault();
     event.stopPropagation();
@@ -297,7 +325,7 @@ export default function SignDesigner() {
     if (!(board instanceof HTMLElement)) return;
 
     const rect = board.getBoundingClientRect();
-    const offset = type === "text" ? textOffset : logoOffset;
+    const offset = type === "text" ? textOffset : type === "extra" ? extraOffset : logoOffset;
 
     dragRef.current = {
       type,
@@ -315,6 +343,7 @@ export default function SignDesigner() {
   const resetPositions = () => {
     setTextOffset({ x: 0, y: 0 });
     setLogoOffset({ x: 0, y: 0 });
+    setExtraOffset({ x: 0, y: 28 });
   };
 
   const onLogo = (file?: File) => {
@@ -419,6 +448,91 @@ export default function SignDesigner() {
                 </div>
               )}
             </div>
+          </div>
+
+          <div className="designer-field designer-extra-copy-field">
+            <div className="designer-extra-copy-heading">
+              <div>
+                <label>EK METİN / ALT BAŞLIK</label>
+                <p className="designer-control-note">İş alanı, slogan, şube adı veya istediğin ikinci metni ekle.</p>
+              </div>
+              <button
+                type="button"
+                className={`designer-extra-toggle ${extraTextEnabled ? "is-active" : ""}`}
+                onClick={() => setExtraTextEnabled((value) => !value)}
+              >
+                {extraTextEnabled ? "KALDIR" : "+ EKLE"}
+              </button>
+            </div>
+
+            {extraTextEnabled && (
+              <div className="designer-extra-copy-controls">
+                <input
+                  value={extraText}
+                  maxLength={32}
+                  onChange={(e) => setExtraText(e.target.value)}
+                  placeholder="ÖRN. RETAIL SOLUTIONS"
+                />
+
+                <div className="designer-extra-placement">
+                  <button type="button" onClick={() => setExtraOffset({ x: 0, y: -28 })}>ÜSTE AL</button>
+                  <button type="button" onClick={() => setExtraOffset({ x: 0, y: 28 })}>ALTA AL</button>
+                  <span>Sahnede sürükleyerek serbestçe konumlandırabilirsin.</span>
+                </div>
+
+                <div className="designer-extra-font-grid">
+                  <label>EK METİN FONTU</label>
+                  <select value={extraFont} onChange={(e) => setExtraFont(e.target.value as FontId)}>
+                    {fonts.map((font) => (
+                      <option key={`extra-font-${font.id}`} value={font.id}>{font.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="designer-slider-heading">
+                  <label>EK METİN BOYUTU</label>
+                  <b>%{extraFontSizePercent}</b>
+                </div>
+                <input
+                  className="designer-range"
+                  type="range"
+                  min="10"
+                  max="65"
+                  step="1"
+                  value={extraFontSizePercent}
+                  onChange={(e) => setExtraFontSizePercent(Number(e.target.value))}
+                />
+
+                <div className="designer-slider-heading designer-extra-spacing-heading">
+                  <label>EK METİN HARF ARALIĞI</label>
+                  <b>{extraLetterSpacing > 0 ? "+" : ""}{extraLetterSpacing}</b>
+                </div>
+                <input
+                  className="designer-range"
+                  type="range"
+                  min="-5"
+                  max="35"
+                  step="1"
+                  value={extraLetterSpacing}
+                  onChange={(e) => setExtraLetterSpacing(Number(e.target.value))}
+                />
+
+                <label className="designer-extra-color-label">EK METİN RENGİ</label>
+                <div className="designer-colors designer-extra-colors">
+                  {letterColors.map((item) => (
+                    <button
+                      key={`extra-color-${item.value}`}
+                      type="button"
+                      className={extraTextColor === item.value ? "is-active" : ""}
+                      style={{ "--swatch": item.value } as React.CSSProperties}
+                      onClick={() => setExtraTextColor(item.value)}
+                      aria-label={item.name}
+                      title={item.name}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="designer-field">
@@ -888,6 +1002,23 @@ export default function SignDesigner() {
                     }}
                   >
                     {normalizedText}
+                  </strong>
+                )}
+
+                {extraTextEnabled && (
+                  <strong
+                    className={`designer-extra-text-preview designer-draggable-element ${effectiveLighted ? "is-lighted" : ""}`}
+                    onPointerDown={(event) => startDrag(event, "extra")}
+                    style={{
+                      left: `${50 + extraOffset.x}%`,
+                      top: `${50 + extraOffset.y}%`,
+                      fontFamily: currentExtraFont.family,
+                      fontSize: `calc(var(--board-px-height) * ${extraFontSizePercent / 100})`,
+                      letterSpacing: `${extraLetterSpacing / 100}em`,
+                      color: extraTextColor,
+                    }}
+                  >
+                    {normalizedExtraText}
                   </strong>
                 )}
               </div>
