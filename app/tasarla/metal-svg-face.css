@@ -1,13 +1,14 @@
 /* REDPEN / SVG METAL FACE
-   GOLD/KROM: gerçek SVG metal yüz.
-   Raster texture yerine çok bantlı reflection gradient + specular bevel kullanılır.
-   Böylece harf yüzeyi sarı/gri düz boya gibi görünmez. */
+   GOLD/KROM artık HTML text + background-clip ile çizilmez.
+   Ön yüz gerçek SVG <text fill="url(#pattern)"> kullanır.
+*/
 
 .designer-board-content{
   position:absolute!important;
   overflow:visible!important;
 }
 
+/* Gold/Krom SVG yazısı board içindeki normal flex düzeninden bağımsızdır. */
 .designer-metal-svg-wrap{
   position:absolute!important;
   z-index:8;
@@ -21,7 +22,9 @@
   -webkit-user-select:none;
 }
 
-.designer-metal-svg-wrap:active{cursor:grabbing}
+.designer-metal-svg-wrap:active{
+  cursor:grabbing;
+}
 
 .designer-metal-svg{
   display:block;
@@ -36,93 +39,99 @@
   font-size:calc(var(--board-px-height) * var(--font-size-ratio));
   font-weight:800;
   letter-spacing:var(--letter-spacing-em);
+  /* Solid gold/chrome faces are edge-to-edge metal plates.
+     No outline is painted around the front face. */
   paint-order:fill;
 }
 
-/* Gerçek arkadan ışık. Metal ön yüz kendi kendine neon gibi parlamaz. */
+/* Arka halo */
 .designer-metal-halo{
   stroke:none;
-  opacity:.58;
+  opacity:.62;
 }
-.designer-metal-svg-wrap.is-gold .designer-metal-halo{fill:#ffd16b}
-.designer-metal-svg-wrap.is-chrome .designer-metal-halo{fill:#e4f1ff}
 
-/* Harf kalınlığı: ön yüzden birkaç px geride iki ayrı yan yüz. */
-.designer-metal-depth{stroke:none}
-.designer-metal-svg-wrap.is-gold .designer-metal-depth-far{fill:#211100}
-.designer-metal-svg-wrap.is-gold .designer-metal-depth-near{fill:#724100}
-.designer-metal-svg-wrap.is-chrome .designer-metal-depth-far{fill:#101315}
-.designer-metal-svg-wrap.is-chrome .designer-metal-depth-near{fill:#454c52}
+.designer-metal-svg-wrap.is-gold .designer-metal-halo{
+  fill:#ffc95c;
+}
 
-/* Metal ön yüz. Gerçek kutu harfte ön yüz ile yan bant arasında
-   çizilmiş bir kontur yoktur. Yüzey ve kasa sıfıra sıfır birleşir. */
+.designer-metal-svg-wrap.is-chrome .designer-metal-halo{
+  fill:#dcecff;
+}
+
+/* Derinlik / yan yüz */
+.designer-metal-depth{
+  stroke:none;
+}
+
+.designer-metal-svg-wrap.is-gold .designer-metal-depth-far{
+  fill:#3d2200;
+}
+
+.designer-metal-svg-wrap.is-gold .designer-metal-depth-near{
+  fill:#865000;
+}
+
+.designer-metal-svg-wrap.is-chrome .designer-metal-depth-far{
+  fill:#15191c;
+}
+
+.designer-metal-svg-wrap.is-chrome .designer-metal-depth-near{
+  fill:#596168;
+}
+
+/* Ön yüz tamamen texture. Burada düz gold/gri fill YOK. */
 .designer-metal-front{
   stroke:none!important;
   stroke-width:0!important;
+  paint-order:fill!important;
+  vector-effect:non-scaling-stroke;
 }
-.designer-metal-svg-wrap.is-gold .designer-metal-front,
+
+.designer-metal-svg-wrap.is-gold .designer-metal-front{
+  stroke:none!important;
+  filter:contrast(1.08) saturate(1.12);
+}
+
 .designer-metal-svg-wrap.is-chrome .designer-metal-front{
   stroke:none!important;
+  filter:contrast(1.10);
 }
 
-/* Sweep de yalnızca yüzeyin içinde kalır; dış hat çizmez. */
-.designer-metal-sweep{
-  stroke:none!important;
-  stroke-width:0!important;
+/* Fileli harflerde ileride kullanılacak metal çerçeve ayrı tutulacak.
+   Solid GOLD/KROM bu kuralları kullanmaz. */
+.designer-metal-svg-wrap.is-fileli-gold .designer-metal-front,
+.designer-metal-svg-wrap.is-fileli-chrome .designer-metal-front{
+  stroke-width:1.1px!important;
+  paint-order:stroke fill!important;
 }
 
-/* Ayrı reflection sweep. Yüzeyde net bir ışık kaynağı/refleksiyon hissi verir. */
-.designer-metal-sweep{
-  stroke:none;
-  opacity:.8;
-  mix-blend-mode:screen;
-  animation:redpen-metal-sweep-pulse 5.8s ease-in-out infinite alternate;
-}
-
-@keyframes redpen-metal-sweep-pulse{
-  from{opacity:.42}
-  to{opacity:.92}
-}
-
-/* Harfi zeminden ayıran ince fiziksel temas gölgesi. */
-.designer-metal-svg-wrap::after{
-  content:"";
-  position:absolute;
-  left:17%;
-  right:17%;
-  top:59%;
-  height:18%;
-  z-index:-2;
-  pointer-events:none;
-  background:radial-gradient(ellipse at center,rgba(0,0,0,.34),transparent 70%);
-  filter:blur(13px);
-  opacity:.55;
-}
-
-/* Gold/kromda eski generic glow devre dışı. */
+/* Gold/krom board için eski CSS text highlight katmanlarını anlamsız hale getir.
+   SVG dışında metal yüz oluşturan HTML strong zaten render edilmiyor. */
 .designer-board.letter-material-gold-kaplama .designer-board-glow,
 .designer-board.letter-material-krom-kaplama .designer-board-glow{
   display:none!important;
 }
 
-/* Gündüz halo çok daha zayıf, metal refleksiyon ise görünmeye devam eder. */
-.mode-day .designer-metal-halo{opacity:.16}
-.mode-day .designer-metal-sweep{opacity:.62}
+/* Halo gece görünür, gündüz daha düşük. */
+.mode-day .designer-metal-halo{
+  opacity:.22;
+}
 
-body.designer-is-dragging .designer-metal-svg-wrap{transition:none!important}
+/* Kullanıcı sürüklerken SVG'ye transition bindirme. */
+body.designer-is-dragging .designer-metal-svg-wrap{
+  transition:none!important;
+}
 
+/* Logo yine bağımsız şekilde önde kalsın. */
 .designer-board-content .designer-logo-preview{
   position:relative;
   z-index:12;
 }
 
+/* Mobil */
 @media(max-width:620px){
   .designer-metal-svg-wrap{
     width:150%;
     height:155%;
   }
-}
-
-@media(prefers-reduced-motion:reduce){
-  .designer-metal-sweep{animation:none}
 }
