@@ -99,6 +99,7 @@ export default function SignDesigner() {
 
   const fileRef = useRef<HTMLInputElement>(null);
   const boardRef = useRef<HTMLDivElement>(null);
+  const facadeRef = useRef<HTMLDivElement>(null);
   const mainTextRef = useRef<HTMLElement | SVGTextElement | null>(null);
   const extraTextRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLImageElement>(null);
@@ -288,35 +289,48 @@ export default function SignDesigner() {
     return logoRef.current;
   };
 
-  const clampOffsetToBoard = (type: DragType, next: { x: number; y: number }) => {
+  const clampOffsetToCanvas = (type: DragType, next: { x: number; y: number }) => {
     const board = boardRef.current;
+    const canvas = facadeRef.current;
     const element = getDragElement(type);
-    if (!board || !element) return next;
+    if (!board || !canvas || !element) return next;
 
     const boardRect = board.getBoundingClientRect();
+    const canvasRect = canvas.getBoundingClientRect();
     const elementRect = element.getBoundingClientRect();
-    if (!boardRect.width || !boardRect.height) return next;
+    if (!boardRect.width || !boardRect.height || !canvasRect.width || !canvasRect.height) return next;
 
-    // Elemanın tamamı tabela kanvasında kalır. Tek gerçek sınır board kenarıdır.
-    const halfWidthPercent = Math.min(50, (elementRect.width / boardRect.width) * 50);
-    const halfHeightPercent = Math.min(50, (elementRect.height / boardRect.height) * 50);
-    const maxX = Math.max(0, 50 - halfWidthPercent);
-    const maxY = Math.max(0, 50 - halfHeightPercent);
+    // Offset değerleri board yüzdesi olarak çiziliyor, fakat gerçek hareket sınırı
+    // büyük önizleme alanı (designer-facade). Böylece yazı tabela dışına çıkabilir,
+    // fakat müşterinin tasarım kanvasının dışına taşamaz.
+    const current = type === "text" ? textOffset : type === "extra" ? extraOffset : logoOffset;
+    let deltaXPx = ((next.x - current.x) / 100) * boardRect.width;
+    let deltaYPx = ((next.y - current.y) / 100) * boardRect.height;
+
+    let futureLeft = elementRect.left + deltaXPx;
+    let futureRight = elementRect.right + deltaXPx;
+    let futureTop = elementRect.top + deltaYPx;
+    let futureBottom = elementRect.bottom + deltaYPx;
+
+    if (futureLeft < canvasRect.left) deltaXPx += canvasRect.left - futureLeft;
+    if (futureRight > canvasRect.right) deltaXPx -= futureRight - canvasRect.right;
+    if (futureTop < canvasRect.top) deltaYPx += canvasRect.top - futureTop;
+    if (futureBottom > canvasRect.bottom) deltaYPx -= futureBottom - canvasRect.bottom;
 
     return {
-      x: Math.max(-maxX, Math.min(maxX, next.x)),
-      y: Math.max(-maxY, Math.min(maxY, next.y)),
+      x: current.x + (deltaXPx / boardRect.width) * 100,
+      y: current.y + (deltaYPx / boardRect.height) * 100,
     };
   };
 
-  const keepElementsInsideBoard = () => {
-    setTextOffset((value) => clampOffsetToBoard("text", value));
-    setExtraOffset((value) => clampOffsetToBoard("extra", value));
-    setLogoOffset((value) => clampOffsetToBoard("logo", value));
+  const keepElementsInsideCanvas = () => {
+    setTextOffset((value) => clampOffsetToCanvas("text", value));
+    setExtraOffset((value) => clampOffsetToCanvas("extra", value));
+    setLogoOffset((value) => clampOffsetToCanvas("logo", value));
   };
 
   useEffect(() => {
-    const frame = requestAnimationFrame(keepElementsInsideBoard);
+    const frame = requestAnimationFrame(keepElementsInsideCanvas);
     return () => cancelAnimationFrame(frame);
   }, [fontSizePercent, letterSpacing, extraFontSizePercent, extraLetterSpacing, logoSizePercent, width, height, selectedFont, extraFont, normalizedText, normalizedExtraText]);
 
@@ -328,7 +342,7 @@ export default function SignDesigner() {
       const deltaXPercent = ((event.clientX - drag.startX) / drag.boardWidth) * 100;
       const deltaYPercent = ((event.clientY - drag.startY) / drag.boardHeight) * 100;
 
-      const next = clampOffsetToBoard(drag.type, {
+      const next = clampOffsetToCanvas(drag.type, {
         x: drag.startOffsetX + deltaXPercent,
         y: drag.startOffsetY + deltaYPercent,
       });
@@ -796,7 +810,7 @@ export default function SignDesigner() {
             </div>
           </div>
 
-          <div className="designer-facade" style={facadeStyle}>
+          <div ref={facadeRef} className="designer-facade" style={facadeStyle}>
             <div className="designer-wall-grid" />
 
             <div className="designer-preview-light-controls" aria-label="Aydınlatma kontrolleri">

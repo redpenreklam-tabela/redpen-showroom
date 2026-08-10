@@ -381,14 +381,15 @@ body.designer-is-dragging .designer-extra-text-preview{cursor:grabbing;}
   line-height:.92!important;
 }
 
-/* v12 — Gerçek serbest yerleşim: tek sınır tabela kanvası. */
+/* v13 — Gerçek serbest yerleşim: sınır artık küçük tabela değil,
+   büyük CANLI ÖNİZLEME / designer-facade alanıdır. */
 .designer-board{
-  overflow:hidden!important;
+  overflow:visible!important;
 }
 .designer-board-content{
   inset:0!important;
   padding:0!important;
-  overflow:hidden!important;
+  overflow:visible!important;
   display:block!important;
 }
 
@@ -412,14 +413,15 @@ body.designer-is-dragging .designer-extra-text-preview{cursor:grabbing;}
   z-index:12!important;
 }
 
-/* Glow board dışına taşmasın. Kullanıcının gördüğü canvas gerçekten son sınır olsun. */
+/* Harf/logo tabela yüzeyinin dışına çıkabilir. Son kırpma sınırı zaten
+   .designer-facade üzerindeki overflow:hidden tarafından sağlanır. */
 .designer-board.is-lighted,
 .designer-board.is-lighted .designer-board-content{
-  overflow:hidden!important;
+  overflow:visible!important;
 }
 
 /* Sliderların artık preset değil serbest aralık olduğunu kullanıcıya belli et. */
 .designer-range-scale span:last-child::after{
-  content:" / KANVAS SINIRI";
+  content:" / ÖNİZLEME SINIRI";
   opacity:.55;
 }
