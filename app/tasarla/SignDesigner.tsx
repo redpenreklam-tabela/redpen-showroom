@@ -7,6 +7,7 @@ type BaseMaterial = "PLEKSİ" | "ALÜMİNYUM" | "KROM" | "KOMPOZİT";
 type LetterMaterial = "PLEKSİ" | "GOLD KAPLAMA" | "KROM KAPLAMA" | "FİLELİ KROM" | "FİLELİ GOLD" | "FOREX";
 type SceneMode = "day" | "night";
 type DragType = "text" | "logo" | "extra";
+type LightStripMode = "none" | "top" | "bottom" | "top-bottom" | "left" | "right" | "left-right" | "all";
 type FontId =
   | "montserrat"
   | "oswald"
@@ -57,6 +58,17 @@ const baseColors = [
   { name: "Kompozit Gri", value: "#555a60" },
 ];
 
+const lightStripModes: Array<{ id: LightStripMode; label: string; short: string }> = [
+  { id: "none", label: "Işık bandı yok", short: "YOK" },
+  { id: "top", label: "Üst kenar", short: "ÜST" },
+  { id: "bottom", label: "Alt kenar", short: "ALT" },
+  { id: "top-bottom", label: "Üst ve alt kenar", short: "ÜST + ALT" },
+  { id: "left", label: "Sol kenar", short: "SOL" },
+  { id: "right", label: "Sağ kenar", short: "SAĞ" },
+  { id: "left-right", label: "Sol ve sağ kenar", short: "SOL + SAĞ" },
+  { id: "all", label: "Dört kenar", short: "4 KENAR" },
+];
+
 export default function SignDesigner() {
   const [text, setText] = useState("REDPEN");
   const [signType, setSignType] = useState<SignType>("KUTU HARF");
@@ -69,6 +81,7 @@ export default function SignDesigner() {
   const [lighted, setLighted] = useState(true);
   const [fileliBacklight, setFileliBacklight] = useState(true);
   const [scene, setScene] = useState<SceneMode>("night");
+  const [lightStripMode, setLightStripMode] = useState<LightStripMode>("none");
   const [logo, setLogo] = useState<string | null>(null);
 
   const [extraTextEnabled, setExtraTextEnabled] = useState(false);
@@ -191,6 +204,7 @@ export default function SignDesigner() {
       "--font-size-ratio": `${fontSizePercent / 100}`,
       "--letter-spacing-em": `${letterSpacing / 100}em`,
       "--logo-size-ratio": `${logoSizePercent / 100}`,
+      "--light-strip-px": `${6 * sceneScale}px`,
       "--metal-reflect-shift": `${Math.max(-18, Math.min(18, textOffset.x * 0.28))}%`,
     } as React.CSSProperties;
   }, [
@@ -248,6 +262,7 @@ export default function SignDesigner() {
               ? "Önden ışıklı"
               : "Işıksız"
       }`,
+      `6 cm ışık bandı: ${lightStripModes.find((item) => item.id === lightStripMode)?.label ?? "Işık bandı yok"}`,
       `Zemin rengi: ${baseColor}`,
       `Harf rengi: ${letterColor}`,
       "",
@@ -278,6 +293,7 @@ export default function SignDesigner() {
     lighted,
     fileliBacklight,
     lightingMode,
+    lightStripMode,
     baseColor,
     letterColor,
   ]);
@@ -694,6 +710,40 @@ export default function SignDesigner() {
             </div>
           </div>
 
+          <div className="designer-field designer-light-strip-field">
+            <div className="designer-light-strip-heading">
+              <div>
+                <label>IŞIK BANDI / 6 CM</label>
+                <p className="designer-control-note">
+                  Zeminin kenarına sıfır 6 cm ışık bandı ekle. Bant tabela ölçüsüyle birlikte gerçek oranda ölçeklenir.
+                </p>
+              </div>
+              <span className={lightStripMode === "none" ? "" : "is-active"}>
+                {lightStripMode === "none" ? "KAPALI" : "AKTİF"}
+              </span>
+            </div>
+
+            <div className="designer-light-strip-grid">
+              {lightStripModes.map((item) => (
+                <button
+                  key={`light-strip-${item.id}`}
+                  type="button"
+                  className={lightStripMode === item.id ? "is-active" : ""}
+                  onClick={() => setLightStripMode(item.id)}
+                  title={item.label}
+                >
+                  <i className={`designer-strip-icon strip-${item.id}`} aria-hidden="true">
+                    <span className="strip-top" />
+                    <span className="strip-right" />
+                    <span className="strip-bottom" />
+                    <span className="strip-left" />
+                  </i>
+                  <b>{item.short}</b>
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="designer-field">
             <label>HARF MALZEMESİ</label>
             <div className="designer-material-row">
@@ -875,6 +925,16 @@ export default function SignDesigner() {
               style={boardStyle}
             >
               <span className="designer-board-edge" aria-hidden="true" />
+
+              {lightStripMode !== "none" && (
+                <div className={`designer-light-strips strip-mode-${lightStripMode}`} aria-hidden="true">
+                  <span className="designer-light-strip strip-top" />
+                  <span className="designer-light-strip strip-right" />
+                  <span className="designer-light-strip strip-bottom" />
+                  <span className="designer-light-strip strip-left" />
+                </div>
+              )}
+
               <div className="designer-board-content">
                 {logo && (
                   <img

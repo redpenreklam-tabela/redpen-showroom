@@ -425,3 +425,189 @@ body.designer-is-dragging .designer-extra-text-preview{cursor:grabbing;}
   content:" / ÖNİZLEME SINIRI";
   opacity:.55;
 }
+
+/* v14 / 6 cm kenar ışık bandı */
+.designer-light-strip-field{
+  position:relative;
+}
+
+.designer-light-strip-heading{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:14px;
+}
+
+.designer-light-strip-heading > div{
+  min-width:0;
+}
+
+.designer-light-strip-heading > span{
+  flex:0 0 auto;
+  min-width:64px;
+  padding:6px 9px;
+  border:1px solid rgba(255,255,255,.14);
+  color:rgba(255,255,255,.42);
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.12em;
+  text-align:center;
+}
+
+.designer-light-strip-heading > span.is-active{
+  border-color:rgba(255,255,255,.55);
+  color:#fff;
+  box-shadow:0 0 18px rgba(255,255,255,.09);
+}
+
+.designer-light-strip-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:8px;
+}
+
+.designer-light-strip-grid > button{
+  min-height:72px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:9px 6px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.025);
+  color:rgba(255,255,255,.58);
+  cursor:pointer;
+  transition:border-color .18s ease,background .18s ease,color .18s ease,transform .18s ease;
+}
+
+.designer-light-strip-grid > button:hover{
+  border-color:rgba(255,255,255,.32);
+  color:#fff;
+  transform:translateY(-1px);
+}
+
+.designer-light-strip-grid > button.is-active{
+  border-color:rgba(255,255,255,.72);
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06),0 0 20px rgba(255,255,255,.05);
+}
+
+.designer-light-strip-grid > button b{
+  font-size:9px;
+  line-height:1;
+  letter-spacing:.07em;
+  font-weight:900;
+}
+
+.designer-strip-icon{
+  position:relative;
+  display:block;
+  width:34px;
+  height:20px;
+  border:1px solid rgba(255,255,255,.22);
+  background:rgba(0,0,0,.22);
+}
+
+.designer-strip-icon > span{
+  position:absolute;
+  display:none;
+  background:#fff;
+  box-shadow:0 0 5px rgba(255,255,255,.9);
+}
+
+.designer-strip-icon .strip-top,
+.designer-strip-icon .strip-bottom{
+  left:0;
+  right:0;
+  height:3px;
+}
+.designer-strip-icon .strip-top{top:0}
+.designer-strip-icon .strip-bottom{bottom:0}
+.designer-strip-icon .strip-left,
+.designer-strip-icon .strip-right{
+  top:0;
+  bottom:0;
+  width:3px;
+}
+.designer-strip-icon .strip-left{left:0}
+.designer-strip-icon .strip-right{right:0}
+
+.designer-strip-icon.strip-top .strip-top,
+.designer-strip-icon.strip-bottom .strip-bottom,
+.designer-strip-icon.strip-left .strip-left,
+.designer-strip-icon.strip-right .strip-right,
+.designer-strip-icon.strip-top-bottom .strip-top,
+.designer-strip-icon.strip-top-bottom .strip-bottom,
+.designer-strip-icon.strip-left-right .strip-left,
+.designer-strip-icon.strip-left-right .strip-right,
+.designer-strip-icon.strip-all > span{
+  display:block;
+}
+
+/* Gerçek tabela yüzeyindeki ışık bandı. 6 cm = sceneScale * 6px. */
+.designer-light-strips{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  overflow:hidden;
+}
+
+.designer-light-strip{
+  position:absolute;
+  display:none;
+  background:linear-gradient(90deg,#f7f6ee 0%,#fff 48%,#f1f3f5 100%);
+  box-shadow:
+    0 0 5px rgba(255,255,255,.95),
+    0 0 13px rgba(255,255,255,.72),
+    0 0 26px rgba(255,255,255,.34);
+}
+
+.designer-light-strip.strip-top,
+.designer-light-strip.strip-bottom{
+  left:0;
+  right:0;
+  height:max(2px,var(--light-strip-px));
+}
+.designer-light-strip.strip-top{top:0}
+.designer-light-strip.strip-bottom{bottom:0}
+.designer-light-strip.strip-left,
+.designer-light-strip.strip-right{
+  top:0;
+  bottom:0;
+  width:max(2px,var(--light-strip-px));
+  background:linear-gradient(180deg,#f7f6ee 0%,#fff 48%,#f1f3f5 100%);
+}
+.designer-light-strip.strip-left{left:0}
+.designer-light-strip.strip-right{right:0}
+
+.strip-mode-top .designer-light-strip.strip-top,
+.strip-mode-bottom .designer-light-strip.strip-bottom,
+.strip-mode-left .designer-light-strip.strip-left,
+.strip-mode-right .designer-light-strip.strip-right,
+.strip-mode-top-bottom .designer-light-strip.strip-top,
+.strip-mode-top-bottom .designer-light-strip.strip-bottom,
+.strip-mode-left-right .designer-light-strip.strip-left,
+.strip-mode-left-right .designer-light-strip.strip-right,
+.strip-mode-all .designer-light-strip{
+  display:block;
+}
+
+.mode-day .designer-light-strip{
+  background:#f8f8f3;
+  box-shadow:0 0 4px rgba(255,255,255,.75),0 0 11px rgba(255,255,255,.28);
+}
+
+/* Bant yüzeyin üstünde, yazı/logo ise bandın da üstünde kalsın. */
+.designer-board-content{
+  z-index:3;
+}
+
+@media(max-width:900px){
+  .designer-light-strip-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
