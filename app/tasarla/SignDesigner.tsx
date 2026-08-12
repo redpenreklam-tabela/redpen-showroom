@@ -108,6 +108,18 @@ const hexToRgb = (hex: string) => {
   return `${(value >> 16) & 255}, ${(value >> 8) & 255}, ${value & 255}`;
 };
 
+const lightStripMaterialSlug = (material: LetterMaterial) => {
+  switch (material) {
+    case "PLEKSİ": return "pleksi";
+    case "GOLD KAPLAMA": return "gold-kaplama";
+    case "KROM KAPLAMA": return "krom-kaplama";
+    case "FİLELİ GOLD": return "fileli-gold";
+    case "FİLELİ KROM": return "fileli-krom";
+    case "FOREX": return "forex";
+    default: return "pleksi";
+  }
+};
+
 export default function SignDesigner() {
   const [text, setText] = useState("REDPEN");
   const [signType, setSignType] = useState<SignType>("KUTU HARF");
@@ -1052,27 +1064,18 @@ export default function SignDesigner() {
                     "--strip-light-color": lightStripColor,
                     "--strip-light-rgb": hexToRgb(lightStripColor),
                   } as React.CSSProperties}
-                  className={`designer-light-strips strip-mode-${lightStripMode} strip-material-${lightStripMaterial
-                    .toLowerCase()
-                    .replaceAll(" ", "-")
-                    .replaceAll("İ", "i")
-                    .replaceAll("ı", "i")
-                    .replaceAll("Ş", "s")
-                    .replaceAll("ş", "s")
-                    .replaceAll("Ö", "o")
-                    .replaceAll("ö", "o")
-                    .replaceAll("Ü", "u")
-                    .replaceAll("ü", "u")
-                    .replaceAll("Ğ", "g")
-                    .replaceAll("ğ", "g")
-                    .replaceAll("Ç", "c")
-                    .replaceAll("ç", "c")}`}
+                  className={`designer-light-strips strip-mode-${lightStripMode} strip-material-${lightStripMaterialSlug(lightStripMaterial)}`}
                   aria-hidden="true"
                 >
-                  <span className="designer-light-strip strip-top" />
-                  <span className="designer-light-strip strip-right" />
-                  <span className="designer-light-strip strip-bottom" />
-                  <span className="designer-light-strip strip-left" />
+                  {["top", "right", "bottom", "left"].map((side) => (
+                    <span
+                      key={`light-strip-${side}`}
+                      className={`designer-light-strip strip-${side}`}
+                      style={(lightStripMaterial === "PLEKSİ" || lightStripMaterial === "FİLELİ GOLD" || lightStripMaterial === "FİLELİ KROM")
+                        ? { backgroundColor: lightStripColor }
+                        : undefined}
+                    />
+                  ))}
                 </div>
               )}
 
