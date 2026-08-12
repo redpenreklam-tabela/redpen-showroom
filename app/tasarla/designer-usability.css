@@ -917,3 +917,87 @@ body.designer-is-dragging .designer-extra-text-preview{cursor:grabbing;}
     grid-template-columns:repeat(5,minmax(0,1fr));
   }
 }
+
+/* v17.1 — bant ışık rengi + fileli çerçeve düzeltmesi
+   Renk katmanı ve metal çerçeve birbirinden ayrıldı. Böylece gündüz modu
+   box-shadow'u ezse bile fileli çerçeve kaybolmaz. */
+
+/* Pleksi: seçilen renk doğrudan bant yüzeyinin gerçek rengi olsun. */
+.strip-material-pleksi .designer-light-strip,
+.mode-day .strip-material-pleksi .designer-light-strip{
+  background:var(--strip-light-color)!important;
+  box-shadow:
+    inset 0 0 max(2px,calc(var(--light-strip-px) * .20)) rgba(255,255,255,.40),
+    0 0 5px rgba(var(--strip-light-rgb),.92),
+    0 0 14px rgba(var(--strip-light-rgb),.62),
+    0 0 28px rgba(var(--strip-light-rgb),.30)!important;
+}
+
+.mode-day .strip-material-pleksi .designer-light-strip{
+  box-shadow:
+    inset 0 0 max(2px,calc(var(--light-strip-px) * .16)) rgba(255,255,255,.28),
+    0 0 4px rgba(var(--strip-light-rgb),.55),
+    0 0 10px rgba(var(--strip-light-rgb),.20)!important;
+}
+
+/* Fileli: bant gövdesi seçilen renkli pleksi çekirdek. */
+.strip-material-fileli-gold .designer-light-strip,
+.strip-material-fileli-krom .designer-light-strip,
+.mode-day .strip-material-fileli-gold .designer-light-strip,
+.mode-day .strip-material-fileli-krom .designer-light-strip{
+  background:var(--strip-light-color)!important;
+  position:absolute;
+  box-shadow:
+    inset 0 0 max(2px,calc(var(--light-strip-px) * .12)) rgba(255,255,255,.35),
+    0 0 6px rgba(var(--strip-light-rgb),.88),
+    0 0 16px rgba(var(--strip-light-rgb),.36)!important;
+}
+
+/* Metal file çerçevesi ayrı katman. Işık glow'u artık bunu silemez. */
+.strip-material-fileli-gold .designer-light-strip::before,
+.strip-material-fileli-krom .designer-light-strip::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:2;
+  box-sizing:border-box;
+  border-style:solid;
+  border-width:max(1px,calc(var(--light-strip-px) * .24));
+}
+
+.strip-material-fileli-gold .designer-light-strip::before{
+  border-color:#c88920;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,223,137,.45),
+    inset 0 1px 1px rgba(255,244,194,.72),
+    inset 0 -1px 1px rgba(78,37,0,.62);
+  background:linear-gradient(90deg,rgba(75,39,4,.32),rgba(255,227,132,.34),rgba(111,59,4,.32));
+}
+
+.strip-material-fileli-krom .designer-light-strip::before{
+  border-color:#8f9ba2;
+  box-shadow:
+    inset 0 0 0 1px rgba(242,248,251,.44),
+    inset 0 1px 1px rgba(255,255,255,.72),
+    inset 0 -1px 1px rgba(20,27,31,.62);
+  background:linear-gradient(90deg,rgba(36,43,47,.28),rgba(240,247,250,.30),rgba(67,77,83,.28));
+}
+
+/* Dikey bantta yansıma yönü de dikey olsun. */
+.strip-material-fileli-gold .designer-light-strip.strip-left::before,
+.strip-material-fileli-gold .designer-light-strip.strip-right::before,
+.strip-material-fileli-krom .designer-light-strip.strip-left::before,
+.strip-material-fileli-krom .designer-light-strip.strip-right::before{
+  background:linear-gradient(180deg,rgba(45,45,45,.20),rgba(255,255,255,.28),rgba(45,45,45,.20));
+}
+
+/* Gündüzde sadece glow sakinleşsin; metal çerçeve ve pleksi rengi aynen kalsın. */
+.mode-day .strip-material-fileli-gold .designer-light-strip,
+.mode-day .strip-material-fileli-krom .designer-light-strip{
+  filter:none!important;
+  box-shadow:
+    inset 0 0 max(2px,calc(var(--light-strip-px) * .10)) rgba(255,255,255,.24),
+    0 0 4px rgba(var(--strip-light-rgb),.54),
+    0 0 10px rgba(var(--strip-light-rgb),.20)!important;
+}
