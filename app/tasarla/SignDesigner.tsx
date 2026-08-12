@@ -88,6 +88,26 @@ const lightStripModes: Array<{ id: LightStripMode; label: string; short: string 
   { id: "all", label: "Dört kenar", short: "4 KENAR" },
 ];
 
+const lightStripColors = [
+  { name: "Beyaz", value: "#ffffff" },
+  { name: "Günışığı", value: "#ffd9a3" },
+  { name: "Kırmızı", value: "#ff2a45" },
+  { name: "Mavi", value: "#3f8cff" },
+  { name: "Yeşil", value: "#38e27d" },
+  { name: "Amber", value: "#ffae35" },
+  { name: "Mor", value: "#a66cff" },
+  { name: "Turkuaz", value: "#39e6e2" },
+];
+
+const hexToRgb = (hex: string) => {
+  const clean = hex.replace("#", "");
+  const normalized = clean.length === 3
+    ? clean.split("").map((char) => char + char).join("")
+    : clean.padEnd(6, "f").slice(0, 6);
+  const value = Number.parseInt(normalized, 16);
+  return `${(value >> 16) & 255}, ${(value >> 8) & 255}, ${value & 255}`;
+};
+
 export default function SignDesigner() {
   const [text, setText] = useState("REDPEN");
   const [signType, setSignType] = useState<SignType>("KUTU HARF");
@@ -102,6 +122,7 @@ export default function SignDesigner() {
   const [scene, setScene] = useState<SceneMode>("night");
   const [lightStripMode, setLightStripMode] = useState<LightStripMode>("none");
   const [lightStripMaterial, setLightStripMaterial] = useState<LetterMaterial>("PLEKSİ");
+  const [lightStripColor, setLightStripColor] = useState("#ffffff");
   const [logo, setLogo] = useState<string | null>(null);
 
   const [extraTextEnabled, setExtraTextEnabled] = useState(false);
@@ -287,7 +308,10 @@ export default function SignDesigner() {
               : "Işıksız"
       }`,
       `6 cm ışık bandı: ${lightStripModes.find((item) => item.id === lightStripMode)?.label ?? "Işık bandı yok"}`,
-      ...(lightStripMode !== "none" ? [`Işık bandı malzemesi: ${lightStripMaterial}`] : []),
+      ...(lightStripMode !== "none" ? [
+        `Işık bandı malzemesi: ${lightStripMaterial}`,
+        ...(lightStripMaterial !== "FOREX" ? [`Işık bandı ışık rengi: ${lightStripColor}`] : []),
+      ] : []),
       `Zemin rengi: ${baseColor}`,
       `Harf rengi: ${letterColor}`,
       "",
@@ -320,6 +344,7 @@ export default function SignDesigner() {
     lightingMode,
     lightStripMode,
     lightStripMaterial,
+    lightStripColor,
     baseColor,
     letterColor,
   ]);
@@ -803,8 +828,38 @@ export default function SignDesigner() {
                   ))}
                 </div>
                 <p className="designer-control-note designer-strip-material-note">
-                  Pleksi beyaz ışıklı görünür. Gold/krom kaplamalar metal yüzey, fileli seçenekler ise metal çerçeve + ışıklı pleksi merkez olarak önizlenir.
+                  Pleksi ışığı doğrudan verir. Gold/krom kaplamalarda seçilen renk metalin çevresindeki ışık etkisine, fileli seçeneklerde ise pleksi merkeze uygulanır.
                 </p>
+
+                {lightStripMaterial !== "FOREX" && (
+                  <div className="designer-strip-color-control">
+                    <div className="designer-light-strip-material-heading">
+                      <label>BANT IŞIK RENGİ</label>
+                      <span>{lightStripColors.find((item) => item.value === lightStripColor)?.name ?? "ÖZEL"}</span>
+                    </div>
+                    <div className="designer-strip-color-row">
+                      {lightStripColors.map((item) => (
+                        <button
+                          key={`strip-light-color-${item.value}`}
+                          type="button"
+                          className={lightStripColor === item.value ? "is-active" : ""}
+                          style={{ "--strip-swatch": item.value } as React.CSSProperties}
+                          onClick={() => setLightStripColor(item.value)}
+                          title={item.name}
+                          aria-label={`Bant ışık rengi ${item.name}`}
+                        />
+                      ))}
+                      <label className="designer-strip-custom-color" title="Özel renk seç">
+                        <input
+                          type="color"
+                          value={lightStripColor}
+                          onChange={(event) => setLightStripColor(event.target.value)}
+                        />
+                        <span>ÖZEL</span>
+                      </label>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -993,6 +1048,10 @@ export default function SignDesigner() {
 
               {lightStripMode !== "none" && (
                 <div
+                  style={{
+                    "--strip-light-color": lightStripColor,
+                    "--strip-light-rgb": hexToRgb(lightStripColor),
+                  } as React.CSSProperties}
                   className={`designer-light-strips strip-mode-${lightStripMode} strip-material-${lightStripMaterial
                     .toLowerCase()
                     .replaceAll(" ", "-")

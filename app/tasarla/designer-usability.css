@@ -782,3 +782,138 @@ body.designer-is-dragging .designer-extra-text-preview{cursor:grabbing;}
   text-align:center;
   font:600 11px/1.4 var(--font-geist-sans),sans-serif;
 }
+
+/* v17 / bant ışık rengi */
+.designer-strip-color-control{
+  margin-top:16px;
+  padding-top:16px;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+
+.designer-strip-color-row{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:9px;
+  align-items:center;
+}
+
+.designer-strip-color-row > button{
+  position:relative;
+  width:100%;
+  aspect-ratio:1;
+  min-height:34px;
+  border:1px solid rgba(255,255,255,.16);
+  background:var(--strip-swatch);
+  cursor:pointer;
+  box-shadow:0 0 0 2px rgba(0,0,0,.18) inset;
+  transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease;
+}
+
+.designer-strip-color-row > button:hover{
+  transform:translateY(-1px) scale(1.03);
+  border-color:rgba(255,255,255,.5);
+}
+
+.designer-strip-color-row > button.is-active{
+  border-color:#fff;
+  box-shadow:0 0 0 2px #111 inset,0 0 16px color-mix(in srgb,var(--strip-swatch) 55%,transparent);
+}
+
+.designer-strip-custom-color{
+  position:relative;
+  min-height:38px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.035);
+  overflow:hidden;
+  cursor:pointer;
+}
+
+.designer-strip-custom-color input{
+  position:absolute;
+  inset:-8px;
+  width:calc(100% + 16px);
+  height:calc(100% + 16px);
+  opacity:.58;
+  cursor:pointer;
+}
+
+.designer-strip-custom-color span{
+  position:relative;
+  z-index:1;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.08em;
+  color:#fff;
+  text-shadow:0 1px 3px #000;
+  pointer-events:none;
+}
+
+/* Pleksi seçilen ışık rengini doğrudan taşır. */
+.strip-material-pleksi .designer-light-strip{
+  background:linear-gradient(
+    90deg,
+    color-mix(in srgb,var(--strip-light-color) 74%,white) 0%,
+    var(--strip-light-color) 48%,
+    color-mix(in srgb,var(--strip-light-color) 78%,white) 100%
+  );
+  box-shadow:
+    0 0 5px rgba(var(--strip-light-rgb),.95),
+    0 0 14px rgba(var(--strip-light-rgb),.74),
+    0 0 30px rgba(var(--strip-light-rgb),.38);
+}
+
+.strip-material-pleksi .designer-light-strip.strip-left,
+.strip-material-pleksi .designer-light-strip.strip-right{
+  background:linear-gradient(
+    180deg,
+    color-mix(in srgb,var(--strip-light-color) 74%,white) 0%,
+    var(--strip-light-color) 48%,
+    color-mix(in srgb,var(--strip-light-color) 78%,white) 100%
+  );
+}
+
+/* Fileli bantlarda dış metal çerçeve sabit, iç pleksi seçilen renkte yanar. */
+.strip-material-fileli-gold .designer-light-strip{
+  background:var(--strip-light-color);
+  box-shadow:
+    inset 0 0 0 max(1px,calc(var(--light-strip-px) * .26)) #bd7612,
+    inset 0 0 5px rgba(var(--strip-light-rgb),.72),
+    0 0 6px rgba(var(--strip-light-rgb),.9),
+    0 0 16px rgba(var(--strip-light-rgb),.42);
+}
+
+.strip-material-fileli-krom .designer-light-strip{
+  background:var(--strip-light-color);
+  box-shadow:
+    inset 0 0 0 max(1px,calc(var(--light-strip-px) * .26)) #7f8a91,
+    inset 0 0 5px rgba(var(--strip-light-rgb),.72),
+    0 0 6px rgba(var(--strip-light-rgb),.9),
+    0 0 16px rgba(var(--strip-light-rgb),.42);
+}
+
+/* Kaplama bantta yüzey metal kalır, seçilen renk çevrede halo olarak görünür. */
+.strip-material-gold-kaplama .designer-light-strip,
+.strip-material-krom-kaplama .designer-light-strip{
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.34),
+    inset 0 -1px 0 rgba(0,0,0,.55),
+    0 0 7px rgba(var(--strip-light-rgb),.58),
+    0 0 18px rgba(var(--strip-light-rgb),.28);
+}
+
+.mode-day .strip-material-pleksi .designer-light-strip,
+.mode-day .strip-material-fileli-gold .designer-light-strip,
+.mode-day .strip-material-fileli-krom .designer-light-strip{
+  box-shadow:
+    0 0 4px rgba(var(--strip-light-rgb),.62),
+    0 0 10px rgba(var(--strip-light-rgb),.24);
+}
+
+@media(max-width:900px){
+  .designer-strip-color-row{
+    grid-template-columns:repeat(5,minmax(0,1fr));
+  }
+}
