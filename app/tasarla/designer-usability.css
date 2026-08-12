@@ -1032,3 +1032,56 @@ body.designer-is-dragging .designer-extra-text-preview{cursor:grabbing;}
     inset 0 0 0 1px rgba(248,252,255,.62),
     0 0 0 1px rgba(24,31,35,.34)!important;
 }
+
+/* v18 — ışık bantlarını gerçek tek-parça profil gibi birleştir.
+   Fileli bantlarda eski 4 kenarlı border her ayrı span'in ucunda kapak oluşturuyordu.
+   Artık yatay bant yalnız uzun üst/alt metal raylarını, dikey bant yalnız uzun sol/sağ
+   metal raylarını çizer. 4 kenar modunda da yatay parçalar dikey parçaların arasına
+   sıfıra sıfır oturur; köşelerde üst üste binen ikinci parça oluşmaz. */
+.strip-material-fileli-gold .designer-light-strip::before,
+.strip-material-fileli-krom .designer-light-strip::before{
+  border:0!important;
+  border-style:solid!important;
+  border-color:transparent;
+  box-sizing:border-box;
+}
+
+/* Yatay profil: sadece iki uzun metal kenar. Uçlarda ayrı kapak çizme. */
+.strip-material-fileli-gold .designer-light-strip.strip-top::before,
+.strip-material-fileli-gold .designer-light-strip.strip-bottom::before{
+  border-top-width:max(2px,calc(var(--light-strip-px) * .28))!important;
+  border-bottom-width:max(2px,calc(var(--light-strip-px) * .28))!important;
+  border-top-color:#c88920!important;
+  border-bottom-color:#c88920!important;
+}
+.strip-material-fileli-krom .designer-light-strip.strip-top::before,
+.strip-material-fileli-krom .designer-light-strip.strip-bottom::before{
+  border-top-width:max(2px,calc(var(--light-strip-px) * .28))!important;
+  border-bottom-width:max(2px,calc(var(--light-strip-px) * .28))!important;
+  border-top-color:#8f9ba2!important;
+  border-bottom-color:#8f9ba2!important;
+}
+
+/* Dikey profil: sadece iki uzun metal kenar. Üst/alt uçta kapak yok. */
+.strip-material-fileli-gold .designer-light-strip.strip-left::before,
+.strip-material-fileli-gold .designer-light-strip.strip-right::before{
+  border-left-width:max(2px,calc(var(--light-strip-px) * .28))!important;
+  border-right-width:max(2px,calc(var(--light-strip-px) * .28))!important;
+  border-left-color:#c88920!important;
+  border-right-color:#c88920!important;
+}
+.strip-material-fileli-krom .designer-light-strip.strip-left::before,
+.strip-material-fileli-krom .designer-light-strip.strip-right::before{
+  border-left-width:max(2px,calc(var(--light-strip-px) * .28))!important;
+  border-right-width:max(2px,calc(var(--light-strip-px) * .28))!important;
+  border-left-color:#8f9ba2!important;
+  border-right-color:#8f9ba2!important;
+}
+
+/* Dört kenarda parçaları üst üste bindirme. Sol/sağ tam boy gider,
+   üst/alt onların arasına butt-joint şeklinde oturur. */
+.strip-mode-all .designer-light-strip.strip-top,
+.strip-mode-all .designer-light-strip.strip-bottom{
+  left:max(2px,var(--light-strip-px));
+  right:max(2px,var(--light-strip-px));
+}
