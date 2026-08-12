@@ -9,18 +9,13 @@ type SceneMode = "day" | "night";
 type DragType = "text" | "logo" | "extra";
 type LightStripMode = "none" | "top" | "bottom" | "top-bottom" | "left" | "right" | "left-right" | "all";
 type FontId =
-  | "montserrat"
-  | "oswald"
-  | "bebas"
-  | "poppins"
-  | "roboto-condensed"
-  | "archivo-black"
-  | "anton"
-  | "barlow-condensed"
-  | "league-spartan"
-  | "rubik"
-  | "lobster"
-  | "pacifico";
+  | "montserrat" | "oswald" | "bebas" | "poppins" | "roboto-condensed"
+  | "archivo-black" | "anton" | "barlow-condensed" | "league-spartan" | "rubik"
+  | "lobster" | "pacifico" | "inter" | "roboto" | "open-sans" | "lato"
+  | "raleway" | "nunito" | "ubuntu" | "pt-sans" | "merriweather" | "playfair-display"
+  | "dm-sans" | "work-sans" | "manrope" | "mulish" | "fira-sans" | "noto-sans"
+  | "noto-serif" | "quicksand" | "josefin-sans" | "exo-2" | "cinzel"
+  | "comfortaa" | "caveat" | "dancing-script";
 
 const signTypes: SignType[] = ["KUTU HARF", "IŞIKLI PANEL", "TOTEM", "CEPHE"];
 const baseMaterials: BaseMaterial[] = ["PLEKSİ", "ALÜMİNYUM", "KROM", "KOMPOZİT"];
@@ -37,8 +32,32 @@ const fonts: Array<{ id: FontId; name: string; family: string }> = [
   { id: "barlow-condensed", name: "Barlow Condensed", family: "var(--font-sign-barlow-condensed)" },
   { id: "league-spartan", name: "League Spartan", family: "var(--font-sign-league-spartan)" },
   { id: "rubik", name: "Rubik", family: "var(--font-sign-rubik)" },
+  { id: "inter", name: "Inter", family: "var(--font-sign-inter)" },
+  { id: "roboto", name: "Roboto", family: "var(--font-sign-roboto)" },
+  { id: "open-sans", name: "Open Sans", family: "var(--font-sign-open-sans)" },
+  { id: "lato", name: "Lato", family: "var(--font-sign-lato)" },
+  { id: "raleway", name: "Raleway", family: "var(--font-sign-raleway)" },
+  { id: "nunito", name: "Nunito", family: "var(--font-sign-nunito)" },
+  { id: "ubuntu", name: "Ubuntu", family: "var(--font-sign-ubuntu)" },
+  { id: "pt-sans", name: "PT Sans", family: "var(--font-sign-pt-sans)" },
+  { id: "dm-sans", name: "DM Sans", family: "var(--font-sign-dm-sans)" },
+  { id: "work-sans", name: "Work Sans", family: "var(--font-sign-work-sans)" },
+  { id: "manrope", name: "Manrope", family: "var(--font-sign-manrope)" },
+  { id: "mulish", name: "Mulish", family: "var(--font-sign-mulish)" },
+  { id: "fira-sans", name: "Fira Sans", family: "var(--font-sign-fira-sans)" },
+  { id: "noto-sans", name: "Noto Sans", family: "var(--font-sign-noto-sans)" },
+  { id: "quicksand", name: "Quicksand", family: "var(--font-sign-quicksand)" },
+  { id: "josefin-sans", name: "Josefin Sans", family: "var(--font-sign-josefin-sans)" },
+  { id: "exo-2", name: "Exo 2", family: "var(--font-sign-exo-2)" },
+  { id: "comfortaa", name: "Comfortaa", family: "var(--font-sign-comfortaa)" },
+  { id: "merriweather", name: "Merriweather", family: "var(--font-sign-merriweather)" },
+  { id: "playfair-display", name: "Playfair Display", family: "var(--font-sign-playfair-display)" },
+  { id: "noto-serif", name: "Noto Serif", family: "var(--font-sign-noto-serif)" },
+  { id: "cinzel", name: "Cinzel", family: "var(--font-sign-cinzel)" },
   { id: "lobster", name: "Lobster", family: "var(--font-sign-lobster)" },
   { id: "pacifico", name: "Pacifico", family: "var(--font-sign-pacifico)" },
+  { id: "caveat", name: "Caveat", family: "var(--font-sign-caveat)" },
+  { id: "dancing-script", name: "Dancing Script", family: "var(--font-sign-dancing-script)" },
 ];
 
 const letterColors = [
@@ -82,6 +101,7 @@ export default function SignDesigner() {
   const [fileliBacklight, setFileliBacklight] = useState(true);
   const [scene, setScene] = useState<SceneMode>("night");
   const [lightStripMode, setLightStripMode] = useState<LightStripMode>("none");
+  const [lightStripMaterial, setLightStripMaterial] = useState<LetterMaterial>("PLEKSİ");
   const [logo, setLogo] = useState<string | null>(null);
 
   const [extraTextEnabled, setExtraTextEnabled] = useState(false);
@@ -94,6 +114,7 @@ export default function SignDesigner() {
 
   const [selectedFont, setSelectedFont] = useState<FontId>("montserrat");
   const [fontMenuOpen, setFontMenuOpen] = useState(false);
+  const [fontSearch, setFontSearch] = useState("");
   const [fontSizePercent, setFontSizePercent] = useState(62);
   const [letterSpacing, setLetterSpacing] = useState(-4);
   const [logoSizePercent, setLogoSizePercent] = useState(52);
@@ -117,10 +138,13 @@ export default function SignDesigner() {
   const extraTextRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLImageElement>(null);
 
-  const normalizedText = (text.trim() || "MARKANIZ").slice(0, 24).toUpperCase();
+  const normalizedText = (text.trim() || "Markanız").slice(0, 24);
   const currentFont = fonts.find((font) => font.id === selectedFont) ?? fonts[0];
   const currentExtraFont = fonts.find((font) => font.id === extraFont) ?? fonts[0];
-  const normalizedExtraText = (extraText.trim() || "EK METİN").slice(0, 32).toUpperCase();
+  const filteredFonts = fonts.filter((font) =>
+    font.name.toLocaleLowerCase("tr-TR").includes(fontSearch.toLocaleLowerCase("tr-TR"))
+  );
+  const normalizedExtraText = (extraText.trim() || "Ek Metin").slice(0, 32);
 
   const isSolidMetalFace =
     letterMaterial === "GOLD KAPLAMA" || letterMaterial === "KROM KAPLAMA";
@@ -263,6 +287,7 @@ export default function SignDesigner() {
               : "Işıksız"
       }`,
       `6 cm ışık bandı: ${lightStripModes.find((item) => item.id === lightStripMode)?.label ?? "Işık bandı yok"}`,
+      ...(lightStripMode !== "none" ? [`Işık bandı malzemesi: ${lightStripMaterial}`] : []),
       `Zemin rengi: ${baseColor}`,
       `Harf rengi: ${letterColor}`,
       "",
@@ -294,6 +319,7 @@ export default function SignDesigner() {
     fileliBacklight,
     lightingMode,
     lightStripMode,
+    lightStripMaterial,
     baseColor,
     letterColor,
   ]);
@@ -500,7 +526,18 @@ export default function SignDesigner() {
 
               {fontMenuOpen && (
                 <div className="designer-font-menu">
-                  {fonts.map((font) => (
+                  <div className="designer-font-search-wrap">
+                    <input
+                      className="designer-font-search"
+                      value={fontSearch}
+                      onChange={(e) => setFontSearch(e.target.value)}
+                      placeholder="Font ara..."
+                      autoFocus
+                    />
+                    <span>{filteredFonts.length} FONT</span>
+                  </div>
+                  <div className="designer-font-options">
+                  {filteredFonts.map((font) => (
                     <button
                       type="button"
                       key={font.id}
@@ -517,6 +554,10 @@ export default function SignDesigner() {
                       <i>{selectedFont === font.id ? "✓" : ""}</i>
                     </button>
                   ))}
+                  {filteredFonts.length === 0 && (
+                    <div className="designer-font-empty">Font bulunamadı.</div>
+                  )}
+                  </div>
                 </div>
               )}
             </div>
@@ -742,6 +783,30 @@ export default function SignDesigner() {
                 </button>
               ))}
             </div>
+
+            {lightStripMode !== "none" && (
+              <div className="designer-light-strip-materials">
+                <div className="designer-light-strip-material-heading">
+                  <label>BANT MALZEMESİ</label>
+                  <span>{lightStripMaterial}</span>
+                </div>
+                <div className="designer-material-row designer-strip-material-row">
+                  {letterMaterials.map((item) => (
+                    <button
+                      type="button"
+                      key={`strip-material-${item}`}
+                      className={lightStripMaterial === item ? "is-active" : ""}
+                      onClick={() => setLightStripMaterial(item)}
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
+                <p className="designer-control-note designer-strip-material-note">
+                  Pleksi beyaz ışıklı görünür. Gold/krom kaplamalar metal yüzey, fileli seçenekler ise metal çerçeve + ışıklı pleksi merkez olarak önizlenir.
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="designer-field">
@@ -927,7 +992,24 @@ export default function SignDesigner() {
               <span className="designer-board-edge" aria-hidden="true" />
 
               {lightStripMode !== "none" && (
-                <div className={`designer-light-strips strip-mode-${lightStripMode}`} aria-hidden="true">
+                <div
+                  className={`designer-light-strips strip-mode-${lightStripMode} strip-material-${lightStripMaterial
+                    .toLowerCase()
+                    .replaceAll(" ", "-")
+                    .replaceAll("İ", "i")
+                    .replaceAll("ı", "i")
+                    .replaceAll("Ş", "s")
+                    .replaceAll("ş", "s")
+                    .replaceAll("Ö", "o")
+                    .replaceAll("ö", "o")
+                    .replaceAll("Ü", "u")
+                    .replaceAll("ü", "u")
+                    .replaceAll("Ğ", "g")
+                    .replaceAll("ğ", "g")
+                    .replaceAll("Ç", "c")
+                    .replaceAll("ç", "c")}`}
+                  aria-hidden="true"
+                >
                   <span className="designer-light-strip strip-top" />
                   <span className="designer-light-strip strip-right" />
                   <span className="designer-light-strip strip-bottom" />
