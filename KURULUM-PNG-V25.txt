@@ -1,0 +1,12 @@
+1) Bu ZIP'i D:\Projects\redpen-showroom içine çıkar.
+2) PowerShell:
+   cd D:\Projects\redpen-showroom
+   node PATCH-PNG-EXPORT-V25.cjs
+   npm.cmd install
+   npm.cmd run build
+3) Build geçerse:
+   git add .
+   git commit -m "Use canvas based PNG export"
+   git push
+
+Not: Bu patch mevcut SignDesigner.tsx dosyasını komple değiştirmez; yalnızca PNG export fonksiyonunu değiştirir.
