@@ -1,0 +1,16 @@
+REDPEN PNG EXPORT V28
+
+V27'de html2canvas-pro yazı transformlarını yanlış rasterize ediyordu.
+Bu patch crop/koordinat hesabını tamamen bırakıp modern-screenshot ile
+DOM klonunu doğrudan PNG'ye dönüştürür.
+
+Kurulum:
+  cd D:\Projects\redpen-showroom
+  node PATCH-PNG-EXPORT-V28.cjs
+  npm.cmd install
+  npm.cmd run build
+
+Build geçerse:
+  git add .
+  git commit -m "Replace PNG renderer with modern screenshot"
+  git push

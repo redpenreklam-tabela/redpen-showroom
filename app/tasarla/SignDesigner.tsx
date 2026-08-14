@@ -1,7 +1,7 @@
 "use client";
 
+import { domToPng } from "modern-screenshot";
 import { useEffect, useMemo, useRef, useState } from "react";
-import html2canvas from "html2canvas-pro";
 
 type SignType = "KUTU HARF";
 type BaseMaterial = "PLEKSİ" | "ALÜMİNYUM" | "KROM" | "KOMPOZİT";
@@ -517,41 +517,33 @@ export default function SignDesigner() {
 
     setExportingPng(true);
 
-    const temporarilyHidden: Array<{ element: HTMLElement; visibility: string }> = [];
-
     try {
       if (document.fonts?.ready) await document.fonts.ready;
 
-      // Önce gerçekten ekranda görünen koordinatları alıyoruz.
-      // Böylece preview içindeki scale/transform hesaplarını yeniden üretmeye çalışmıyoruz.
-      const boardRect = board.getBoundingClientRect();
-      const exportElements = Array.from(
-        facade.querySelectorAll<HTMLElement>(".designer-draggable-element")
-      );
+      // Export için canlı sahnenin klonunu görünmez bir katmanda kuruyoruz.
+      // Burada kritik fark: transform zincirini yeniden hesaplamıyoruz.
+      // modern-screenshot tarayıcıdaki DOM/CSS yapısını kendi SVG klonuna taşıyor.
+      const exportRoot = facade.cloneNode(true) as HTMLElement;
 
-      let left = boardRect.left;
-      let top = boardRect.top;
-      let right = boardRect.right;
-      let bottom = boardRect.bottom;
+      exportRoot.setAttribute("data-redpen-png-clone", "true");
+      Object.assign(exportRoot.style, {
+        position: "fixed",
+        left: "0",
+        top: "0",
+        margin: "0",
+        zIndex: "-2147483647",
+        pointerEvents: "none",
+        opacity: "1",
+        visibility: "visible",
+      });
 
-      for (const element of exportElements) {
-        const rect = element.getBoundingClientRect();
-        if (rect.width <= 0 || rect.height <= 0) continue;
-        left = Math.min(left, rect.left);
-        top = Math.min(top, rect.top);
-        right = Math.max(right, rect.right);
-        bottom = Math.max(bottom, rect.bottom);
-      }
+      // Canlı facade'ın ekranda kapladığı gerçek ölçüyü koru.
+      const facadeRect = facade.getBoundingClientRect();
+      exportRoot.style.width = `${facadeRect.width}px`;
+      exportRoot.style.height = `${facadeRect.height}px`;
 
-      const padding = 24;
-      left -= padding;
-      top -= padding;
-      right += padding;
-      bottom += padding;
-
-      // PNG'de görünmesini istemediğimiz sahne yardımcılarını gerçek DOM'da
-      // geçici olarak gizliyoruz. Export bitince aynen geri getiriliyor.
-      const hiddenSelectors = [
+      // UI yardımcılarını klonda kaldır.
+      const removeSelectors = [
         ".designer-preview-light-controls",
         ".designer-dimension",
         ".designer-human-scale",
@@ -561,69 +553,57 @@ export default function SignDesigner() {
         ".designer-wall-grid",
       ];
 
-      for (const selector of hiddenSelectors) {
-        document.querySelectorAll<HTMLElement>(selector).forEach((element) => {
-          temporarilyHidden.push({
-            element,
-            visibility: element.style.visibility,
-          });
-          element.style.visibility = "hidden";
+      removeSelectors.forEach((selector) => {
+        exportRoot.querySelectorAll(selector).forEach((node) => node.remove());
+      });
+
+      document.body.appendChild(exportRoot);
+
+      try {
+        // Bir frame bekleyerek browser'ın clone layout'unu hesaplamasına izin ver.
+        await new Promise<void>((resolve) =>
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
+        );
+
+        const cloneBoard =
+          exportRoot.querySelector<HTMLElement>(".designer-board") ??
+          exportRoot.querySelector<HTMLElement>("[data-designer-board]");
+
+        // Eğer board class adı değişmişse, facade içindeki gerçek board ölçüsüne en yakın
+        // büyük child'ı kullanmak yerine tüm facade'ı export ediyoruz. Böylece yanlış crop
+        // yazıyı kesmez.
+        const target = cloneBoard ?? exportRoot;
+
+        // Target içindeki transform'u SAKLIYORUZ. Önceki html2canvas sorununun aksine
+        // kendi x/y crop hesabımız yok.
+        const dataUrl = await domToPng(target, {
+          scale: 3,
+          backgroundColor: "transparent",
+          quality: 1,
+          fetch: {
+            requestInit: {
+              cache: "force-cache",
+            },
+          },
+          style: {
+            margin: "0",
+          },
         });
+
+        const anchor = document.createElement("a");
+        anchor.href = dataUrl;
+        anchor.download = `redpen-tabela-${width}x${height}.png`;
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+      } finally {
+        exportRoot.remove();
       }
-
-      // html2canvas-pro'ya küçük tabela elemanını değil bütün sayfayı veriyoruz.
-      // Bunun sebebi: preview'daki responsive scale/transform zincirini tarayıcının
-      // ekranda çizdiği haliyle korumak. x/y/width/height ile yalnızca görünen
-      // tabela bölgesini rasterize ediyoruz.
-      const x = Math.max(0, left + window.scrollX);
-      const y = Math.max(0, top + window.scrollY);
-      const exportWidth = Math.max(1, right - left);
-      const exportHeight = Math.max(1, bottom - top);
-
-      const scale = 3;
-
-      const canvas = await html2canvas(document.documentElement, {
-        scale,
-        backgroundColor: null,
-        useCORS: true,
-        allowTaint: false,
-        logging: false,
-        imageTimeout: 15000,
-        foreignObjectRendering: false,
-        removeContainer: true,
-        x,
-        y,
-        width: exportWidth,
-        height: exportHeight,
-        scrollX: -window.scrollX,
-        scrollY: -window.scrollY,
-        windowWidth: document.documentElement.clientWidth,
-        windowHeight: document.documentElement.clientHeight,
-      });
-
-      const blob = await new Promise<Blob>((resolve, reject) => {
-        canvas.toBlob((result) => {
-          if (result) resolve(result);
-          else reject(new Error("Canvas PNG blob üretemedi."));
-        }, "image/png", 1);
-      });
-
-      const url = URL.createObjectURL(blob);
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = `redpen-tabela-${width}x${height}.png`;
-      document.body.appendChild(anchor);
-      anchor.click();
-      anchor.remove();
-      window.setTimeout(() => URL.revokeObjectURL(url), 1500);
     } catch (error) {
-      console.error("REDPEN PNG EXPORT ERROR V27", error);
+      console.error("REDPEN PNG EXPORT ERROR V28", error);
       const message = error instanceof Error ? error.message : String(error);
       window.alert(`PNG oluşturulamadı. Hata: ${message}`);
     } finally {
-      for (const item of temporarilyHidden) {
-        item.element.style.visibility = item.visibility;
-      }
       setExportingPng(false);
     }
   };
