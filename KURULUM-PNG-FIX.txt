@@ -1,0 +1,14 @@
+REDPEN PNG EXPORT V24
+
+1) Bu ZIP'i D:\\Projects\\redpen-showroom içine çıkar.
+2) PowerShell:
+   cd D:\\Projects\\redpen-showroom
+   node PATCH-PNG-EXPORT.cjs
+   npm.cmd install
+   npm.cmd run build
+3) Build geçerse:
+   git add .
+   git commit -m "Fix PNG export rendering"
+   git push
+
+Not: PATCH-PNG-EXPORT.cjs mevcut SignDesigner.tsx dosyasındaki yalnızca PNG export fonksiyonunu değiştirir ve package.json'a html-to-image ekler. Diğer güncel tasarım çalışmalarını ezmez.
