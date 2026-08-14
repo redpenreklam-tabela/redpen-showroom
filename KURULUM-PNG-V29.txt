@@ -1,0 +1,22 @@
+REDPEN PNG EXPORT V29
+
+V28'de board tek başına export edilince CSS transform zinciri bozuluyor ve
+PNG yalnızca sol üst köşeyi alıyordu.
+
+V29:
+- Önce tüm preview'ı doğru haliyle render eder.
+- Sonra tabela zemini + yazı/logo/ek metin sınırlarını hesaplar.
+- Son PNG'yi canvas üzerinde bu alana crop eder.
+- Glow için 28px pay bırakır.
+
+Kurulum:
+  cd D:\Projects\redpen-showroom
+  node PATCH-PNG-EXPORT-V29.cjs
+  npm.cmd run build
+
+Build geçerse:
+  git add .
+  git commit -m "Fix PNG export crop after full preview render"
+  git push
+
+V28'de modern-screenshot kurulduğu için npm install tekrar gerekmez.

@@ -512,24 +512,24 @@ export default function SignDesigner() {
 
   const downloadDesignPng = async () => {
     const facade = facadeRef.current;
-    const board = boardRef.current;
-    if (!facade || !board || exportingPng) return;
+    if (!facade || exportingPng) return;
 
     setExportingPng(true);
 
     try {
       if (document.fonts?.ready) await document.fonts.ready;
 
-      // Export için canlı sahnenin klonunu görünmez bir katmanda kuruyoruz.
-      // Burada kritik fark: transform zincirini yeniden hesaplamıyoruz.
-      // modern-screenshot tarayıcıdaki DOM/CSS yapısını kendi SVG klonuna taşıyor.
       const exportRoot = facade.cloneNode(true) as HTMLElement;
-
       exportRoot.setAttribute("data-redpen-png-clone", "true");
+
+      const liveRect = facade.getBoundingClientRect();
+
       Object.assign(exportRoot.style, {
         position: "fixed",
-        left: "0",
-        top: "0",
+        left: "0px",
+        top: "0px",
+        width: `${liveRect.width}px`,
+        height: `${liveRect.height}px`,
         margin: "0",
         zIndex: "-2147483647",
         pointerEvents: "none",
@@ -537,12 +537,6 @@ export default function SignDesigner() {
         visibility: "visible",
       });
 
-      // Canlı facade'ın ekranda kapladığı gerçek ölçüyü koru.
-      const facadeRect = facade.getBoundingClientRect();
-      exportRoot.style.width = `${facadeRect.width}px`;
-      exportRoot.style.height = `${facadeRect.height}px`;
-
-      // UI yardımcılarını klonda kaldır.
       const removeSelectors = [
         ".designer-preview-light-controls",
         ".designer-dimension",
@@ -560,24 +554,57 @@ export default function SignDesigner() {
       document.body.appendChild(exportRoot);
 
       try {
-        // Bir frame bekleyerek browser'ın clone layout'unu hesaplamasına izin ver.
         await new Promise<void>((resolve) =>
           requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
         );
+
+        // V28'de sadece board'u export etmek transform zincirini kırıp
+        // görüntünün sol üst köşesini alıyordu. Bu sürümde önce TÜM preview
+        // doğru haliyle rasterize ediliyor, crop işlemi sonradan canvas'ta yapılıyor.
+        const rootRect = exportRoot.getBoundingClientRect();
 
         const cloneBoard =
           exportRoot.querySelector<HTMLElement>(".designer-board") ??
           exportRoot.querySelector<HTMLElement>("[data-designer-board]");
 
-        // Eğer board class adı değişmişse, facade içindeki gerçek board ölçüsüne en yakın
-        // büyük child'ı kullanmak yerine tüm facade'ı export ediyoruz. Böylece yanlış crop
-        // yazıyı kesmez.
-        const target = cloneBoard ?? exportRoot;
+        if (!cloneBoard) {
+          throw new Error("Tabela zemini export klonunda bulunamadı.");
+        }
 
-        // Target içindeki transform'u SAKLIYORUZ. Önceki html2canvas sorununun aksine
-        // kendi x/y crop hesabımız yok.
-        const dataUrl = await domToPng(target, {
-          scale: 3,
+        const cropNodes: HTMLElement[] = [cloneBoard];
+        exportRoot
+          .querySelectorAll<HTMLElement>(".designer-draggable-element")
+          .forEach((node) => cropNodes.push(node));
+
+        let left = Infinity;
+        let top = Infinity;
+        let right = -Infinity;
+        let bottom = -Infinity;
+
+        cropNodes.forEach((node) => {
+          const rect = node.getBoundingClientRect();
+          if (rect.width <= 0 || rect.height <= 0) return;
+          left = Math.min(left, rect.left);
+          top = Math.min(top, rect.top);
+          right = Math.max(right, rect.right);
+          bottom = Math.max(bottom, rect.bottom);
+        });
+
+        if (!Number.isFinite(left)) {
+          throw new Error("PNG kırpma alanı hesaplanamadı.");
+        }
+
+        // Glow / box-shadow kesilmesin.
+        const padding = 28;
+        left = Math.max(rootRect.left, left - padding);
+        top = Math.max(rootRect.top, top - padding);
+        right = Math.min(rootRect.right, right + padding);
+        bottom = Math.min(rootRect.bottom, bottom + padding);
+
+        const scale = 3;
+
+        const fullDataUrl = await domToPng(exportRoot, {
+          scale,
           backgroundColor: "transparent",
           quality: 1,
           fetch: {
@@ -590,8 +617,41 @@ export default function SignDesigner() {
           },
         });
 
+        const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error("Geçici PNG tekrar okunamadı."));
+          img.src = fullDataUrl;
+        });
+
+        const sx = Math.max(0, Math.round((left - rootRect.left) * scale));
+        const sy = Math.max(0, Math.round((top - rootRect.top) * scale));
+        const sw = Math.max(1, Math.round((right - left) * scale));
+        const sh = Math.max(1, Math.round((bottom - top) * scale));
+
+        const cropCanvas = document.createElement("canvas");
+        cropCanvas.width = Math.min(sw, image.naturalWidth - sx);
+        cropCanvas.height = Math.min(sh, image.naturalHeight - sy);
+
+        const ctx = cropCanvas.getContext("2d");
+        if (!ctx) throw new Error("PNG crop canvas context açılamadı.");
+
+        ctx.drawImage(
+          image,
+          sx,
+          sy,
+          cropCanvas.width,
+          cropCanvas.height,
+          0,
+          0,
+          cropCanvas.width,
+          cropCanvas.height
+        );
+
+        const finalDataUrl = cropCanvas.toDataURL("image/png", 1);
+
         const anchor = document.createElement("a");
-        anchor.href = dataUrl;
+        anchor.href = finalDataUrl;
         anchor.download = `redpen-tabela-${width}x${height}.png`;
         document.body.appendChild(anchor);
         anchor.click();
@@ -600,7 +660,7 @@ export default function SignDesigner() {
         exportRoot.remove();
       }
     } catch (error) {
-      console.error("REDPEN PNG EXPORT ERROR V28", error);
+      console.error("REDPEN PNG EXPORT ERROR V29", error);
       const message = error instanceof Error ? error.message : String(error);
       window.alert(`PNG oluşturulamadı. Hata: ${message}`);
     } finally {
