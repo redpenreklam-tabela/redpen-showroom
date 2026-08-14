@@ -1282,6 +1282,7 @@ export default function SignDesigner() {
                   <div
                     ref={extraTextRef}
                     className={`designer-extra-text-preview designer-draggable-element extra-material-${materialSlug(extraLetterMaterial)} ${effectiveLighted && extraLetterMaterial !== "FOREX" && extraLetterMaterial !== "FOLYO" ? "is-lighted" : ""}`}
+                    data-text={normalizedExtraText}
                     onPointerDown={(event) => startDrag(event, "extra")}
                     style={{
                       left: `${50 + extraOffset.x}%`,
