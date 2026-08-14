@@ -1164,3 +1164,34 @@ body.designer-is-dragging .designer-extra-text-preview{cursor:grabbing;}
     inset 0 0 0 1px rgba(248,252,255,.44),
     0 0 0 1px rgba(24,31,35,.24);
 }
+
+/* v21 — üretim tipine göre harf malzemesi grupları */
+.designer-letter-material-picker{display:grid;gap:12px;margin-top:10px}
+.designer-material-group{display:grid;gap:7px;padding:10px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.018)}
+.designer-material-group>span{font-size:11px;font-weight:900;letter-spacing:.14em;color:rgba(255,255,255,.58)}
+.designer-material-group .designer-material-row{margin:0}
+.designer-letter-material-picker.is-compact{gap:9px}
+.designer-letter-material-picker.is-compact .designer-material-group{padding:8px}
+.designer-extra-material-control{display:grid;gap:7px;margin-top:7px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}
+
+/* Oyma: merkez zemin tonuna yaklaşır, seçilen renk kesim/ışık hattını verir. */
+.designer-board.letter-material-oyma-harf .designer-main-text{color:var(--base-color)!important;-webkit-text-fill-color:var(--base-color)!important;-webkit-text-stroke:1px color-mix(in srgb,var(--letter-color) 78%,white 22%);text-shadow:0 0 2px var(--letter-color),0 0 7px color-mix(in srgb,var(--letter-color) 72%,transparent),0 0 15px color-mix(in srgb,var(--letter-color) 42%,transparent)!important;filter:none!important}
+.designer-board.letter-material-oyma-harf:not(.is-lighted) .designer-main-text{-webkit-text-stroke:1px color-mix(in srgb,var(--letter-color) 55%,#202020 45%);text-shadow:0 1px 2px rgba(0,0,0,.45)!important}
+
+/* Forex: mat kabartma. */
+.designer-board.letter-material-forex .designer-main-text{color:var(--letter-color)!important;-webkit-text-fill-color:var(--letter-color)!important;background:none!important;filter:none!important;text-shadow:2px 3px 0 rgba(0,0,0,.28)!important;-webkit-text-stroke:0!important}
+
+/* Folyo: sıfır kalınlık, sıfır glow. */
+.designer-board.letter-material-folyo .designer-main-text{color:var(--letter-color)!important;-webkit-text-fill-color:var(--letter-color)!important;background:none!important;filter:none!important;text-shadow:none!important;-webkit-text-stroke:0!important}
+.designer-board.letter-material-folyo .designer-main-text::before,.designer-board.letter-material-folyo .designer-main-text::after,.designer-board.letter-material-oyma-harf .designer-main-text::before,.designer-board.letter-material-oyma-harf .designer-main-text::after{content:none!important;display:none!important}
+
+/* Ek metin kendi malzemesini bağımsız taşır. */
+.designer-extra-text-preview.extra-material-pleksi{color:var(--extra-letter-color)!important;text-shadow:2px 3px 0 rgba(0,0,0,.30)!important}
+.designer-extra-text-preview.extra-material-pleksi.is-lighted{text-shadow:0 0 2px rgba(255,255,255,.9),0 0 8px var(--extra-letter-color),2px 3px 0 rgba(0,0,0,.35)!important}
+.designer-extra-text-preview.extra-material-gold-kaplama{color:#d79a2f!important;background:linear-gradient(100deg,#5b2d03 0%,#d58a18 20%,#fff0a8 43%,#9c5207 63%,#f5c55a 82%,#6c3403 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:2px 3px 0 #5b2e04!important}
+.designer-extra-text-preview.extra-material-krom-kaplama{color:#cbd2d6!important;background:linear-gradient(100deg,#31383d 0%,#f5f8fa 26%,#7a858c 49%,#f8fafb 70%,#4d565c 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:2px 3px 0 #263037!important}
+.designer-extra-text-preview.extra-material-fileli-gold{color:var(--extra-letter-color)!important;-webkit-text-fill-color:var(--extra-letter-color)!important;-webkit-text-stroke:1.4px #c88920;text-shadow:2px 3px 0 #5b2e04!important}
+.designer-extra-text-preview.extra-material-fileli-krom{color:var(--extra-letter-color)!important;-webkit-text-fill-color:var(--extra-letter-color)!important;-webkit-text-stroke:1.4px #9aa5ab;text-shadow:2px 3px 0 #263037!important}
+.designer-extra-text-preview.extra-material-oyma-harf{color:var(--extra-base-color)!important;-webkit-text-fill-color:var(--extra-base-color)!important;-webkit-text-stroke:1px var(--extra-letter-color);text-shadow:0 0 3px var(--extra-letter-color),0 0 9px color-mix(in srgb,var(--extra-letter-color) 65%,transparent)!important}
+.designer-extra-text-preview.extra-material-forex{color:var(--extra-letter-color)!important;-webkit-text-fill-color:var(--extra-letter-color)!important;-webkit-text-stroke:0!important;text-shadow:1.5px 2px 0 rgba(0,0,0,.32)!important}
+.designer-extra-text-preview.extra-material-folyo{color:var(--extra-letter-color)!important;-webkit-text-fill-color:var(--extra-letter-color)!important;-webkit-text-stroke:0!important;text-shadow:none!important;filter:none!important}

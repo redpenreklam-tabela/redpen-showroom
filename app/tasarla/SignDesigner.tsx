@@ -4,7 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 type SignType = "KUTU HARF" | "IŞIKLI PANEL" | "TOTEM" | "CEPHE";
 type BaseMaterial = "PLEKSİ" | "ALÜMİNYUM" | "KROM" | "KOMPOZİT";
-type LetterMaterial = "PLEKSİ" | "GOLD KAPLAMA" | "KROM KAPLAMA" | "FİLELİ KROM" | "FİLELİ GOLD" | "FOREX";
+type LetterMaterial = "PLEKSİ" | "GOLD KAPLAMA" | "KROM KAPLAMA" | "FİLELİ KROM" | "FİLELİ GOLD" | "OYMA HARF" | "FOREX" | "FOLYO";
+type LightStripMaterial = "PLEKSİ" | "GOLD KAPLAMA" | "KROM KAPLAMA" | "FİLELİ KROM" | "FİLELİ GOLD" | "FOREX";
 type SceneMode = "day" | "night";
 type DragType = "text" | "logo" | "extra";
 type LightStripMode = "none" | "top" | "bottom" | "top-bottom" | "left" | "right" | "left-right" | "all";
@@ -17,7 +18,8 @@ type FontId =
 
 const signTypes: SignType[] = ["KUTU HARF"];
 const baseMaterials: BaseMaterial[] = ["KOMPOZİT", "PLEKSİ", "ALÜMİNYUM"];
-const letterMaterials: LetterMaterial[] = ["PLEKSİ", "GOLD KAPLAMA", "KROM KAPLAMA", "FİLELİ KROM", "FİLELİ GOLD", "FOREX"];
+const kutuHarfMaterials: LetterMaterial[] = ["PLEKSİ", "GOLD KAPLAMA", "KROM KAPLAMA", "FİLELİ KROM", "FİLELİ GOLD"];
+const lightStripMaterials: LightStripMaterial[] = ["PLEKSİ", "GOLD KAPLAMA", "KROM KAPLAMA", "FİLELİ KROM", "FİLELİ GOLD", "FOREX"];
 
 const fonts: Array<{ id: FontId; name: string; family: string }> = [
   { id: "montserrat", name: "Montserrat", family: "var(--font-sign-montserrat)" },
@@ -100,17 +102,44 @@ const hexToRgb = (hex: string) => {
   return `${(value >> 16) & 255}, ${(value >> 8) & 255}, ${value & 255}`;
 };
 
-const lightStripMaterialSlug = (material: LetterMaterial) => {
+const materialSlug = (material: LetterMaterial | LightStripMaterial) => {
   switch (material) {
     case "PLEKSİ": return "pleksi";
     case "GOLD KAPLAMA": return "gold-kaplama";
     case "KROM KAPLAMA": return "krom-kaplama";
     case "FİLELİ GOLD": return "fileli-gold";
     case "FİLELİ KROM": return "fileli-krom";
+    case "OYMA HARF": return "oyma-harf";
     case "FOREX": return "forex";
+    case "FOLYO": return "folyo";
     default: return "pleksi";
   }
 };
+
+const MaterialPicker = ({ value, onChange, compact = false }: { value: LetterMaterial; onChange: (material: LetterMaterial) => void; compact?: boolean }) => (
+  <div className={`designer-letter-material-picker ${compact ? "is-compact" : ""}`}>
+    <div className="designer-material-group">
+      <span>KUTU HARF</span>
+      <div className="designer-material-row">
+        {kutuHarfMaterials.map((item) => (
+          <button type="button" key={`kutu-${item}`} className={value === item ? "is-active" : ""} onClick={() => onChange(item)}>{item}</button>
+        ))}
+      </div>
+    </div>
+    <div className="designer-material-group">
+      <span>OYMA</span>
+      <div className="designer-material-row"><button type="button" className={value === "OYMA HARF" ? "is-active" : ""} onClick={() => onChange("OYMA HARF")}>OYMA HARF</button></div>
+    </div>
+    <div className="designer-material-group">
+      <span>FOREX</span>
+      <div className="designer-material-row"><button type="button" className={value === "FOREX" ? "is-active" : ""} onClick={() => onChange("FOREX")}>FOREX</button></div>
+    </div>
+    <div className="designer-material-group">
+      <span>FOLYO</span>
+      <div className="designer-material-row"><button type="button" className={value === "FOLYO" ? "is-active" : ""} onClick={() => onChange("FOLYO")}>FOLYO</button></div>
+    </div>
+  </div>
+);
 
 export default function SignDesigner() {
   const [text, setText] = useState("REDPEN");
@@ -125,7 +154,7 @@ export default function SignDesigner() {
   const [fileliBacklight, setFileliBacklight] = useState(true);
   const [scene, setScene] = useState<SceneMode>("night");
   const [lightStripMode, setLightStripMode] = useState<LightStripMode>("none");
-  const [lightStripMaterial, setLightStripMaterial] = useState<LetterMaterial>("PLEKSİ");
+  const [lightStripMaterial, setLightStripMaterial] = useState<LightStripMaterial>("PLEKSİ");
   const [lightStripColor, setLightStripColor] = useState("#ffffff");
   const [logo, setLogo] = useState<string | null>(null);
 
@@ -135,6 +164,7 @@ export default function SignDesigner() {
   const [extraFontSizePercent, setExtraFontSizePercent] = useState(24);
   const [extraLetterSpacing, setExtraLetterSpacing] = useState(8);
   const [extraTextColor, setExtraTextColor] = useState("#f5f5f3");
+  const [extraLetterMaterial, setExtraLetterMaterial] = useState<LetterMaterial>("FOLYO");
   const [extraOffset, setExtraOffset] = useState({ x: 0, y: 32 });
 
   const [selectedFont, setSelectedFont] = useState<FontId>("montserrat");
@@ -202,7 +232,7 @@ export default function SignDesigner() {
   );
 
   const lightingMode = useMemo(() => {
-    if (letterMaterial === "FOREX" || !lighted) return "off";
+    if (letterMaterial === "FOREX" || letterMaterial === "FOLYO" || !lighted) return "off";
 
     if (
       letterMaterial === "GOLD KAPLAMA" ||
@@ -298,6 +328,7 @@ export default function SignDesigner() {
         `Ek metin harf aralığı: ${extraLetterSpacing}`,
         `Ek metin konumu: X ${extraOffset.x.toFixed(0)} / Y ${extraOffset.y.toFixed(0)}`,
         `Ek metin rengi: ${extraTextColor}`,
+        `Ek metin malzemesi: ${extraLetterMaterial}`,
       ] : []),
       `Zemin malzemesi: ${baseMaterial}`,
       `Harf malzemesi: ${letterMaterial}`,
@@ -339,6 +370,7 @@ export default function SignDesigner() {
     extraLetterSpacing,
     extraOffset,
     extraTextColor,
+    extraLetterMaterial,
     baseMaterial,
     letterMaterial,
     width,
@@ -659,7 +691,13 @@ export default function SignDesigner() {
                   onChange={(e) => setExtraLetterSpacing(Number(e.target.value))}
                 />
 
-                <label className="designer-extra-color-label">EK METİN RENGİ</label>
+                <div className="designer-extra-material-control">
+                  <label>EK METİN MALZEMESİ</label>
+                  <p className="designer-control-note">Bu seçim yalnızca ek metni etkiler.</p>
+                  <MaterialPicker value={extraLetterMaterial} onChange={setExtraLetterMaterial} compact />
+                </div>
+
+                <label className="designer-extra-color-label">EK METİN RENGİ / IŞIK RENGİ</label>
                 <div className="designer-colors designer-extra-colors">
                   {letterColors.map((item) => (
                     <button
@@ -820,7 +858,7 @@ export default function SignDesigner() {
                   <span>{lightStripMaterial}</span>
                 </div>
                 <div className="designer-material-row designer-strip-material-row">
-                  {letterMaterials.map((item) => (
+                  {lightStripMaterials.map((item) => (
                     <button
                       type="button"
                       key={`strip-material-${item}`}
@@ -868,20 +906,10 @@ export default function SignDesigner() {
             )}
           </div>
 
-          <div className="designer-field">
+          <div className="designer-field designer-letter-material-field">
             <label>HARF MALZEMESİ</label>
-            <div className="designer-material-row">
-              {letterMaterials.map((item) => (
-                <button
-                  type="button"
-                  key={`letter-${item}`}
-                  className={letterMaterial === item ? "is-active" : ""}
-                  onClick={() => setLetterMaterial(item)}
-                >
-                  {item}
-                </button>
-              ))}
-            </div>
+            <p className="designer-control-note">Ana metin için üretim tipini seç.</p>
+            <MaterialPicker value={letterMaterial} onChange={setLetterMaterial} />
           </div>
 
           <div className="designer-field">
@@ -988,10 +1016,10 @@ export default function SignDesigner() {
             <div className="designer-wall-grid" />
 
             <div className="designer-preview-light-controls" aria-label="Aydınlatma kontrolleri">
-              {letterMaterial === "FOREX" ? (
+              {letterMaterial === "FOREX" || letterMaterial === "FOLYO" ? (
                 <div className="designer-preview-light-fixed">
                   <span>AYDINLATMA</span>
-                  <b>IŞIKSIZ / FOREX</b>
+                  <b>IŞIKSIZ / {letterMaterial}</b>
                 </div>
               ) : (
                 <>
@@ -1031,21 +1059,7 @@ export default function SignDesigner() {
               ref={boardRef}
               className={`designer-board material-${baseMaterial.toLowerCase()} type-${signType
                 .toLowerCase()
-                .replaceAll(" ", "-")} letter-material-${letterMaterial
-                .toLowerCase()
-                .replaceAll(" ", "-")
-                .replaceAll("İ", "i")
-                .replaceAll("ı", "i")
-                .replaceAll("Ş", "s")
-                .replaceAll("ş", "s")
-                .replaceAll("Ö", "o")
-                .replaceAll("ö", "o")
-                .replaceAll("Ü", "u")
-                .replaceAll("ü", "u")
-                .replaceAll("Ğ", "g")
-                .replaceAll("ğ", "g")
-                .replaceAll("Ç", "c")
-                .replaceAll("ç", "c")} ${effectiveLighted ? "is-lighted" : ""} lighting-${lightingMode}`}
+                .replaceAll(" ", "-")} letter-material-${materialSlug(letterMaterial)} ${effectiveLighted ? "is-lighted" : ""} lighting-${lightingMode}`}
               style={boardStyle}
             >
               <span className="designer-board-edge" aria-hidden="true" />
@@ -1056,7 +1070,7 @@ export default function SignDesigner() {
                     "--strip-light-color": lightStripColor,
                     "--strip-light-rgb": hexToRgb(lightStripColor),
                   } as React.CSSProperties}
-                  className={`designer-light-strips strip-mode-${lightStripMode} strip-material-${lightStripMaterialSlug(lightStripMaterial)}`}
+                  className={`designer-light-strips strip-mode-${lightStripMode} strip-material-${materialSlug(lightStripMaterial)}`}
                   aria-hidden="true"
                 >
                   {["top", "right", "bottom", "left"].map((side) => (
@@ -1252,7 +1266,7 @@ export default function SignDesigner() {
                 ) : (
                   <strong
                     ref={(node) => { mainTextRef.current = node; }}
-                    className="designer-draggable-element"
+                    className={`designer-draggable-element designer-main-text material-${materialSlug(letterMaterial)}`}
                     data-text={normalizedText}
                     onPointerDown={(event) => startDrag(event, "text")}
                     style={{
@@ -1267,7 +1281,7 @@ export default function SignDesigner() {
                 {extraTextEnabled && (
                   <div
                     ref={extraTextRef}
-                    className={`designer-extra-text-preview designer-draggable-element ${effectiveLighted ? "is-lighted" : ""}`}
+                    className={`designer-extra-text-preview designer-draggable-element extra-material-${materialSlug(extraLetterMaterial)} ${effectiveLighted && extraLetterMaterial !== "FOREX" && extraLetterMaterial !== "FOLYO" ? "is-lighted" : ""}`}
                     onPointerDown={(event) => startDrag(event, "extra")}
                     style={{
                       left: `${50 + extraOffset.x}%`,
@@ -1276,7 +1290,9 @@ export default function SignDesigner() {
                       fontSize: `calc(var(--board-px-height) * ${extraFontSizePercent / 100})`,
                       letterSpacing: `${extraLetterSpacing / 100}em`,
                       color: extraTextColor,
-                    }}
+                      "--extra-letter-color": extraTextColor,
+                      "--extra-base-color": baseColor,
+                    } as React.CSSProperties}
                   >
                     {normalizedExtraText}
                   </div>
