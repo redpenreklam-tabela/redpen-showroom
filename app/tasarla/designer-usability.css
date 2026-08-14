@@ -1224,3 +1224,14 @@ body.designer-is-dragging .designer-extra-text-preview{cursor:grabbing;}
   border:0!important;
   filter:none!important;
 }
+
+/* v21.5 — PLEKSİ harf üzerindeki dikdörtgen kutu düzeltmesi.
+   Ana metin `material-pleksi` class'ını da taşıyor. Bu isim, tabela zemini için
+   tasarla.css içinde tanımlı `.material-pleksi { box-shadow: ... }` ile çakışıyordu.
+   Sonuç: harfin glyph'i yerine metnin bounding-box'ına dikdörtgen box-shadow geliyordu.
+   Harf katmanında bu zemin efektini kesin olarak iptal ediyoruz. */
+.designer-main-text.material-pleksi,
+.designer-board .designer-main-text.material-pleksi{
+  box-shadow:none!important;
+  background:none!important;
+}
