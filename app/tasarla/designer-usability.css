@@ -1210,3 +1210,17 @@ body.designer-is-dragging .designer-extra-text-preview{cursor:grabbing;}
 .designer-extra-text-preview.extra-material-forex::before,.designer-extra-text-preview.extra-material-forex::after{content:none!important;display:none!important}
 .designer-extra-text-preview.extra-material-folyo{color:var(--extra-letter-color)!important;-webkit-text-fill-color:var(--extra-letter-color)!important;-webkit-text-stroke:0!important;text-shadow:none!important;filter:none!important;background:none!important}
 .designer-extra-text-preview.extra-material-folyo::before,.designer-extra-text-preview.extra-material-folyo::after{content:none!important;display:none!important}
+
+
+/* v21.4 — Ana metinde eski rectangular glow katmanını tamamen kapat.
+   Pleksi/Forex/Folyo için ışık sadece glyph text-shadow üzerinden verilir;
+   harfin bounding-box'ı artık beyaz/şeffaf dikdörtgen üretmez. */
+.designer-board .designer-main-text::before,
+.designer-board .designer-main-text::after{
+  content:none!important;
+  display:none!important;
+  background:none!important;
+  box-shadow:none!important;
+  border:0!important;
+  filter:none!important;
+}

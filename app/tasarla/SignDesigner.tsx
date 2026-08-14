@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
-type SignType = "KUTU HARF" | "IŞIKLI PANEL" | "TOTEM" | "CEPHE";
+type SignType = "KUTU HARF";
 type BaseMaterial = "PLEKSİ" | "ALÜMİNYUM" | "KROM" | "KOMPOZİT";
 type LetterMaterial = "PLEKSİ" | "GOLD KAPLAMA" | "KROM KAPLAMA" | "FİLELİ KROM" | "FİLELİ GOLD" | "FOREX" | "FOLYO";
 type LightStripMaterial = "PLEKSİ" | "GOLD KAPLAMA" | "KROM KAPLAMA" | "FİLELİ KROM" | "FİLELİ GOLD" | "FOREX";
@@ -16,7 +16,6 @@ type FontId =
   | "cal-sans" | "caveat-brush" | "luckiest-guy"
   | "momo-trust-display" | "russo-one" | "sekuya" | "sriracha";
 
-const signTypes: SignType[] = ["KUTU HARF"];
 const baseMaterials: BaseMaterial[] = ["KOMPOZİT", "PLEKSİ", "ALÜMİNYUM"];
 const kutuHarfMaterials: LetterMaterial[] = ["PLEKSİ", "GOLD KAPLAMA", "KROM KAPLAMA", "FİLELİ KROM", "FİLELİ GOLD"];
 const lightStripMaterials: LightStripMaterial[] = ["PLEKSİ", "GOLD KAPLAMA", "KROM KAPLAMA", "FİLELİ KROM", "FİLELİ GOLD", "FOREX"];
@@ -138,7 +137,7 @@ const MaterialPicker = ({ value, onChange, compact = false }: { value: LetterMat
 
 export default function SignDesigner() {
   const [text, setText] = useState("REDPEN");
-  const [signType, setSignType] = useState<SignType>("KUTU HARF");
+  const signType: SignType = "KUTU HARF";
   const [letterMaterial, setLetterMaterial] = useState<LetterMaterial>("PLEKSİ");
   const [baseMaterial, setBaseMaterial] = useState<BaseMaterial>("KOMPOZİT");
   const [letterColor, setLetterColor] = useState(letterColors[1].value);
@@ -765,22 +764,6 @@ export default function SignDesigner() {
           </div>
 
           <div className="designer-field">
-            <label>TABELA TİPİ</label>
-            <div className="designer-choice-grid">
-              {signTypes.map((item) => (
-                <button
-                  type="button"
-                  key={item}
-                  className={signType === item ? "is-active" : ""}
-                  onClick={() => setSignType(item)}
-                >
-                  {item}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="designer-field">
             <label>ZEMİN MALZEMESİ</label>
             <div className="designer-material-row">
               {baseMaterials.map((item) => (
@@ -999,7 +982,6 @@ export default function SignDesigner() {
           <div className="designer-preview-top">
             <div>
               <span>CANLI ÖNİZLEME</span>
-              <b>{signType}</b>
             </div>
             <div>
               <span>ÖLÇÜ</span>
