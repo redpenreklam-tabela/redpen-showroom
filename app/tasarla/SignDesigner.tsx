@@ -93,6 +93,46 @@ const lightStripColors = [
   { name: "Turkuaz", value: "#39e6e2" },
 ];
 
+const resolveCssFontFamily = (family: string) => {
+  if (typeof window === "undefined") return family;
+
+  const match = family.match(/^var\((--[^)]+)\)$/);
+  if (!match) return family;
+
+  const resolved = getComputedStyle(document.documentElement)
+    .getPropertyValue(match[1])
+    .trim();
+
+  return resolved || family;
+};
+
+const measureGlyphHeightRatio = (
+  family: string,
+  text: string,
+  weight = 800
+) => {
+  if (typeof document === "undefined") return 0.72;
+
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d");
+  if (!context) return 0.72;
+
+  const testSize = 1000;
+  const resolvedFamily = resolveCssFontFamily(family);
+
+  context.font = `${weight} ${testSize}px ${resolvedFamily}`;
+
+  const metrics = context.measureText(text || "REDPEN");
+  const actualHeight =
+    (metrics.actualBoundingBoxAscent || 0) +
+    (metrics.actualBoundingBoxDescent || 0);
+
+  if (!Number.isFinite(actualHeight) || actualHeight <= 0) return 0.72;
+
+  // Aşırı sıra dışı font metriklerine karşı güvenli sınır.
+  return Math.max(0.35, Math.min(1.25, actualHeight / testSize));
+};
+
 const hexToRgb = (hex: string) => {
   const clean = hex.replace("#", "");
   const normalized = clean.length === 3
@@ -163,6 +203,7 @@ export default function SignDesigner() {
   const [extraOffset, setExtraOffset] = useState({ x: 0, y: 32 });
 
   const [selectedFont, setSelectedFont] = useState<FontId>("montserrat");
+  const [fontMetricsVersion, setFontMetricsVersion] = useState(0);
   const [fontMenuOpen, setFontMenuOpen] = useState(false);
   const [fontSearch, setFontSearch] = useState("");
   const [letterHeightCm, setLetterHeightCm] = useState(50);
@@ -196,6 +237,16 @@ export default function SignDesigner() {
     font.name.toLocaleLowerCase("tr-TR").includes(fontSearch.toLocaleLowerCase("tr-TR"))
   );
   const normalizedExtraText = (extraText.trim() || "Ek Metin").slice(0, 32);
+
+  const mainGlyphHeightRatio = useMemo(
+    () => measureGlyphHeightRatio(currentFont.family, normalizedText, 800),
+    [currentFont.family, normalizedText, fontMetricsVersion]
+  );
+
+  const extraGlyphHeightRatio = useMemo(
+    () => measureGlyphHeightRatio(currentExtraFont.family, normalizedExtraText, 800),
+    [currentExtraFont.family, normalizedExtraText, fontMetricsVersion]
+  );
 
   const isSolidMetalFace =
     letterMaterial === "GOLD KAPLAMA" || letterMaterial === "KROM KAPLAMA";
@@ -276,7 +327,7 @@ export default function SignDesigner() {
       "--base-color": baseColor,
       "--letter-color": letterColor,
       "--sign-font": currentFont.family,
-      "--font-size-ratio": `${letterHeightCm / Math.max(1, height)}`,
+      "--font-size-ratio": `${(letterHeightCm / Math.max(1, height)) / mainGlyphHeightRatio}`,
       "--letter-spacing-em": `${letterSpacing / 100}em`,
       "--logo-size-ratio": `${logoHeightCm / Math.max(1, height)}`,
       "--light-strip-px": `${6 * sceneScale}px`,
@@ -427,9 +478,23 @@ export default function SignDesigner() {
   };
 
   useEffect(() => {
+    let active = true;
+
+    if (document.fonts?.ready) {
+      document.fonts.ready.then(() => {
+        if (active) setFontMetricsVersion((value) => value + 1);
+      });
+    }
+
+    return () => {
+      active = false;
+    };
+  }, [selectedFont, extraFont]);
+
+  useEffect(() => {
     const frame = requestAnimationFrame(keepElementsInsideCanvas);
     return () => cancelAnimationFrame(frame);
-  }, [letterHeightCm, letterSpacing, extraLetterHeightCm, extraLetterSpacing, logoHeightCm, width, height, selectedFont, extraFont, normalizedText, normalizedExtraText]);
+  }, [letterHeightCm, letterSpacing, extraLetterHeightCm, extraLetterSpacing, logoHeightCm, mainGlyphHeightRatio, extraGlyphHeightRatio, width, height, selectedFont, extraFont, normalizedText, normalizedExtraText]);
 
   useEffect(() => {
     const handlePointerMove = (event: PointerEvent) => {
@@ -1454,7 +1519,7 @@ export default function SignDesigner() {
                       left: `${50 + extraOffset.x}%`,
                       top: `${50 + extraOffset.y}%`,
                       fontFamily: currentExtraFont.family,
-                      fontSize: `calc(var(--board-px-height) * ${extraLetterHeightCm / Math.max(1, height)})`,
+                      fontSize: `calc(var(--board-px-height) * ${(extraLetterHeightCm / Math.max(1, height)) / extraGlyphHeightRatio})`,
                       letterSpacing: `${extraLetterSpacing / 100}em`,
                       color: extraTextColor,
                       "--extra-letter-color": extraTextColor,

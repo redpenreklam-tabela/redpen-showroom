@@ -1,0 +1,36 @@
+REDPEN GLYPH CM CALIBRATION V31
+
+Sorun:
+V30'da 50 cm değeri doğrudan CSS font-size oranına çevriliyordu.
+Montserrat gibi fontlarda görünen büyük harf yüksekliği font-size'ın yaklaşık %70'i
+olduğu için Illustrator'da yaklaşık 35 cm görünüyordu.
+
+V31:
+- Browser Canvas measureText(actualBoundingBoxAscent/Descent) kullanır.
+- Seçili font + gerçek metin için görünen glyph yüksekliğini ölçer.
+- 50 cm istenirse CSS font-size'ı otomatik büyütür ve görünen harfi 50 cm hedefler.
+- Her font/metin değişiminde yeniden kalibre eder.
+- Ek metne de aynı sistem uygulanır.
+- Logo tarafına dokunmaz.
+
+Kurulum:
+  cd D:\Projects\redpen-showroom
+  node PATCH-GLYPH-CM-V31.cjs
+  npm.cmd run build
+
+Build geçerse:
+  git add .
+  git commit -m "Calibrate letter centimeters to real glyph height"
+  git push
+
+Test:
+1) Tabela 590 x 110 cm.
+2) Montserrat / REDPEN.
+3) Harf yüksekliği 50 cm.
+4) PNG al.
+5) Illustrator'da zemini 590 x 110 cm ölçe.
+6) Harfin beyaz gövdesini (glow hariç) dıştan dışa ölç.
+Beklenti: 50 cm'ye çok yakın.
+
+Not:
+Illustrator'da font-size değerini değil harfin gerçek bounding-box yüksekliğini ölç.
