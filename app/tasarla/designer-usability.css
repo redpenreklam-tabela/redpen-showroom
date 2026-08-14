@@ -1235,3 +1235,40 @@ body.designer-is-dragging .designer-extra-text-preview{cursor:grabbing;}
   box-shadow:none!important;
   background:none!important;
 }
+
+
+/* REDPEN V30 — gerçek ölçü / cm kontrolleri */
+.designer-cm-size-field .designer-slider-heading,
+.designer-logo-size-control .designer-slider-heading,
+.designer-extra-copy-controls .designer-slider-heading {
+  align-items: center;
+}
+
+.designer-cm-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.designer-cm-value input {
+  width: 76px;
+  min-height: 38px;
+  padding: 7px 9px;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.045);
+  color: #fff;
+  font: 800 13px/1 var(--font-geist-mono);
+  text-align: right;
+  outline: none;
+}
+
+.designer-cm-value input:focus {
+  border-color: rgba(226,29,56,.8);
+  box-shadow: 0 0 0 1px rgba(226,29,56,.22);
+}
+
+.designer-cm-value b {
+  color: rgba(255,255,255,.72);
+  font-size: 10px;
+  letter-spacing: .08em;
+}

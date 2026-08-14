@@ -1,0 +1,23 @@
+REDPEN CM SIZING V30
+
+Amaç:
+Ana harf, ek metin ve logo boyutunu yüzde yerine santimetre cinsinden yönetmek.
+
+Varsayılan:
+- Ana harf: 50 cm
+- Ek metin: 20 cm
+- Logo: 42 cm
+
+Kurulum:
+  cd D:\Projects\redpen-showroom
+  node PATCH-CM-SIZING-V30.cjs
+  npm.cmd run build
+
+Build geçerse:
+  git add .
+  git commit -m "Switch text and logo sizing to centimeters"
+  git push
+
+Not:
+Bu ilk CM sürümüdür. UI ve WhatsApp artık cm kullanır.
+Bir sonraki doğrulamada Illustrator ile gerçek glyph dıştan-dışa yüksekliği karşılaştırılabilir.

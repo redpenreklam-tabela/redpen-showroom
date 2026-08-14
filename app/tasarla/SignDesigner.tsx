@@ -156,7 +156,7 @@ export default function SignDesigner() {
   const [extraTextEnabled, setExtraTextEnabled] = useState(false);
   const [extraText, setExtraText] = useState("RETAIL SOLUTIONS");
   const [extraFont, setExtraFont] = useState<FontId>("montserrat");
-  const [extraFontSizePercent, setExtraFontSizePercent] = useState(24);
+  const [extraLetterHeightCm, setExtraLetterHeightCm] = useState(20);
   const [extraLetterSpacing, setExtraLetterSpacing] = useState(8);
   const [extraTextColor, setExtraTextColor] = useState("#f5f5f3");
   const [extraLetterMaterial, setExtraLetterMaterial] = useState<LetterMaterial>("FOLYO");
@@ -165,9 +165,9 @@ export default function SignDesigner() {
   const [selectedFont, setSelectedFont] = useState<FontId>("montserrat");
   const [fontMenuOpen, setFontMenuOpen] = useState(false);
   const [fontSearch, setFontSearch] = useState("");
-  const [fontSizePercent, setFontSizePercent] = useState(62);
+  const [letterHeightCm, setLetterHeightCm] = useState(50);
   const [letterSpacing, setLetterSpacing] = useState(-4);
-  const [logoSizePercent, setLogoSizePercent] = useState(52);
+  const [logoHeightCm, setLogoHeightCm] = useState(42);
 
   const [textOffset, setTextOffset] = useState({ x: 0, y: 0 });
   const [logoOffset, setLogoOffset] = useState({ x: 0, y: 0 });
@@ -276,9 +276,9 @@ export default function SignDesigner() {
       "--base-color": baseColor,
       "--letter-color": letterColor,
       "--sign-font": currentFont.family,
-      "--font-size-ratio": `${fontSizePercent / 100}`,
+      "--font-size-ratio": `${letterHeightCm / Math.max(1, height)}`,
       "--letter-spacing-em": `${letterSpacing / 100}em`,
-      "--logo-size-ratio": `${logoSizePercent / 100}`,
+      "--logo-size-ratio": `${logoHeightCm / Math.max(1, height)}`,
       "--light-strip-px": `${6 * sceneScale}px`,
       "--metal-reflect-shift": `${Math.max(-18, Math.min(18, textOffset.x * 0.28))}%`,
     } as React.CSSProperties;
@@ -289,9 +289,9 @@ export default function SignDesigner() {
     baseColor,
     letterColor,
     currentFont.family,
-    fontSizePercent,
+    letterHeightCm,
     letterSpacing,
-    logoSizePercent,
+    logoHeightCm,
     textOffset,
   ]);
 
@@ -306,9 +306,7 @@ export default function SignDesigner() {
   );
 
   const whatsappHref = useMemo(() => {
-    const letterHeightCm = Math.max(0, height * (fontSizePercent / 100));
-    const logoHeightCm = Math.max(0, height * (logoSizePercent / 100));
-    const extraTextHeightCm = Math.max(0, height * (extraFontSizePercent / 100));
+    const extraTextHeightCm = Math.max(0, extraLetterHeightCm);
     const baseColorName = baseColors.find((item) => item.value.toLowerCase() === baseColor.toLowerCase())?.name ?? baseColor;
     const letterColorName = letterColors.find((item) => item.value.toLowerCase() === letterColor.toLowerCase())?.name ?? letterColor;
     const extraTextColorName = letterColors.find((item) => item.value.toLowerCase() === extraTextColor.toLowerCase())?.name ?? extraTextColor;
@@ -357,14 +355,14 @@ export default function SignDesigner() {
     signType,
     normalizedText,
     currentFont.name,
-    fontSizePercent,
+    letterHeightCm,
     letterSpacing,
-    logoSizePercent,
+    logoHeightCm,
     logo,
     extraTextEnabled,
     normalizedExtraText,
     currentExtraFont.name,
-    extraFontSizePercent,
+    extraLetterHeightCm,
     extraTextColor,
     extraLetterMaterial,
     baseMaterial,
@@ -431,7 +429,7 @@ export default function SignDesigner() {
   useEffect(() => {
     const frame = requestAnimationFrame(keepElementsInsideCanvas);
     return () => cancelAnimationFrame(frame);
-  }, [fontSizePercent, letterSpacing, extraFontSizePercent, extraLetterSpacing, logoSizePercent, width, height, selectedFont, extraFont, normalizedText, normalizedExtraText]);
+  }, [letterHeightCm, letterSpacing, extraLetterHeightCm, extraLetterSpacing, logoHeightCm, width, height, selectedFont, extraFont, normalizedText, normalizedExtraText]);
 
   useEffect(() => {
     const handlePointerMove = (event: PointerEvent) => {
@@ -819,17 +817,27 @@ export default function SignDesigner() {
                 </div>
 
                 <div className="designer-slider-heading">
-                  <label>EK METİN BOYUTU</label>
-                  <b>%{extraFontSizePercent}</b>
+                  <label>EK METİN YÜKSEKLİĞİ / CM</label>
+                  <div className="designer-cm-value">
+                    <input
+                      type="number"
+                      min="1"
+                      max="999"
+                      step="1"
+                      value={extraLetterHeightCm}
+                      onChange={(e) => setExtraLetterHeightCm(Math.max(1, Math.min(999, Number(e.target.value) || 1)))}
+                    />
+                    <b>CM</b>
+                  </div>
                 </div>
                 <input
                   className="designer-range"
                   type="range"
-                  min="5"
-                  max="160"
+                  min="1"
+                  max={Math.max(120, height * 2)}
                   step="1"
-                  value={extraFontSizePercent}
-                  onChange={(e) => setExtraFontSizePercent(Number(e.target.value))}
+                  value={Math.min(extraLetterHeightCm, Math.max(120, height * 2))}
+                  onChange={(e) => setExtraLetterHeightCm(Number(e.target.value))}
                 />
 
                 <div className="designer-slider-heading designer-extra-spacing-heading">
@@ -870,25 +878,35 @@ export default function SignDesigner() {
             )}
           </div>
 
-          <div className="designer-field">
+          <div className="designer-field designer-cm-size-field">
             <div className="designer-slider-heading">
-              <label>HARF BOYUTU</label>
-              <b>%{fontSizePercent}</b>
+              <label>HARF YÜKSEKLİĞİ / CM</label>
+              <div className="designer-cm-value">
+                <input
+                  type="number"
+                  min="1"
+                  max="999"
+                  step="1"
+                  value={letterHeightCm}
+                  onChange={(e) => setLetterHeightCm(Math.max(1, Math.min(999, Number(e.target.value) || 1)))}
+                />
+                <b>CM</b>
+              </div>
             </div>
             <input
               className="designer-range"
               type="range"
-              min="8"
-              max="180"
+              min="1"
+              max={Math.max(160, height * 2)}
               step="1"
-              value={fontSizePercent}
-              onChange={(e) => setFontSizePercent(Number(e.target.value))}
+              value={Math.min(letterHeightCm, Math.max(160, height * 2))}
+              onChange={(e) => setLetterHeightCm(Number(e.target.value))}
             />
             <div className="designer-range-scale">
-              <span>KÜÇÜK</span>
-              <span>TAŞIR</span>
+              <span>1 CM</span>
+              <span>{Math.max(160, height * 2)} CM</span>
             </div>
-            <p className="designer-control-note">Boyutu istediğin kadar büyütebilirsin; sistem harfi tabela kanvasının içinde tutar.</p>
+            <p className="designer-control-note">Harf yüksekliğini yüzde yerine santimetre olarak gir. Önizleme tabela ölçeğine göre otomatik hesaplanır.</p>
           </div>
 
           <div className="designer-field">
@@ -1118,21 +1136,31 @@ export default function SignDesigner() {
             {logo && (
               <div className="designer-logo-size-control">
                 <div className="designer-slider-heading">
-                  <label>LOGO BOYUTU</label>
-                  <b>%{logoSizePercent}</b>
+                  <label>LOGO YÜKSEKLİĞİ / CM</label>
+                  <div className="designer-cm-value">
+                    <input
+                      type="number"
+                      min="1"
+                      max="999"
+                      step="1"
+                      value={logoHeightCm}
+                      onChange={(e) => setLogoHeightCm(Math.max(1, Math.min(999, Number(e.target.value) || 1)))}
+                    />
+                    <b>CM</b>
+                  </div>
                 </div>
                 <input
                   className="designer-range"
                   type="range"
-                  min="10"
-                  max="130"
+                  min="1"
+                  max={Math.max(160, height * 2)}
                   step="1"
-                  value={logoSizePercent}
-                  onChange={(e) => setLogoSizePercent(Number(e.target.value))}
+                  value={Math.min(logoHeightCm, Math.max(160, height * 2))}
+                  onChange={(e) => setLogoHeightCm(Number(e.target.value))}
                 />
                 <div className="designer-range-scale">
-                  <span>KÜÇÜK</span>
-                  <span>TAŞIR</span>
+                  <span>1 CM</span>
+                  <span>{Math.max(160, height * 2)} CM</span>
                 </div>
               </div>
             )}
@@ -1426,7 +1454,7 @@ export default function SignDesigner() {
                       left: `${50 + extraOffset.x}%`,
                       top: `${50 + extraOffset.y}%`,
                       fontFamily: currentExtraFont.family,
-                      fontSize: `calc(var(--board-px-height) * ${extraFontSizePercent / 100})`,
+                      fontSize: `calc(var(--board-px-height) * ${extraLetterHeightCm / Math.max(1, height)})`,
                       letterSpacing: `${extraLetterSpacing / 100}em`,
                       color: extraTextColor,
                       "--extra-letter-color": extraTextColor,
