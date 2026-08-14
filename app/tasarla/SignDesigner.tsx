@@ -9,13 +9,11 @@ type SceneMode = "day" | "night";
 type DragType = "text" | "logo" | "extra";
 type LightStripMode = "none" | "top" | "bottom" | "top-bottom" | "left" | "right" | "left-right" | "all";
 type FontId =
-  | "montserrat" | "oswald" | "bebas" | "poppins" | "roboto-condensed"
-  | "archivo-black" | "anton" | "barlow-condensed" | "league-spartan" | "rubik"
-  | "lobster" | "pacifico" | "inter" | "roboto" | "open-sans" | "lato"
-  | "raleway" | "nunito" | "ubuntu" | "pt-sans" | "merriweather" | "playfair-display"
-  | "dm-sans" | "work-sans" | "manrope" | "mulish" | "fira-sans" | "noto-sans"
-  | "noto-serif" | "quicksand" | "josefin-sans" | "exo-2" | "cinzel"
-  | "comfortaa" | "caveat" | "dancing-script";
+  | "montserrat" | "oswald" | "bebas" | "poppins" | "roboto" | "anton"
+  | "outfit" | "geologica" | "roboto-slab" | "inknut-antiqua" | "pacifico"
+  | "anta" | "asimovian" | "bangers" | "bree-serif" | "bruno-ace-sc"
+  | "cal-sans" | "caveat-brush" | "luckiest-guy"
+  | "momo-trust-display" | "russo-one" | "sekuya" | "sriracha";
 
 const signTypes: SignType[] = ["KUTU HARF", "IŞIKLI PANEL", "TOTEM", "CEPHE"];
 const baseMaterials: BaseMaterial[] = ["PLEKSİ", "ALÜMİNYUM", "KROM", "KOMPOZİT"];
@@ -26,38 +24,25 @@ const fonts: Array<{ id: FontId; name: string; family: string }> = [
   { id: "oswald", name: "Oswald", family: "var(--font-sign-oswald)" },
   { id: "bebas", name: "Bebas Neue", family: "var(--font-sign-bebas)" },
   { id: "poppins", name: "Poppins", family: "var(--font-sign-poppins)" },
-  { id: "roboto-condensed", name: "Roboto Condensed", family: "var(--font-sign-roboto-condensed)" },
-  { id: "archivo-black", name: "Archivo Black", family: "var(--font-sign-archivo-black)" },
-  { id: "anton", name: "Anton", family: "var(--font-sign-anton)" },
-  { id: "barlow-condensed", name: "Barlow Condensed", family: "var(--font-sign-barlow-condensed)" },
-  { id: "league-spartan", name: "League Spartan", family: "var(--font-sign-league-spartan)" },
-  { id: "rubik", name: "Rubik", family: "var(--font-sign-rubik)" },
-  { id: "inter", name: "Inter", family: "var(--font-sign-inter)" },
   { id: "roboto", name: "Roboto", family: "var(--font-sign-roboto)" },
-  { id: "open-sans", name: "Open Sans", family: "var(--font-sign-open-sans)" },
-  { id: "lato", name: "Lato", family: "var(--font-sign-lato)" },
-  { id: "raleway", name: "Raleway", family: "var(--font-sign-raleway)" },
-  { id: "nunito", name: "Nunito", family: "var(--font-sign-nunito)" },
-  { id: "ubuntu", name: "Ubuntu", family: "var(--font-sign-ubuntu)" },
-  { id: "pt-sans", name: "PT Sans", family: "var(--font-sign-pt-sans)" },
-  { id: "dm-sans", name: "DM Sans", family: "var(--font-sign-dm-sans)" },
-  { id: "work-sans", name: "Work Sans", family: "var(--font-sign-work-sans)" },
-  { id: "manrope", name: "Manrope", family: "var(--font-sign-manrope)" },
-  { id: "mulish", name: "Mulish", family: "var(--font-sign-mulish)" },
-  { id: "fira-sans", name: "Fira Sans", family: "var(--font-sign-fira-sans)" },
-  { id: "noto-sans", name: "Noto Sans", family: "var(--font-sign-noto-sans)" },
-  { id: "quicksand", name: "Quicksand", family: "var(--font-sign-quicksand)" },
-  { id: "josefin-sans", name: "Josefin Sans", family: "var(--font-sign-josefin-sans)" },
-  { id: "exo-2", name: "Exo 2", family: "var(--font-sign-exo-2)" },
-  { id: "comfortaa", name: "Comfortaa", family: "var(--font-sign-comfortaa)" },
-  { id: "merriweather", name: "Merriweather", family: "var(--font-sign-merriweather)" },
-  { id: "playfair-display", name: "Playfair Display", family: "var(--font-sign-playfair-display)" },
-  { id: "noto-serif", name: "Noto Serif", family: "var(--font-sign-noto-serif)" },
-  { id: "cinzel", name: "Cinzel", family: "var(--font-sign-cinzel)" },
-  { id: "lobster", name: "Lobster", family: "var(--font-sign-lobster)" },
+  { id: "anton", name: "Anton", family: "var(--font-sign-anton)" },
+  { id: "outfit", name: "Outfit", family: "var(--font-sign-outfit)" },
+  { id: "geologica", name: "Geologica", family: "var(--font-sign-geologica)" },
+  { id: "roboto-slab", name: "Roboto Slab", family: "var(--font-sign-roboto-slab)" },
+  { id: "inknut-antiqua", name: "Inknut Antiqua", family: "var(--font-sign-inknut-antiqua)" },
   { id: "pacifico", name: "Pacifico", family: "var(--font-sign-pacifico)" },
-  { id: "caveat", name: "Caveat", family: "var(--font-sign-caveat)" },
-  { id: "dancing-script", name: "Dancing Script", family: "var(--font-sign-dancing-script)" },
+  { id: "anta", name: "Anta", family: "var(--font-sign-anta)" },
+  { id: "asimovian", name: "Asimovian", family: "var(--font-sign-asimovian)" },
+  { id: "bangers", name: "Bangers", family: "var(--font-sign-bangers)" },
+  { id: "bree-serif", name: "Bree Serif", family: "var(--font-sign-bree-serif)" },
+  { id: "bruno-ace-sc", name: "Bruno Ace SC", family: "var(--font-sign-bruno-ace-sc)" },
+  { id: "cal-sans", name: "Cal Sans", family: "var(--font-sign-cal-sans)" },
+  { id: "caveat-brush", name: "Caveat Brush", family: "var(--font-sign-caveat-brush)" },
+  { id: "luckiest-guy", name: "Luckiest Guy", family: "var(--font-sign-luckiest-guy)" },
+  { id: "momo-trust-display", name: "Momo Trust Display", family: "var(--font-sign-momo-trust-display)" },
+  { id: "russo-one", name: "Russo One", family: "var(--font-sign-russo-one)" },
+  { id: "sekuya", name: "Sekuya", family: "var(--font-sign-sekuya)" },
+  { id: "sriracha", name: "Sriracha", family: "var(--font-sign-sriracha)" },
 ];
 
 const letterColors = [

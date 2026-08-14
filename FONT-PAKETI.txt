@@ -1,0 +1,14 @@
+REDPEN LOCAL FONT PAKETİ
+
+Bu patch next/font/google bağımlılığını kaldırır.
+Fontlar public/fonts/sign-designer/ altından local olarak servis edilir.
+Google Fonts / fonts.gstatic.com build isteği yapılmaz.
+
+Fontlar:
+Montserrat, Oswald, Bebas Neue, Poppins, Roboto, Anton, Outfit, Geologica,
+Roboto Slab, Inknut Antiqua, Pacifico, Anta, Asimovian, Bangers, Bree Serif,
+Bruno Ace SC, Cal Sans, Caveat Brush, Luckiest Guy,
+Momo Trust Display, Russo One, Sekuya, Sriracha.
+
+Türkçe test karakterleri:
+Ç Ğ İ I Ö Ş Ü ç ğ ı i ö ş ü
