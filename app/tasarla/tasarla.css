@@ -52,3 +52,52 @@ html:has(.designer-screen),body:has(.designer-screen){margin:0;background:var(--
 .designer-quote{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;text-decoration:none;border-color:rgba(var(--rp-red),.38);background:linear-gradient(115deg,rgba(var(--rp-red),.17),rgba(var(--rp-red),.05))}.designer-quote>span{color:rgba(255,255,255,.48);font:600 8px/1 var(--font-geist-mono)}.designer-quote>strong{align-self:end;color:#fff;font:800 14px/1 var(--font-geist-mono)}.designer-quote>b{grid-column:2;grid-row:1/3;align-self:center;color:rgb(var(--rp-red));font-size:22px}
 @media(max-width:980px){html:has(.designer-screen),body:has(.designer-screen){overflow:auto!important}.designer-screen{height:auto;min-height:100svh;overflow:visible}.designer-title small,.designer-back b{display:none}.designer-layout{grid-template-columns:1fr}.designer-panel{overflow:visible;border-right:0}.designer-preview{min-height:720px}.designer-summary{grid-template-columns:repeat(3,1fr)}.designer-quote{grid-column:1/-1}.designer-toolbar{grid-template-columns:auto 1fr auto}.designer-title{justify-content:center}}
 @media(max-width:620px){.designer-toolbar{min-height:64px;padding:8px 10px}.designer-title strong{font-size:10px}.designer-mode-switch button{padding:9px 8px;font-size:7px}.designer-panel{padding:28px 18px}.designer-material-row{grid-template-columns:1fr 1fr}.designer-preview{padding:22px 12px;min-height:650px}.designer-facade{min-height:390px}.designer-summary{grid-template-columns:1fr 1fr}.designer-summary>div:nth-child(3){grid-column:1/-1}.designer-board-content strong{font-size:clamp(26px,11vw,52px)}.designer-human-scale{display:none}.designer-dimension-height{right:1%}}
+
+/* v20 · zemin malzemesi yüzey karakterleri */
+.material-kompozit{
+  box-shadow:0 22px 42px rgba(0,0,0,.42),inset 0 0 0 1px rgba(255,255,255,.025);
+}
+.material-kompozit:before{
+  opacity:.16;
+  background:
+    linear-gradient(115deg,rgba(255,255,255,.055),transparent 34%,rgba(0,0,0,.16)),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0 1px,transparent 1px 3px);
+}
+
+.material-pleksi{
+  box-shadow:
+    0 22px 42px rgba(0,0,0,.42),
+    0 0 22px color-mix(in srgb,var(--base-color) 38%,transparent),
+    0 0 50px color-mix(in srgb,var(--base-color) 18%,transparent),
+    inset 0 0 28px color-mix(in srgb,var(--base-color) 48%,white),
+    inset 0 0 0 1px rgba(255,255,255,.20);
+}
+.material-pleksi:before{
+  opacity:.72;
+  background:
+    linear-gradient(112deg,rgba(255,255,255,.34),rgba(255,255,255,.06) 24%,transparent 46%,rgba(255,255,255,.10) 74%,transparent),
+    linear-gradient(180deg,rgba(255,255,255,.10),transparent 40%,rgba(0,0,0,.08));
+}
+.mode-day .material-pleksi{
+  box-shadow:
+    0 22px 42px rgba(0,0,0,.30),
+    0 0 16px color-mix(in srgb,var(--base-color) 24%,transparent),
+    inset 0 0 24px color-mix(in srgb,var(--base-color) 34%,white),
+    inset 0 0 0 1px rgba(255,255,255,.22);
+}
+
+.material-alüminyum{
+  box-shadow:0 22px 42px rgba(0,0,0,.42),inset 0 0 0 1px rgba(255,255,255,.11);
+}
+.material-alüminyum:before{
+  opacity:.64;
+  background:
+    linear-gradient(105deg,
+      rgba(255,255,255,.30) 0%,
+      rgba(255,255,255,.09) 12%,
+      transparent 27%,
+      rgba(0,0,0,.14) 46%,
+      rgba(255,255,255,.18) 61%,
+      rgba(255,255,255,.035) 76%,
+      rgba(0,0,0,.16) 100%);
+}

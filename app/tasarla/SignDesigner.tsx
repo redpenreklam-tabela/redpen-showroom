@@ -15,8 +15,8 @@ type FontId =
   | "cal-sans" | "caveat-brush" | "luckiest-guy"
   | "momo-trust-display" | "russo-one" | "sekuya" | "sriracha";
 
-const signTypes: SignType[] = ["KUTU HARF", "IŞIKLI PANEL", "TOTEM", "CEPHE"];
-const baseMaterials: BaseMaterial[] = ["PLEKSİ", "ALÜMİNYUM", "KROM", "KOMPOZİT"];
+const signTypes: SignType[] = ["KUTU HARF"];
+const baseMaterials: BaseMaterial[] = ["KOMPOZİT", "PLEKSİ", "ALÜMİNYUM"];
 const letterMaterials: LetterMaterial[] = ["PLEKSİ", "GOLD KAPLAMA", "KROM KAPLAMA", "FİLELİ KROM", "FİLELİ GOLD", "FOREX"];
 
 const fonts: Array<{ id: FontId; name: string; family: string }> = [
@@ -54,12 +54,19 @@ const letterColors = [
 ];
 
 const baseColors = [
-  { name: "Antrasit", value: "#232426" },
-  { name: "Siyah", value: "#0d0e10" },
-  { name: "Beyaz", value: "#e8e8e3" },
-  { name: "Kırmızı", value: "#9c1429" },
-  { name: "Lacivert", value: "#102b4d" },
-  { name: "Kompozit Gri", value: "#555a60" },
+  { code: "SB 002", name: "Beyaz", value: "#ffffff" },
+  { code: "SB 003", name: "Krem", value: "#e2e0c3" },
+  { code: "SB 006", name: "Mavi", value: "#044585" },
+  { code: "SB 013", name: "Koyu Gri", value: "#485655" },
+  { code: "SB 004", name: "Siyah", value: "#0d1419" },
+  { code: "SB 010", name: "Bordo", value: "#7e2927" },
+  { code: "SB 005", name: "Kırmızı", value: "#c3282a" },
+  { code: "SB 009", name: "Turuncu", value: "#dd5e2e" },
+  { code: "SB 011", name: "Sarı", value: "#eca231" },
+  { code: "SB 012", name: "Yosun Yeşili", value: "#25594a" },
+  { code: "SB 024", name: "Trafik Yeşili", value: "#008445" },
+  { code: "SB 026", name: "Çinko Sarısı", value: "#ffce42" },
+  { code: "SB 025", name: "Antrasit Gri", value: "#24333b" },
 ];
 
 const lightStripModes: Array<{ id: LightStripMode; label: string; short: string }> = [
@@ -111,7 +118,7 @@ export default function SignDesigner() {
   const [letterMaterial, setLetterMaterial] = useState<LetterMaterial>("PLEKSİ");
   const [baseMaterial, setBaseMaterial] = useState<BaseMaterial>("KOMPOZİT");
   const [letterColor, setLetterColor] = useState(letterColors[1].value);
-  const [baseColor, setBaseColor] = useState(baseColors[0].value);
+  const [baseColor, setBaseColor] = useState("#24333b");
   const [width, setWidth] = useState(300);
   const [height, setHeight] = useState(80);
   const [lighted, setLighted] = useState(true);
@@ -766,8 +773,8 @@ export default function SignDesigner() {
                   className={baseColor === item.value ? "is-active" : ""}
                   style={{ "--swatch": item.value } as React.CSSProperties}
                   onClick={() => setBaseColor(item.value)}
-                  aria-label={item.name}
-                  title={item.name}
+                  aria-label={`${item.code} ${item.name}`}
+                  title={`${item.code} · ${item.name}`}
                 />
               ))}
             </div>
