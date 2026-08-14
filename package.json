@@ -19,7 +19,8 @@
     "three": "^0.185.1",
     "@react-three/postprocessing": "^3.0.4",
     "postprocessing": "^6.38.3",
-    "modern-screenshot": "^4.7.0"
+    "modern-screenshot": "^4.7.0",
+    "@vercel/blob": "^2.6.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

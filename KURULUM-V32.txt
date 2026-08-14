@@ -1,0 +1,46 @@
+REDPEN TEKLİF + WATERMARK + VERCEL BLOB V32
+
+NE YAPIYOR?
+- "PNG İNDİR" butonunu kaldırır.
+- Tek güçlü CTA bırakır: WHATSAPP'TAN TEKLİF AL.
+- CTA tıklanınca mevcut tasarım PNG'si üretilir.
+- PNG'nin sağ altına kullanıcının verdiği Redpen Reklam logosu transparan watermark olarak eklenir.
+- PNG Vercel Blob'a kaydedilir.
+- WhatsApp mesajına mevcut teknik bilgiler + Tasarım No + Tasarım Görseli URL'si eklenir.
+- Kullanıcıya temiz PNG indirme butonu verilmez.
+
+BİR KERELİK VERCEL AYARI
+1) Vercel Dashboard > redpen-showroom projesi
+2) Storage
+3) Create Database / Blob
+4) Public Blob store oluştur
+5) Projeye bağla
+Vercel BLOB_READ_WRITE_TOKEN environment variable'ını otomatik ekler.
+
+KURULUM
+ZIP'i D:\Projects\redpen-showroom içine çıkar.
+
+PowerShell:
+  cd D:\Projects\redpen-showroom
+  node PATCH-QUOTE-WATERMARK-V32.cjs
+  npm.cmd install
+  npm.cmd run build
+
+Build geçerse:
+  git add .
+  git commit -m "Add watermarked quote design upload flow"
+  git push
+
+TEST
+1) Vercel deployment tamamlandıktan sonra /tasarla aç.
+2) Tasarımı oluştur.
+3) WHATSAPP'TAN TEKLİF AL.
+4) Önce görsel Blob'a yüklenir.
+5) WhatsApp mesajında:
+   Tasarım No: RP-...
+   Tasarım Görseli: https://...public.blob.vercel-storage.com/...
+   görünmeli.
+
+NOT
+Local test için BLOB_READ_WRITE_TOKEN gerekir.
+Vercel'de proje Blob Store'a bağlandıysa production deploy tokenı otomatik kullanır.

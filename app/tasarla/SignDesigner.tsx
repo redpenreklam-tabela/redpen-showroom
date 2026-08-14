@@ -213,6 +213,7 @@ export default function SignDesigner() {
   const [textOffset, setTextOffset] = useState({ x: 0, y: 0 });
   const [logoOffset, setLogoOffset] = useState({ x: 0, y: 0 });
   const [exportingPng, setExportingPng] = useState(false);
+  const [quoteSubmitting, setQuoteSubmitting] = useState(false);
   const dragRef = useRef<{
     type: DragType;
     startX: number;
@@ -356,7 +357,7 @@ export default function SignDesigner() {
     [width, height, sceneScale]
   );
 
-  const whatsappHref = useMemo(() => {
+  const whatsappMessage = useMemo(() => {
     const extraTextHeightCm = Math.max(0, extraLetterHeightCm);
     const baseColorName = baseColors.find((item) => item.value.toLowerCase() === baseColor.toLowerCase())?.name ?? baseColor;
     const letterColorName = letterColors.find((item) => item.value.toLowerCase() === letterColor.toLowerCase())?.name ?? letterColor;
@@ -401,7 +402,7 @@ export default function SignDesigner() {
       "Bu tasarım için fiyat ve uygulama bilgisi alabilir miyim?",
     ].join("\n");
 
-    return `https://wa.me/905305606525?text=${encodeURIComponent(message)}`;
+    return message;
   }, [
     signType,
     normalizedText,
@@ -573,9 +574,9 @@ export default function SignDesigner() {
   };
 
 
-  const downloadDesignPng = async () => {
+  const createDesignPngBlob = async () => {
     const facade = facadeRef.current;
-    if (!facade || exportingPng) return;
+    if (!facade) throw new Error("Önizleme alanı bulunamadı.");
 
     setExportingPng(true);
 
@@ -711,23 +712,101 @@ export default function SignDesigner() {
           cropCanvas.height
         );
 
-        const finalDataUrl = cropCanvas.toDataURL("image/png", 1);
+        // Redpen watermark: müşterinin aldığı/ilettiği görsel markalı kalsın.
+        // Temiz üretim PNG'si kullanıcıya doğrudan indirtilmiyor.
+        const watermark = await new Promise<HTMLImageElement>((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error("Redpen watermark logosu yüklenemedi."));
+          img.src = "/brand/redpen-watermark.png";
+        });
 
-        const anchor = document.createElement("a");
-        anchor.href = finalDataUrl;
-        anchor.download = `redpen-tabela-${width}x${height}.png`;
-        document.body.appendChild(anchor);
-        anchor.click();
-        anchor.remove();
+        const wmMaxWidth = Math.min(cropCanvas.width * 0.24, 720);
+        const wmScale = wmMaxWidth / Math.max(1, watermark.naturalWidth);
+        const wmWidth = watermark.naturalWidth * wmScale;
+        const wmHeight = watermark.naturalHeight * wmScale;
+        const wmPad = Math.max(22, cropCanvas.width * 0.018);
+
+        ctx.save();
+        ctx.globalAlpha = 0.22;
+        ctx.drawImage(
+          watermark,
+          Math.max(wmPad, cropCanvas.width - wmWidth - wmPad),
+          Math.max(wmPad, cropCanvas.height - wmHeight - wmPad),
+          wmWidth,
+          wmHeight
+        );
+        ctx.restore();
+
+        const pngBlob = await new Promise<Blob>((resolve, reject) => {
+          cropCanvas.toBlob((result) => {
+            if (result) resolve(result);
+            else reject(new Error("PNG blob oluşturulamadı."));
+          }, "image/png", 1);
+        });
+
+        return pngBlob;
       } finally {
         exportRoot.remove();
       }
     } catch (error) {
-      console.error("REDPEN PNG EXPORT ERROR V29", error);
-      const message = error instanceof Error ? error.message : String(error);
-      window.alert(`PNG oluşturulamadı. Hata: ${message}`);
+      console.error("REDPEN PNG EXPORT ERROR V32", error);
+      throw error;
     } finally {
       setExportingPng(false);
+    }
+  };
+
+  const handleQuoteRequest = async () => {
+    if (quoteSubmitting) return;
+
+    setQuoteSubmitting(true);
+
+    try {
+      const pngBlob = await createDesignPngBlob();
+
+      const form = new FormData();
+      form.append(
+        "file",
+        new File([pngBlob], `redpen-tabela-${width}x${height}.png`, {
+          type: "image/png",
+        })
+      );
+
+      const response = await fetch("/api/design-upload", {
+        method: "POST",
+        body: form,
+      });
+
+      const payload = (await response.json()) as {
+        designId?: string;
+        url?: string;
+        error?: string;
+      };
+
+      if (!response.ok || !payload.designId || !payload.url) {
+        throw new Error(payload.error || "Tasarım görseli kaydedilemedi.");
+      }
+
+      const message = [
+        whatsappMessage,
+        "",
+        `Tasarım No: ${payload.designId}`,
+        `Tasarım Görseli: ${payload.url}`,
+      ].join("\n");
+
+      const whatsappUrl =
+        `https://wa.me/905305606525?text=${encodeURIComponent(message)}`;
+
+      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error("REDPEN QUOTE REQUEST ERROR", error);
+      const message = error instanceof Error ? error.message : String(error);
+      window.alert(
+        `Teklif hazırlanamadı. ${message}`
+      );
+    } finally {
+      setQuoteSubmitting(false);
     }
   };
 
@@ -1581,7 +1660,7 @@ export default function SignDesigner() {
               className="designer-actions"
               style={{
                 display: "grid",
-                gridTemplateColumns: "1fr 1fr",
+                gridTemplateColumns: "1fr",
                 gap: "7px",
                 padding: 0,
                 border: 0,
@@ -1590,25 +1669,21 @@ export default function SignDesigner() {
             >
               <button
                 type="button"
-                className="designer-quote designer-download"
-                onClick={downloadDesignPng}
-                disabled={exportingPng}
-                style={{ width: "100%", cursor: exportingPng ? "wait" : "pointer", textAlign: "left" }}
-              >
-                <span>TASARIMINI</span>
-                <strong>{exportingPng ? "HAZIRLANIYOR" : "PNG İNDİR"}</strong>
-                <b>↓</b>
-              </button>
-              <a
-                href={whatsappHref}
-                target="_blank"
-                rel="noreferrer"
                 className="designer-quote"
+                onClick={handleQuoteRequest}
+                disabled={quoteSubmitting || exportingPng}
+                style={{
+                  width: "100%",
+                  cursor: quoteSubmitting || exportingPng ? "wait" : "pointer",
+                  textAlign: "left",
+                }}
               >
-                <span>BU TASARIM İÇİN</span>
-                <strong>TEKLİF AL</strong>
+                <span>TASARIM GÖRSELİ + ÖZELLİKLER</span>
+                <strong>
+                  {quoteSubmitting || exportingPng ? "HAZIRLANIYOR" : "WHATSAPP'TAN TEKLİF AL"}
+                </strong>
                 <b>↗</b>
-              </a>
+              </button>
             </div>
           </div>
         </section>
