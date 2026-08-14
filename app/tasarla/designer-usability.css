@@ -1085,3 +1085,82 @@ body.designer-is-dragging .designer-extra-text-preview{cursor:grabbing;}
   left:max(2px,var(--light-strip-px));
   right:max(2px,var(--light-strip-px));
 }
+
+/* v18.1 — fileli 4-kenar bantta kesintisiz metal file
+   Çocuk bantların ayrı ayrı çizdiği metal raylar köşelerde kesiliyordu.
+   4 KENAR modunda metal file artık parent üzerinde iki kesintisiz dikdörtgen ray
+   olarak çizilir: dış ray + iç ray. Böylece köşelerde metal çizgi dönerek devam eder. */
+.strip-mode-all.strip-material-fileli-gold,
+.strip-mode-all.strip-material-fileli-krom{
+  overflow:visible;
+  --strip-file-edge:max(2px,calc(var(--light-strip-px) * .28));
+}
+
+/* 4 kenarda çocukların eski parça-parça metal kenarlarını kapat. Işıklı çekirdek kalır. */
+.strip-mode-all.strip-material-fileli-gold .designer-light-strip::before,
+.strip-mode-all.strip-material-fileli-krom .designer-light-strip::before{
+  display:none!important;
+}
+
+/* v18'de köşe bindirmesini azaltmak için kısaltılan yatay ışık çekirdeğini geri tam boya getir.
+   Aynı renkteki çekirdekler köşede birleştiği için artık boşluk oluşmaz. */
+.strip-mode-all .designer-light-strip.strip-top,
+.strip-mode-all .designer-light-strip.strip-bottom{
+  left:0!important;
+  right:0!important;
+}
+
+/* Dış metal ray: bütün çevreyi tek parça dön. */
+.strip-mode-all.strip-material-fileli-gold::before,
+.strip-mode-all.strip-material-fileli-krom::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:8;
+  pointer-events:none;
+  box-sizing:border-box;
+  border-style:solid;
+  border-width:var(--strip-file-edge);
+}
+
+.strip-mode-all.strip-material-fileli-gold::before{
+  border-color:#c88920;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,235,168,.52),
+    0 0 0 1px rgba(83,43,4,.30);
+}
+
+.strip-mode-all.strip-material-fileli-krom::before{
+  border-color:#8f9ba2;
+  box-shadow:
+    inset 0 0 0 1px rgba(248,252,255,.58),
+    0 0 0 1px rgba(24,31,35,.30);
+}
+
+/* İç metal ray: ışıklı 6 cm bandın iç kenarını da tek parça dön.
+   inset = bant kalınlığı - file kalınlığı; böylece ray ışıklı çekirdeğin içine oturur. */
+.strip-mode-all.strip-material-fileli-gold::after,
+.strip-mode-all.strip-material-fileli-krom::after{
+  content:"";
+  position:absolute;
+  inset:calc(max(2px,var(--light-strip-px)) - var(--strip-file-edge));
+  z-index:8;
+  pointer-events:none;
+  box-sizing:border-box;
+  border-style:solid;
+  border-width:var(--strip-file-edge);
+}
+
+.strip-mode-all.strip-material-fileli-gold::after{
+  border-color:#c88920;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,235,168,.40),
+    0 0 0 1px rgba(83,43,4,.24);
+}
+
+.strip-mode-all.strip-material-fileli-krom::after{
+  border-color:#8f9ba2;
+  box-shadow:
+    inset 0 0 0 1px rgba(248,252,255,.44),
+    0 0 0 1px rgba(24,31,35,.24);
+}
