@@ -304,24 +304,27 @@ export default function SignDesigner() {
   );
 
   const whatsappHref = useMemo(() => {
+    const letterHeightCm = Math.max(0, height * (fontSizePercent / 100));
+    const logoHeightCm = Math.max(0, height * (logoSizePercent / 100));
+    const extraTextHeightCm = Math.max(0, height * (extraFontSizePercent / 100));
+    const baseColorName = baseColors.find((item) => item.value.toLowerCase() === baseColor.toLowerCase())?.name ?? baseColor;
+    const letterColorName = letterColors.find((item) => item.value.toLowerCase() === letterColor.toLowerCase())?.name ?? letterColor;
+    const extraTextColorName = letterColors.find((item) => item.value.toLowerCase() === extraTextColor.toLowerCase())?.name ?? extraTextColor;
+    const stripColorName = lightStripColors.find((item) => item.value.toLowerCase() === lightStripColor.toLowerCase())?.name ?? lightStripColor;
+
     const message = [
       "Merhaba Redpen Reklam, showroom üzerinden bir tabela tasarımı oluşturdum.",
       "",
       `Tabela tipi: ${signType}`,
       `Yazı: ${normalizedText}`,
       `Yazı tipi: ${currentFont.name}`,
-      `Harf boyutu: %${fontSizePercent}`,
-      `Harf aralığı: ${letterSpacing}`,
-      `Logo boyutu: %${logoSizePercent}`,
-      `Yazı konumu: X ${textOffset.x.toFixed(0)} / Y ${textOffset.y.toFixed(0)}`,
-      `Logo konumu: X ${logoOffset.x.toFixed(0)} / Y ${logoOffset.y.toFixed(0)}`,
+      `Harf yüksekliği: ${letterHeightCm.toFixed(1).replace(".0", "")} cm`,
+      `Logo yüksekliği: ${logo ? `${logoHeightCm.toFixed(1).replace(".0", "")} cm` : "Logo yok"}`,
       ...(extraTextEnabled ? [
         `Ek metin: ${normalizedExtraText}`,
         `Ek metin fontu: ${currentExtraFont.name}`,
-        `Ek metin boyutu: %${extraFontSizePercent}`,
-        `Ek metin harf aralığı: ${extraLetterSpacing}`,
-        `Ek metin konumu: X ${extraOffset.x.toFixed(0)} / Y ${extraOffset.y.toFixed(0)}`,
-        `Ek metin rengi: ${extraTextColor}`,
+        `Ek metin yüksekliği: ${extraTextHeightCm.toFixed(1).replace(".0", "")} cm`,
+        `Ek metin rengi: ${extraTextColorName}`,
         `Ek metin malzemesi: ${extraLetterMaterial}`,
       ] : []),
       `Zemin malzemesi: ${baseMaterial}`,
@@ -339,10 +342,10 @@ export default function SignDesigner() {
       `6 cm ışık bandı: ${lightStripModes.find((item) => item.id === lightStripMode)?.label ?? "Işık bandı yok"}`,
       ...(lightStripMode !== "none" ? [
         `Işık bandı malzemesi: ${lightStripMaterial}`,
-        ...(lightStripMaterial !== "FOREX" ? [`Işık bandı ışık rengi: ${lightStripColor}`] : []),
+        ...(lightStripMaterial !== "FOREX" ? [`Işık bandı ışık rengi: ${stripColorName}`] : []),
       ] : []),
-      `Zemin rengi: ${baseColor}`,
-      `Harf rengi: ${letterColor}`,
+      `Zemin rengi: ${baseColorName}`,
+      `Harf rengi: ${letterColorName}`,
       "",
       "Bu tasarım için fiyat ve uygulama bilgisi alabilir miyim?",
     ].join("\n");
@@ -355,14 +358,11 @@ export default function SignDesigner() {
     fontSizePercent,
     letterSpacing,
     logoSizePercent,
-    textOffset,
-    logoOffset,
+    logo,
     extraTextEnabled,
     normalizedExtraText,
     currentExtraFont.name,
     extraFontSizePercent,
-    extraLetterSpacing,
-    extraOffset,
     extraTextColor,
     extraLetterMaterial,
     baseMaterial,
