@@ -170,6 +170,7 @@ export default function SignDesigner() {
 
   const [textOffset, setTextOffset] = useState({ x: 0, y: 0 });
   const [logoOffset, setLogoOffset] = useState({ x: 0, y: 0 });
+  const [exportingPng, setExportingPng] = useState(false);
   const dragRef = useRef<{
     type: DragType;
     startX: number;
@@ -505,6 +506,151 @@ export default function SignDesigner() {
     reader.onload = () =>
       setLogo(typeof reader.result === "string" ? reader.result : null);
     reader.readAsDataURL(file);
+  };
+
+
+  const downloadDesignPng = async () => {
+    const facade = facadeRef.current;
+    const board = boardRef.current;
+    if (!facade || !board || exportingPng) return;
+
+    setExportingPng(true);
+
+    try {
+      if (document.fonts?.ready) await document.fonts.ready;
+
+      const facadeRect = facade.getBoundingClientRect();
+      const boardRect = board.getBoundingClientRect();
+      const exportElements = Array.from(
+        facade.querySelectorAll<HTMLElement>(".designer-draggable-element")
+      );
+
+      let left = boardRect.left;
+      let top = boardRect.top;
+      let right = boardRect.right;
+      let bottom = boardRect.bottom;
+
+      for (const element of exportElements) {
+        const rect = element.getBoundingClientRect();
+        left = Math.min(left, rect.left);
+        top = Math.min(top, rect.top);
+        right = Math.max(right, rect.right);
+        bottom = Math.max(bottom, rect.bottom);
+      }
+
+      const padding = 36;
+      const cropLeft = Math.max(0, left - facadeRect.left - padding);
+      const cropTop = Math.max(0, top - facadeRect.top - padding);
+      const cropRight = Math.min(facadeRect.width, right - facadeRect.left + padding);
+      const cropBottom = Math.min(facadeRect.height, bottom - facadeRect.top + padding);
+      const exportWidth = Math.max(1, Math.ceil(cropRight - cropLeft));
+      const exportHeight = Math.max(1, Math.ceil(cropBottom - cropTop));
+
+      const clone = facade.cloneNode(true) as HTMLElement;
+      clone.querySelectorAll(
+        ".designer-preview-light-controls,.designer-dimension,.designer-human-scale,.designer-scale-readout,.designer-floor-line,.designer-preview-caption,.designer-wall-grid"
+      ).forEach((node) => node.remove());
+
+      clone.style.width = `${facadeRect.width}px`;
+      clone.style.height = `${facadeRect.height}px`;
+      clone.style.minHeight = "0";
+      clone.style.margin = "0";
+      clone.style.transform = "none";
+
+      clone.querySelectorAll<HTMLElement>("*").forEach((element) => {
+        element.style.pointerEvents = "none";
+        element.style.userSelect = "none";
+      });
+
+      const absoluteUrl = (value: string) => {
+        return value
+          .replace(/url\((['"]?)\/(?!\/)/g, `url($1${window.location.origin}/`)
+          .replace(/url\((['"]?)(?!data:|blob:|https?:|\/)/g, `url($1${window.location.origin}/`);
+      };
+
+      let cssText = "";
+      for (const sheet of Array.from(document.styleSheets)) {
+        try {
+          cssText += Array.from(sheet.cssRules).map((rule) => rule.cssText).join("\n") + "\n";
+        } catch {
+          // Cross-origin styles are irrelevant to the local designer export.
+        }
+      }
+      cssText = absoluteUrl(cssText);
+
+      clone.querySelectorAll<HTMLImageElement>("img").forEach((image) => {
+        if (image.src && !image.src.startsWith("data:") && !image.src.startsWith("blob:")) {
+          image.src = new URL(image.getAttribute("src") || image.src, window.location.href).href;
+        }
+      });
+      clone.querySelectorAll<SVGImageElement>("svg image").forEach((image) => {
+        const href = image.getAttribute("href");
+        if (href && !href.startsWith("data:") && !href.startsWith("blob:")) {
+          image.setAttribute("href", new URL(href, window.location.href).href);
+        }
+      });
+
+      const wrapper = document.createElement("div");
+      wrapper.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+      wrapper.style.position = "relative";
+      wrapper.style.width = `${facadeRect.width}px`;
+      wrapper.style.height = `${facadeRect.height}px`;
+      wrapper.style.transform = `translate(${-cropLeft}px, ${-cropTop}px)`;
+      wrapper.style.transformOrigin = "top left";
+      wrapper.appendChild(clone);
+
+      const serialized = new XMLSerializer().serializeToString(wrapper);
+      const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="${exportWidth}" height="${exportHeight}" viewBox="0 0 ${exportWidth} ${exportHeight}">
+          <foreignObject width="${facadeRect.width}" height="${facadeRect.height}" x="0" y="0">
+            <style xmlns="http://www.w3.org/1999/xhtml">${cssText.replace(/<\/style/gi, "<\\/style")}</style>
+            ${serialized}
+          </foreignObject>
+        </svg>`;
+
+      const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const image = new Image();
+      image.decoding = "async";
+
+      await new Promise<void>((resolve, reject) => {
+        image.onload = () => resolve();
+        image.onerror = () => reject(new Error("PNG önizlemesi oluşturulamadı."));
+        image.src = url;
+      });
+
+      const scale = 3;
+      const canvas = document.createElement("canvas");
+      canvas.width = exportWidth * scale;
+      canvas.height = exportHeight * scale;
+      const context = canvas.getContext("2d");
+      if (!context) throw new Error("Canvas oluşturulamadı.");
+
+      context.scale(scale, scale);
+      context.drawImage(image, 0, 0, exportWidth, exportHeight);
+      URL.revokeObjectURL(url);
+
+      const pngBlob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob((result) => {
+          if (result) resolve(result);
+          else reject(new Error("PNG dosyası oluşturulamadı."));
+        }, "image/png", 1);
+      });
+
+      const downloadUrl = URL.createObjectURL(pngBlob);
+      const anchor = document.createElement("a");
+      anchor.href = downloadUrl;
+      anchor.download = `redpen-tabela-${width}x${height}.png`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+    } catch (error) {
+      console.error(error);
+      window.alert("PNG oluşturulamadı. Lütfen tekrar deneyin.");
+    } finally {
+      setExportingPng(false);
+    }
   };
 
   return (
@@ -1323,16 +1469,39 @@ export default function SignDesigner() {
               <p>HARF</p>
               <b>{letterMaterial}</b>
             </div>
-            <a
-              href={whatsappHref}
-              target="_blank"
-              rel="noreferrer"
-              className="designer-quote"
+            <div
+              className="designer-actions"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "7px",
+                padding: 0,
+                border: 0,
+                background: "transparent",
+              }}
             >
-              <span>BU TASARIM İÇİN</span>
-              <strong>TEKLİF AL</strong>
-              <b>↗</b>
-            </a>
+              <button
+                type="button"
+                className="designer-quote designer-download"
+                onClick={downloadDesignPng}
+                disabled={exportingPng}
+                style={{ width: "100%", cursor: exportingPng ? "wait" : "pointer", textAlign: "left" }}
+              >
+                <span>TASARIMINI</span>
+                <strong>{exportingPng ? "HAZIRLANIYOR" : "PNG İNDİR"}</strong>
+                <b>↓</b>
+              </button>
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noreferrer"
+                className="designer-quote"
+              >
+                <span>BU TASARIM İÇİN</span>
+                <strong>TEKLİF AL</strong>
+                <b>↗</b>
+              </a>
+            </div>
           </div>
         </section>
       </div>
