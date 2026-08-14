@@ -1,0 +1,19 @@
+REDPEN PNG EXPORT V26
+
+Amaç:
+html2canvas'ın desteklemediği modern CSS color() fonksiyonu nedeniyle oluşan
+"Attempting to parse an unsupported color function \"color\""
+hatasını gidermek.
+
+Kurulum:
+1) Bu ZIP'i D:\Projects\redpen-showroom içine çıkar.
+2) PowerShell:
+   cd D:\Projects\redpen-showroom
+   node PATCH-PNG-EXPORT-V26.cjs
+   npm.cmd install
+   npm.cmd run build
+
+Build geçerse:
+   git add .
+   git commit -m "Fix PNG export modern CSS color support"
+   git push

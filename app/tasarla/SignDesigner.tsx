@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import html2canvas from "html2canvas";
+import html2canvas from "html2canvas-pro";
 
 type SignType = "KUTU HARF";
 type BaseMaterial = "PLEKSİ" | "ALÜMİNYUM" | "KROM" | "KOMPOZİT";
