@@ -1174,72 +1174,18 @@ body.designer-is-dragging .designer-extra-text-preview{cursor:grabbing;}
 .designer-letter-material-picker.is-compact .designer-material-group{padding:8px}
 .designer-extra-material-control{display:grid;gap:7px;margin-top:7px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}
 
-/* Oyma: merkez zemin tonuna yaklaşır, seçilen renk kesim/ışık hattını verir. */
-/* Oyma: harfin yüzeyi ışıklı kalır; ince koyu kesim ağzı + glyph içine çöken gölge ile panelin içine oyulmuş hissi verir. */
-.designer-board.letter-material-oyma-harf .designer-main-text{
-  color:var(--letter-color)!important;
-  -webkit-text-fill-color:transparent!important;
-  -webkit-text-stroke:0!important;
-  background:
-    linear-gradient(180deg,
-      color-mix(in srgb,var(--letter-color) 82%,white 18%) 0%,
-      color-mix(in srgb,var(--letter-color) 92%,white 8%) 30%,
-      var(--letter-color) 58%,
-      color-mix(in srgb,var(--letter-color) 92%,#111 8%) 100%);
-  -webkit-background-clip:text!important;
-  background-clip:text!important;
-  text-shadow:
-    0 1px 1px rgba(0,0,0,.85),
-    0 2px 3px rgba(0,0,0,.52),
-    0 0 4px color-mix(in srgb,var(--letter-color) 72%,transparent),
-    0 0 10px color-mix(in srgb,var(--letter-color) 46%,transparent)!important;
-  filter:none!important;
-  isolation:isolate;
-}
-.designer-board.letter-material-oyma-harf .designer-main-text::before,
-.designer-board.letter-material-oyma-harf .designer-main-text::after{
-  content:attr(data-text)!important;
-  display:block!important;
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  font:inherit;
-  letter-spacing:inherit;
-  line-height:inherit;
-  text-align:inherit;
-}
-/* Kesim ağzı: dışarı taşan parlak kontur değil, çok ince koyu bir ağız. */
-.designer-board.letter-material-oyma-harf .designer-main-text::before{
-  color:transparent;
-  -webkit-text-fill-color:transparent;
-  -webkit-text-stroke:.7px rgba(7,9,10,.92);
-  text-shadow:0 1px 1px rgba(0,0,0,.82);
-  z-index:2;
-}
-/* İç gölge: merkezde kararma yok. Gölge üst kesim ağzından harfin içine doğru düşer. */
-.designer-board.letter-material-oyma-harf .designer-main-text::after{
-  color:transparent;
-  -webkit-text-fill-color:transparent;
-  background:
-    linear-gradient(180deg,
-      rgba(0,0,0,.62) 0%,
-      rgba(0,0,0,.42) 9%,
-      rgba(0,0,0,.20) 22%,
-      rgba(0,0,0,.07) 34%,
-      transparent 48%);
-  -webkit-background-clip:text;
-  background-clip:text;
-  z-index:1;
-  opacity:.96;
-  transform:translateY(.45px);
-}
-.designer-board.letter-material-oyma-harf:not(.is-lighted) .designer-main-text{
-  text-shadow:0 1px 1px rgba(0,0,0,.82),0 2px 3px rgba(0,0,0,.48)!important;
-  filter:saturate(.72) brightness(.78)!important;
-}
-
 /* Forex: mat kabartma. */
-.designer-board.letter-material-forex .designer-main-text{color:var(--letter-color)!important;-webkit-text-fill-color:var(--letter-color)!important;background:none!important;filter:none!important;text-shadow:2px 3px 0 rgba(0,0,0,.28)!important;-webkit-text-stroke:0!important}
+.designer-board.letter-material-forex .designer-main-text{
+  color:var(--letter-color)!important;
+  -webkit-text-fill-color:var(--letter-color)!important;
+  background:none!important;
+  filter:none!important;
+  -webkit-text-stroke:0!important;
+  text-shadow:
+    .65px .8px 0 rgba(255,255,255,.10),
+    1.15px 1.35px 0 rgba(0,0,0,.34)!important;
+}
+.designer-board.letter-material-forex .designer-main-text::before,.designer-board.letter-material-forex .designer-main-text::after{content:none!important;display:none!important}
 
 /* Folyo: sıfır kalınlık, sıfır glow. */
 .designer-board.letter-material-folyo .designer-main-text{color:var(--letter-color)!important;-webkit-text-fill-color:var(--letter-color)!important;background:none!important;filter:none!important;text-shadow:none!important;-webkit-text-stroke:0!important}
@@ -1252,27 +1198,15 @@ body.designer-is-dragging .designer-extra-text-preview{cursor:grabbing;}
 .designer-extra-text-preview.extra-material-krom-kaplama{color:#cbd2d6!important;background:linear-gradient(100deg,#31383d 0%,#f5f8fa 26%,#7a858c 49%,#f8fafb 70%,#4d565c 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:2px 3px 0 #263037!important}
 .designer-extra-text-preview.extra-material-fileli-gold{color:var(--extra-letter-color)!important;-webkit-text-fill-color:var(--extra-letter-color)!important;-webkit-text-stroke:1.4px #c88920;text-shadow:2px 3px 0 #5b2e04!important}
 .designer-extra-text-preview.extra-material-fileli-krom{color:var(--extra-letter-color)!important;-webkit-text-fill-color:var(--extra-letter-color)!important;-webkit-text-stroke:1.4px #9aa5ab;text-shadow:2px 3px 0 #263037!important}
-.designer-extra-text-preview.extra-material-oyma-harf{
+.designer-extra-text-preview.extra-material-forex{
   color:var(--extra-letter-color)!important;
-  -webkit-text-fill-color:transparent!important;
+  -webkit-text-fill-color:var(--extra-letter-color)!important;
   -webkit-text-stroke:0!important;
-  background:linear-gradient(180deg,color-mix(in srgb,var(--extra-letter-color) 82%,white 18%) 0%,color-mix(in srgb,var(--extra-letter-color) 92%,white 8%) 30%,var(--extra-letter-color) 58%,color-mix(in srgb,var(--extra-letter-color) 92%,#111 8%) 100%);
-  -webkit-background-clip:text!important;
-  background-clip:text!important;
-  text-shadow:0 1px 1px rgba(0,0,0,.82),0 2px 2px rgba(0,0,0,.5),0 0 7px color-mix(in srgb,var(--extra-letter-color) 52%,transparent)!important;
-  isolation:isolate;
+  filter:none!important;
+  text-shadow:
+    .5px .65px 0 rgba(255,255,255,.09),
+    1px 1.15px 0 rgba(0,0,0,.34)!important;
 }
-.designer-extra-text-preview.extra-material-oyma-harf::before,
-.designer-extra-text-preview.extra-material-oyma-harf::after{
-  content:attr(data-text);
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  font:inherit;
-  letter-spacing:inherit;
-  line-height:inherit;
-}
-.designer-extra-text-preview.extra-material-oyma-harf::before{color:transparent;-webkit-text-fill-color:transparent;-webkit-text-stroke:.6px rgba(7,9,10,.9);text-shadow:0 1px 1px rgba(0,0,0,.75);z-index:2}
-.designer-extra-text-preview.extra-material-oyma-harf::after{color:transparent;-webkit-text-fill-color:transparent;background:linear-gradient(180deg,rgba(0,0,0,.60) 0%,rgba(0,0,0,.40) 9%,rgba(0,0,0,.18) 22%,rgba(0,0,0,.06) 34%,transparent 48%);-webkit-background-clip:text;background-clip:text;z-index:1;opacity:.96;transform:translateY(.35px)}
-.designer-extra-text-preview.extra-material-forex{color:var(--extra-letter-color)!important;-webkit-text-fill-color:var(--extra-letter-color)!important;-webkit-text-stroke:0!important;text-shadow:1.5px 2px 0 rgba(0,0,0,.32)!important}
-.designer-extra-text-preview.extra-material-folyo{color:var(--extra-letter-color)!important;-webkit-text-fill-color:var(--extra-letter-color)!important;-webkit-text-stroke:0!important;text-shadow:none!important;filter:none!important}
+.designer-extra-text-preview.extra-material-forex::before,.designer-extra-text-preview.extra-material-forex::after{content:none!important;display:none!important}
+.designer-extra-text-preview.extra-material-folyo{color:var(--extra-letter-color)!important;-webkit-text-fill-color:var(--extra-letter-color)!important;-webkit-text-stroke:0!important;text-shadow:none!important;filter:none!important;background:none!important}
+.designer-extra-text-preview.extra-material-folyo::before,.designer-extra-text-preview.extra-material-folyo::after{content:none!important;display:none!important}

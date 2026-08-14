@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 type SignType = "KUTU HARF" | "IŞIKLI PANEL" | "TOTEM" | "CEPHE";
 type BaseMaterial = "PLEKSİ" | "ALÜMİNYUM" | "KROM" | "KOMPOZİT";
-type LetterMaterial = "PLEKSİ" | "GOLD KAPLAMA" | "KROM KAPLAMA" | "FİLELİ KROM" | "FİLELİ GOLD" | "OYMA HARF" | "FOREX" | "FOLYO";
+type LetterMaterial = "PLEKSİ" | "GOLD KAPLAMA" | "KROM KAPLAMA" | "FİLELİ KROM" | "FİLELİ GOLD" | "FOREX" | "FOLYO";
 type LightStripMaterial = "PLEKSİ" | "GOLD KAPLAMA" | "KROM KAPLAMA" | "FİLELİ KROM" | "FİLELİ GOLD" | "FOREX";
 type SceneMode = "day" | "night";
 type DragType = "text" | "logo" | "extra";
@@ -109,7 +109,6 @@ const materialSlug = (material: LetterMaterial | LightStripMaterial) => {
     case "KROM KAPLAMA": return "krom-kaplama";
     case "FİLELİ GOLD": return "fileli-gold";
     case "FİLELİ KROM": return "fileli-krom";
-    case "OYMA HARF": return "oyma-harf";
     case "FOREX": return "forex";
     case "FOLYO": return "folyo";
     default: return "pleksi";
@@ -125,10 +124,6 @@ const MaterialPicker = ({ value, onChange, compact = false }: { value: LetterMat
           <button type="button" key={`kutu-${item}`} className={value === item ? "is-active" : ""} onClick={() => onChange(item)}>{item}</button>
         ))}
       </div>
-    </div>
-    <div className="designer-material-group">
-      <span>OYMA</span>
-      <div className="designer-material-row"><button type="button" className={value === "OYMA HARF" ? "is-active" : ""} onClick={() => onChange("OYMA HARF")}>OYMA HARF</button></div>
     </div>
     <div className="designer-material-group">
       <span>FOREX</span>
