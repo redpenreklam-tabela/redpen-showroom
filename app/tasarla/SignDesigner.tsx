@@ -517,10 +517,13 @@ export default function SignDesigner() {
 
     setExportingPng(true);
 
+    const temporarilyHidden: Array<{ element: HTMLElement; visibility: string }> = [];
+
     try {
       if (document.fonts?.ready) await document.fonts.ready;
 
-      const facadeRect = facade.getBoundingClientRect();
+      // Önce gerçekten ekranda görünen koordinatları alıyoruz.
+      // Böylece preview içindeki scale/transform hesaplarını yeniden üretmeye çalışmıyoruz.
       const boardRect = board.getBoundingClientRect();
       const exportElements = Array.from(
         facade.querySelectorAll<HTMLElement>(".designer-draggable-element")
@@ -533,33 +536,53 @@ export default function SignDesigner() {
 
       for (const element of exportElements) {
         const rect = element.getBoundingClientRect();
+        if (rect.width <= 0 || rect.height <= 0) continue;
         left = Math.min(left, rect.left);
         top = Math.min(top, rect.top);
         right = Math.max(right, rect.right);
         bottom = Math.max(bottom, rect.bottom);
       }
 
-      const padding = 36;
-      const cropLeft = Math.max(0, Math.floor(left - facadeRect.left - padding));
-      const cropTop = Math.max(0, Math.floor(top - facadeRect.top - padding));
-      const cropRight = Math.min(facadeRect.width, Math.ceil(right - facadeRect.left + padding));
-      const cropBottom = Math.min(facadeRect.height, Math.ceil(bottom - facadeRect.top + padding));
-      const exportWidth = Math.max(1, Math.ceil(cropRight - cropLeft));
-      const exportHeight = Math.max(1, Math.ceil(cropBottom - cropTop));
+      const padding = 24;
+      left -= padding;
+      top -= padding;
+      right += padding;
+      bottom += padding;
 
-      const hiddenClasses = new Set([
-        "designer-preview-light-controls",
-        "designer-dimension",
-        "designer-human-scale",
-        "designer-scale-readout",
-        "designer-floor-line",
-        "designer-preview-caption",
-        "designer-wall-grid",
-      ]);
+      // PNG'de görünmesini istemediğimiz sahne yardımcılarını gerçek DOM'da
+      // geçici olarak gizliyoruz. Export bitince aynen geri getiriliyor.
+      const hiddenSelectors = [
+        ".designer-preview-light-controls",
+        ".designer-dimension",
+        ".designer-human-scale",
+        ".designer-scale-readout",
+        ".designer-floor-line",
+        ".designer-preview-caption",
+        ".designer-wall-grid",
+      ];
 
-      // Canlı DOM'u doğrudan rasterize ediyoruz. Clone/foreignObject yok.
+      for (const selector of hiddenSelectors) {
+        document.querySelectorAll<HTMLElement>(selector).forEach((element) => {
+          temporarilyHidden.push({
+            element,
+            visibility: element.style.visibility,
+          });
+          element.style.visibility = "hidden";
+        });
+      }
+
+      // html2canvas-pro'ya küçük tabela elemanını değil bütün sayfayı veriyoruz.
+      // Bunun sebebi: preview'daki responsive scale/transform zincirini tarayıcının
+      // ekranda çizdiği haliyle korumak. x/y/width/height ile yalnızca görünen
+      // tabela bölgesini rasterize ediyoruz.
+      const x = Math.max(0, left + window.scrollX);
+      const y = Math.max(0, top + window.scrollY);
+      const exportWidth = Math.max(1, right - left);
+      const exportHeight = Math.max(1, bottom - top);
+
       const scale = 3;
-      const fullCanvas = await html2canvas(facade, {
+
+      const canvas = await html2canvas(document.documentElement, {
         scale,
         backgroundColor: null,
         useCORS: true,
@@ -568,35 +591,18 @@ export default function SignDesigner() {
         imageTimeout: 15000,
         foreignObjectRendering: false,
         removeContainer: true,
-        ignoreElements: (element) => {
-          if (!(element instanceof HTMLElement)) return false;
-          for (const className of hiddenClasses) {
-            if (element.classList.contains(className)) return true;
-          }
-          return false;
-        },
+        x,
+        y,
+        width: exportWidth,
+        height: exportHeight,
+        scrollX: -window.scrollX,
+        scrollY: -window.scrollY,
+        windowWidth: document.documentElement.clientWidth,
+        windowHeight: document.documentElement.clientHeight,
       });
 
-      const outCanvas = document.createElement("canvas");
-      outCanvas.width = Math.max(1, Math.round(exportWidth * scale));
-      outCanvas.height = Math.max(1, Math.round(exportHeight * scale));
-      const context = outCanvas.getContext("2d");
-      if (!context) throw new Error("PNG canvas context oluşturulamadı.");
-
-      context.drawImage(
-        fullCanvas,
-        Math.round(cropLeft * scale),
-        Math.round(cropTop * scale),
-        Math.round(exportWidth * scale),
-        Math.round(exportHeight * scale),
-        0,
-        0,
-        outCanvas.width,
-        outCanvas.height
-      );
-
       const blob = await new Promise<Blob>((resolve, reject) => {
-        outCanvas.toBlob((result) => {
+        canvas.toBlob((result) => {
           if (result) resolve(result);
           else reject(new Error("Canvas PNG blob üretemedi."));
         }, "image/png", 1);
@@ -611,10 +617,13 @@ export default function SignDesigner() {
       anchor.remove();
       window.setTimeout(() => URL.revokeObjectURL(url), 1500);
     } catch (error) {
-      console.error("REDPEN PNG EXPORT ERROR V25", error);
+      console.error("REDPEN PNG EXPORT ERROR V27", error);
       const message = error instanceof Error ? error.message : String(error);
       window.alert(`PNG oluşturulamadı. Hata: ${message}`);
     } finally {
+      for (const item of temporarilyHidden) {
+        item.element.style.visibility = item.visibility;
+      }
       setExportingPng(false);
     }
   };

@@ -1,0 +1,19 @@
+REDPEN PNG EXPORT V27
+
+Bu sürüm PNG'yi preview elemanının kendi iç koordinatlarından değil,
+tarayıcıda gerçekten görünen sayfa koordinatlarından keser.
+
+Kurulum:
+1. ZIP'i D:\Projects\redpen-showroom içine çıkar.
+2. PowerShell:
+   cd D:\Projects\redpen-showroom
+   node PATCH-PNG-EXPORT-V27.cjs
+   npm.cmd run build
+
+Build geçerse:
+   git add .
+   git commit -m "Fix PNG export visible preview coordinates"
+   git push
+
+Not:
+html2canvas-pro V26'da kurulduğu için yeniden npm install gerekmez.
