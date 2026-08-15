@@ -1,0 +1,53 @@
+REDPEN SHOWROOM — TEKLİF ÖZET EKRANI V38
+==========================================
+
+NE DEĞİŞTİ?
+- Alt taraftaki WHATSAPP'TAN TEKLİF AL butonu artık direkt upload başlatmıyor.
+- Önce profesyonel bir "TEKLİF ÖZETİ" modalı açılıyor.
+- Kullanıcı göndermeden önce seçtiği bilgileri son kez görüyor.
+
+MODALDA GÖRÜNENLER
+- Tabela ölçüsü
+- Ana yazı
+- Harf yüksekliği
+- Harf malzemesi / font / renk
+- Zemin malzemesi / renk
+- Aydınlatma
+- 6 cm ışık bandı
+- Logo var/yok + logo yüksekliği
+- Ek metin varsa bilgileri
+- Kalan otomatik görselli teklif hakkı
+
+BUTONLAR
+- TASARIMA DÖN
+- WHATSAPP'TAN GÖNDER
+- Günlük 3 görsel hakkı dolmuşsa: WHATSAPP'TAN DEVAM ET
+
+ÖNEMLİ
+Mevcut v34-v36 teklif / Blob / watermark sistemi değiştirilmedi.
+Modal yalnızca mevcut handleQuoteRequest fonksiyonunun önüne kontrol ekranı ekliyor.
+
+KURULUM
+ZIP'i:
+D:\Projects\redpen-showroom
+
+içine çıkar.
+
+PowerShell:
+cd D:\Projects\redpen-showroom
+node PATCH-QUOTE-SUMMARY-V38.cjs
+npm.cmd run build
+
+Build geçerse:
+git add .
+git commit -m "Add quote review summary modal"
+git push
+
+TEST
+1. /tasarla aç.
+2. Birkaç malzeme ve ölçü değiştir.
+3. WHATSAPP'TAN TEKLİF AL'a bas.
+4. Özet modalını kontrol et.
+5. TASARIMA DÖN ile kapanıyor mu?
+6. Tekrar aç, WHATSAPP'TAN GÖNDER'e bas.
+7. Mevcut PNG/Blob/WhatsApp akışı devam ediyor mu?
