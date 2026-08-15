@@ -1,0 +1,18 @@
+REDPEN QUOTE LIMIT V33
+
+- 24 saatte aynı tarayıcıdan en fazla 3 otomatik görselli teklif.
+- Başarılı görselli teklifler arasında 60 saniye bekleme.
+- Tasarım yapmak sınırsız.
+- Limit dolunca WhatsApp yine açılır ama otomatik PNG linki eklenmez.
+- Kullanıcı ekran görüntüsünü manuel ekleyebilir.
+- Upload hata verirse görselsiz WhatsApp fallback'i sunulur.
+
+Kurulum:
+  cd D:\Projects\redpen-showroom
+  node PATCH-QUOTE-LIMIT-V33.cjs
+  npm.cmd run build
+
+Build geçerse:
+  git add .
+  git commit -m "Add daily image quote limits and screenshot fallback"
+  git push
