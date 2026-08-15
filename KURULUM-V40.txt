@@ -1,0 +1,44 @@
+REDPEN COST DEBUG DIRECT V40
+
+NEDEN V40?
+V39 paneli canlı ekranda hiç görünmedi. Bu sürüm hesap motorunu ayrı
+CostDebugPanel.tsx component'ine taşıyor ve SignDesigner'a yalnızca tek import
++ tek render noktası ekliyor. Query kontrolü component'in kendi içinde.
+
+KURULUM
+ZIP'i D:\Projects\redpen-showroom içine çıkar.
+
+PowerShell:
+cd D:\Projects\redpen-showroom
+node PATCH-COST-DEBUG-DIRECT-V40.cjs
+npm.cmd run build
+
+Build geçerse:
+git add .
+git commit -m "Add direct cost debug panel"
+git push
+
+DEPLOY SONRASI TEST:
+https://redpen-showroom.vercel.app/tasarla?costdebug=1
+
+Sarı çerçeveli:
+SARFİYAT + MALİYET TEST PANELİ
+görünmeli.
+
+NORMAL:
+https://redpen-showroom.vercel.app/tasarla
+adresinde panel görünmez.
+
+KULLANILAN DEĞERLER:
+- Kompozit 300x125 = 8.700 TL
+- Kompozit 600x150 = 16.200 TL
+- Forex 300x150 = 4.800 TL
+- Pleksi 300x150 = 15.000 TL
+- Harf yanağı = 120 TL/m
+- Profil 6 m = 450 TL
+- LED 15 TL/adet: ŞİMDİLİK DAHİL DEĞİL
+
+NOT:
+V40 sadece ana yazının sarfiyatını hesaplar. Önce doğruluğu birlikte
+kalibre edeceğiz. Sonra ek yazı, ışık bandı ve daha gelişmiş nesting'i
+toplu olarak eklemek daha güvenli.

@@ -2,6 +2,7 @@
 
 import { domToPng } from "modern-screenshot";
 import { useEffect, useMemo, useRef, useState } from "react";
+import CostDebugPanel from "./CostDebugPanel";
 
 type SignType = "KUTU HARF";
 type BaseMaterial = "PLEKSİ" | "ALÜMİNYUM" | "KROM" | "KOMPOZİT";
@@ -1755,6 +1756,17 @@ export default function SignDesigner() {
               <span>{scene === "night" ? "GECE MODU" : "GÜNDÜZ MODU"}</span>
             </div>
           </div>
+
+          <CostDebugPanel
+            width={width}
+            height={height}
+            text={normalizedText}
+            fontFamily={currentFont.family}
+            letterHeightCm={letterHeightCm}
+            letterSpacing={letterSpacing}
+            letterMaterial={letterMaterial}
+            baseMaterial={baseMaterial}
+          />
 
           <div className="designer-summary">
             <div>
