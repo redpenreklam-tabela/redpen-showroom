@@ -1,0 +1,108 @@
+REDPEN SHOWROOM — BLOB AUTO CLEANUP V37
+==============================================
+
+AMAÇ
+----
+Showroom teklif görsellerinin Blob depolamasında birikmesini önler.
+
+DAVRANIŞ
+--------
+- Sadece `showroom-designs/` klasörünü tarar.
+- 24 saatten YENİ görsellere dokunmaz.
+- 24 saatten ESKİ görselleri siler.
+- Günde 1 kez otomatik çalışır.
+- Diğer Blob dosyalarına/folder'lara dokunmaz.
+- Silinen dosya sayısı ve toplam MB Vercel Function log/response'unda görünür.
+
+ÖNEMLİ RETENTION DETAYI
+-----------------------
+Hobby Cron günde yalnızca bir kez çalışabildiği için bir görsel pratikte
+yaklaşık 24–48 saat arasında saklanabilir.
+
+Örnek:
+- Görsel 05:10'da oluştu.
+- Ertesi gün 05:00 cleanup'ında henüz 23s50dk yaşında -> KALIR.
+- Sonraki cleanup'ta -> SİLİNİR.
+
+Bu bilinçli: müşterinin tasarım linkini en az yaklaşık 24 saat koruyoruz.
+
+KURULUM
+-------
+ZIP'i:
+D:\Projects\redpen-showroom
+
+içine çıkar.
+
+PowerShell:
+
+cd D:\Projects\redpen-showroom
+node PATCH-BLOB-CLEANUP-V37.cjs
+npm.cmd run build
+
+Build geçerse:
+
+git add .
+git commit -m "Add automatic Blob design cleanup"
+git push
+
+VERCEL'DE BİR KERE YAPILACAK
+----------------------------
+Project -> Environment Variables -> Add New
+
+Name:
+CRON_SECRET
+
+Value:
+En az 16 karakterlik rastgele güçlü bir değer.
+
+Örnek FORMATI (bunu aynen kullanma):
+redpen_cron_xxxxxxxxxxxxxxxxxxxxxxxx
+
+Environment:
+Production
+
+Kaydet.
+
+Sonra yeni deployment oluşması için push/redeploy gerekir.
+
+Vercel Blob tarafında zaten şu env bağlı olmalı:
+REDPEN_SHOWROOM_DESIGNS_STORE_ID
+
+CRON
+----
+Endpoint:
+GET /api/cron/cleanup-designs
+
+Schedule:
+0 2 * * *
+
+Vercel cron UTC ile çalışır.
+02:00 UTC, Türkiye için yaklaşık 05:00'dır.
+
+Hobby planında kesin dakika garantisi yoktur; o saat aralığında tetiklenir.
+
+MANUEL TEST
+-----------
+Deploy sonrası endpoint'i CRON_SECRET olmadan tarayıcıdan açarsan 401 vermesi NORMAL.
+
+PowerShell ile manuel test etmek istersen:
+
+$secret = "VERCELDE_GIRDIGIN_CRON_SECRET"
+Invoke-RestMethod `
+  -Uri "https://SENIN-DOMAININ/api/cron/cleanup-designs" `
+  -Headers @{ Authorization = "Bearer $secret" }
+
+Başarılı cevap örneği:
+
+{
+  "ok": true,
+  "maxAgeHours": 24,
+  "scanned": 5,
+  "deleted": 2,
+  "deletedMegabytes": 1.34
+}
+
+NOT
+---
+Bu patch mevcut vercel.json dosyası varsa içeriğini silmez.
+Sadece `/api/cron/cleanup-designs` cron kaydını ekler/günceller.
