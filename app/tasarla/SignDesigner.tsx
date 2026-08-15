@@ -754,11 +754,52 @@ export default function SignDesigner() {
 
         // Redpen watermark: müşterinin aldığı/ilettiği görsel markalı kalsın.
         // Temiz üretim PNG'si kullanıcıya doğrudan indirtilmiyor.
+        // Watermark kontrastını doğrudan render edilen PNG'den ölç.
+        // Böylece tabela/zemin rengi hangi state'ten gelirse gelsin doğru logo seçilir.
+        const sampleX = Math.floor(cropCanvas.width * 0.68);
+        const sampleY = Math.floor(cropCanvas.height * 0.68);
+        const sampleW = Math.max(1, Math.floor(cropCanvas.width * 0.30));
+        const sampleH = Math.max(1, Math.floor(cropCanvas.height * 0.28));
+
+        let useWhiteWatermark = false;
+
+        try {
+          const pixels = ctx.getImageData(sampleX, sampleY, sampleW, sampleH).data;
+
+          let luminanceTotal = 0;
+          let opaqueCount = 0;
+
+          // Her pikseli okumak gereksiz pahalı; 4 pikselde bir örnekle.
+          for (let i = 0; i < pixels.length; i += 16) {
+            const r = pixels[i];
+            const g = pixels[i + 1];
+            const b = pixels[i + 2];
+            const a = pixels[i + 3];
+
+            if (a < 40) continue;
+
+            // Algısal luminance
+            luminanceTotal += 0.2126 * r + 0.7152 * g + 0.0722 * b;
+            opaqueCount += 1;
+          }
+
+          const averageLuminance =
+            opaqueCount > 0 ? luminanceTotal / opaqueCount : 255;
+
+          useWhiteWatermark = averageLuminance < 125;
+        } catch (error) {
+          console.warn("Watermark kontrast ölçümü yapılamadı.", error);
+        }
+
+        const watermarkSrc = useWhiteWatermark
+          ? "/brand/redpen-watermark-white.png"
+          : "/brand/redpen-watermark.png";
+
         const watermark = await new Promise<HTMLImageElement>((resolve, reject) => {
           const img = new Image();
           img.onload = () => resolve(img);
           img.onerror = () => reject(new Error("Redpen watermark logosu yüklenemedi."));
-          img.src = "/brand/redpen-watermark.png";
+          img.src = watermarkSrc;
         });
 
         const wmMaxWidth = Math.min(cropCanvas.width * 0.24, 720);

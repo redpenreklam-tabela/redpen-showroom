@@ -1,0 +1,28 @@
+REDPEN WATERMARK AUTO CONTRAST V36
+
+Ne yapıyor?
+- Kullanıcının gönderdiği beyaz logoyu:
+  /public/brand/redpen-watermark-white.png
+  olarak ekler.
+- PNG export sırasında sağ alt bölgede gerçek piksel parlaklığını ölçer.
+- Zemin koyuysa beyaz/kırmızı Redpen logosunu kullanır.
+- Zemin açıksa mevcut koyu/kırmızı Redpen logosunu kullanır.
+- Watermark transparanlığı mevcut %22 seviyesinde kalır.
+
+Neden piksel ölçümü?
+Tabela renginin uygulamadaki state/değişken adına bağımlı değiliz.
+Krom, pleksi, kompozit, koyu renk, açık renk fark etmeden çıkan görsele bakıp karar verir.
+
+Kurulum:
+1) ZIP'i D:\Projects\redpen-showroom içine çıkar.
+2) Dosyaların üzerine yazılmasına izin ver.
+
+PowerShell:
+cd D:\Projects\redpen-showroom
+node PATCH-WATERMARK-AUTO-CONTRAST-V36.cjs
+npm.cmd run build
+
+Build geçerse:
+git add .
+git commit -m "Add automatic contrast watermark logo"
+git push
