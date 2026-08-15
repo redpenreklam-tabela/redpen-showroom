@@ -1,0 +1,49 @@
+REDPEN COST PANEL ALWAYS VISIBLE V42
+
+NEDEN?
+GitHub main kontrol edildi:
+- SignDesigner.tsx içinde CostDebugPanel importu VAR.
+- SignDesigner.tsx içinde <CostDebugPanel ... /> render'ı VAR.
+- CostDebugPanel.tsx dosyası VAR.
+- Fiyat config'i VAR.
+
+Yani V40 aslında repoya girmiş durumda.
+
+Kalan tek gereksiz belirsizlik panelin `window.location.search` üzerinden
+`?costdebug=1` beklemesiydi. Bu sürüm o kapıyı tamamen kaldırır.
+
+V42 DAVRANIŞI
+- Normal `/tasarla` açınca maliyet paneli doğrudan görünür.
+- `?costdebug=1` yazmak gerekmez.
+- Sarı çerçeveli SARFİYAT + MALİYET TEST PANELİ,
+  alttaki özet kartlarının hemen üstünde görünür.
+- Hesap/formüller değişmez.
+
+KURULUM
+
+cd D:\Projects\redpen-showroom
+node PATCH-COST-PANEL-V42.cjs
+npm.cmd run build
+
+Build geçerse:
+
+git add .
+git commit -m "Show material cost panel directly"
+git push
+
+Deploy sonrası SADECE:
+https://redpen-showroom.vercel.app/tasarla
+
+adresini aç.
+
+PANELDE:
+- Kompozit
+- Pleksi
+- Forex
+- Harf yanağı
+- Demir profil
+- Bilinen malzeme toplamı
+görünmeli.
+
+Bu panel şu aşamada test/kalibrasyon içindir.
+Doğru sonuçları gördükten sonra müşteri tarafında fiyat ARALIĞINA dönüştürülecek.

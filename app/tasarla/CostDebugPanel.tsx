@@ -158,13 +158,9 @@ function bestComposite(width: number, height: number) {
 }
 
 export default function CostDebugPanel(props: Props) {
-  const [visible, setVisible] = useState(false);
   const [fontReadyTick, setFontReadyTick] = useState(0);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    setVisible(params.get("costdebug") === "1");
-
     document.fonts?.ready.then(() => setFontReadyTick((v) => v + 1));
   }, []);
 
@@ -269,8 +265,6 @@ export default function CostDebugPanel(props: Props) {
     fontReadyTick,
   ]);
 
-  if (!visible) return null;
-
   const box: React.CSSProperties = {
     border: "1px solid rgba(255,181,62,.38)",
     background: "rgba(17,15,10,.97)",
@@ -307,7 +301,7 @@ export default function CostDebugPanel(props: Props) {
               letterSpacing: ".12em",
             }}
           >
-            COSTDEBUG=1 / V40
+            MATERIAL ENGINE / V42
           </div>
           <strong style={{ fontSize: 16 }}>SARFİYAT + MALİYET TEST PANELİ</strong>
         </div>
