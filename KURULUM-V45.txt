@@ -1,0 +1,57 @@
+REDPEN SHOWROOM — COMPACT BOTTOM BAR V45
+=========================================
+
+KULLANICI İSTEĞİ
+----------------
+- Müşteriye plaka / metre / LED gibi detaylı malzeme sarfiyatı gösterme.
+- Fiyat/sarfiyat paneli yüzünden WhatsApp butonu aşağı itilmesin.
+- Alt bilgi kutularını biraz küçült.
+- WhatsApp teklif butonunu malzeme özetinin hemen yanına getir.
+
+V45 DAVRANIŞI
+-------------
+NORMAL:
+  /tasarla
+
+Müşteri şunları görür:
+[ FONT ] [ ZEMİN ] [ HARF ] [ WHATSAPP / TEKLİF AL ]
+
+Kutular daha kompakt.
+WhatsApp butonu HARF kutusunun hemen sağında ve aynı satırda.
+
+Müşteri şunları GÖRMEZ:
+- Kompozit kaç plaka
+- Pleksi kaç plaka
+- Forex kaç plaka
+- Harf yanağı kaç metre
+- Profil kaç metre
+- LED adedi
+- İç malzeme maliyet toplamı
+
+BİZİM TEST:
+  /tasarla?costdebug=1
+
+Bu URL'de detaylı sarfiyat/maliyet paneli yine görünür.
+Yani hesap motorunu kaybetmiyoruz, sadece müşteriden saklıyoruz.
+
+KURULUM
+-------
+cd D:\Projects\redpen-showroom
+node PATCH-COMPACT-BOTTOM-BAR-V45.cjs
+npm.cmd run build
+
+Build geçerse:
+git add .
+git commit -m "Compact summary and hide internal material details"
+git push
+
+TEST
+----
+1) Normal /tasarla:
+   - sarfiyat paneli görünmemeli
+   - FONT/ZEMİN/HARF daha küçük olmalı
+   - WhatsApp butonu aynı satırda görünmeli
+
+2) /tasarla?costdebug=1:
+   - detaylı sarfiyat/maliyet paneli görünmeli
+   - LED / Forex / diğer kalibrasyon verileri kaybolmamalı

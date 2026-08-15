@@ -168,9 +168,12 @@ function bestComposite(width: number, height: number) {
 }
 
 export default function CostDebugPanel(props: Props) {
+  const [showDebug, setShowDebug] = useState(false);
   const [fontReadyTick, setFontReadyTick] = useState(0);
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setShowDebug(params.get("costdebug") === "1");
     document.fonts?.ready.then(() => setFontReadyTick((v) => v + 1));
   }, []);
 
@@ -303,6 +306,8 @@ export default function CostDebugPanel(props: Props) {
     props,
     fontReadyTick,
   ]);
+
+  if (!showDebug) return null;
 
   const box: React.CSSProperties = {
     border: "1px solid rgba(255,181,62,.38)",

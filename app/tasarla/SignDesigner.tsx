@@ -1769,47 +1769,35 @@ export default function SignDesigner() {
             lighted={lighted}
           />
 
-          <div className="designer-summary">
-            <div>
+          <div className="designer-summary designer-summary-compact">
+            <div className="designer-summary-card">
               <span>01</span>
               <p>FONT</p>
               <b>{currentFont.name}</b>
             </div>
-            <div>
+
+            <div className="designer-summary-card">
               <span>02</span>
               <p>ZEMİN</p>
               <b>{baseMaterial}</b>
             </div>
-            <div>
+
+            <div className="designer-summary-card">
               <span>03</span>
               <p>HARF</p>
               <b>{letterMaterial}</b>
             </div>
-            <div
-              className="designer-actions"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr",
-                gap: "7px",
-                padding: 0,
-                border: 0,
-                background: "transparent",
-              }}
-            >
+
+            <div className="designer-actions designer-actions-inline">
               <button
                 type="button"
-                className="designer-quote"
+                className="designer-quote designer-quote-compact"
                 onClick={handleQuoteRequest}
                 disabled={quoteSubmitting || exportingPng}
-                style={{
-                  width: "100%",
-                  cursor: quoteSubmitting || exportingPng ? "wait" : "pointer",
-                  textAlign: "left",
-                }}
               >
-                <span>TASARIM GÖRSELİ + ÖZELLİKLER</span>
+                <span>WHATSAPP</span>
                 <strong>
-                  {quoteSubmitting || exportingPng ? "HAZIRLANIYOR" : "WHATSAPP'TAN TEKLİF AL"}
+                  {quoteSubmitting || exportingPng ? "HAZIRLANIYOR" : "TEKLİF AL"}
                 </strong>
                 <b>↗</b>
               </button>

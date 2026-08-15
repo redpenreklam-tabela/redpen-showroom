@@ -1272,3 +1272,125 @@ body.designer-is-dragging .designer-extra-text-preview{cursor:grabbing;}
   font-size: 10px;
   letter-spacing: .08em;
 }
+
+
+/* REDPEN COMPACT BOTTOM BAR V45 */
+.designer-summary.designer-summary-compact {
+  display: grid;
+  grid-template-columns: minmax(0, .72fr) minmax(0, .72fr) minmax(0, .92fr) minmax(250px, 1.45fr);
+  gap: 6px;
+  align-items: stretch;
+  margin-top: 8px;
+}
+
+.designer-summary-compact > .designer-summary-card {
+  min-width: 0;
+  min-height: 58px;
+  padding: 9px 11px !important;
+}
+
+.designer-summary-compact .designer-summary-card > span {
+  font-size: 8px;
+  opacity: .42;
+}
+
+.designer-summary-compact .designer-summary-card > p {
+  margin: 3px 0 4px;
+  font-size: 8px;
+  letter-spacing: .08em;
+}
+
+.designer-summary-compact .designer-summary-card > b {
+  display: block;
+  overflow: hidden;
+  font-size: 11px;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.designer-actions-inline {
+  display: block !important;
+  min-width: 0;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.designer-quote.designer-quote-compact {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto 1fr;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 58px;
+  padding: 9px 13px;
+  border: 0;
+  background: #e21d38;
+  color: #fff;
+  cursor: pointer;
+  text-align: left;
+}
+
+.designer-quote-compact > span {
+  grid-column: 1;
+  grid-row: 1;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  opacity: .72;
+}
+
+.designer-quote-compact > strong {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: end;
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: -.01em;
+}
+
+.designer-quote-compact > b {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  font-size: 19px;
+  font-weight: 400;
+}
+
+.designer-quote-compact:disabled {
+  cursor: wait;
+  opacity: .65;
+}
+
+@media (max-width: 900px) {
+  .designer-summary.designer-summary-compact {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .designer-actions-inline {
+    grid-column: 1 / -1;
+  }
+
+  .designer-quote.designer-quote-compact {
+    min-height: 54px;
+  }
+}
+
+@media (max-width: 560px) {
+  .designer-summary.designer-summary-compact {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .designer-summary-compact > .designer-summary-card {
+    min-height: 52px;
+    padding: 7px 8px !important;
+  }
+
+  .designer-summary-compact .designer-summary-card > b {
+    font-size: 9px;
+  }
+}
