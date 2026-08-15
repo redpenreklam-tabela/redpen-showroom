@@ -1,0 +1,76 @@
+REDPEN SHOWROOM — NEXT/FONT BUILD FIX V41
+===========================================
+
+SORUN
+-----
+Vercel build, app/layout.tsx içindeki:
+
+- Cormorant_Garamond
+- Geist
+- Geist_Mono
+
+`next/font/google` importları nedeniyle fonts.gstatic.com'a build sırasında
+istek atıyordu.
+
+Cormorant Garamond WOFF2 URL'leri 404 verdiği için Turbopack build:
+"Can't resolve @vercel/turbopack-next/internal/font/google/font"
+hatasıyla durdu.
+
+Bu V40 CostDebugPanel hatası DEĞİL.
+V40 build aşamasına gelirken daha önce var olan global Google font bağımlılığı
+Vercel'de tekrar patladı.
+
+V41 NE YAPIYOR?
+---------------
+- app/layout.tsx içindeki `next/font/google` importunu tamamen kaldırır.
+- Cormorant_Garamond / Geist / Geist_Mono runtime tanımlarını kaldırır.
+- Mevcut CSS variable isimlerini KORUR:
+  --font-geist-sans
+  --font-geist-mono
+  --font-display
+
+Böylece mevcut CSS'in büyük kısmına dokunulmaz.
+
+Fallback:
+--font-geist-sans -> Inter / Segoe UI / Arial
+--font-geist-mono -> Cascadia Mono / Consolas
+--font-display -> Georgia / Times New Roman
+
+/tasarla içindeki local WOFF2 sign font sistemi bundan bağımsızdır ve korunur.
+
+KURULUM
+-------
+ZIP'i:
+D:\Projects\redpen-showroom
+
+içine çıkar.
+
+PowerShell:
+
+cd D:\Projects\redpen-showroom
+node PATCH-NEXT-FONT-BUILD-FIX-V41.cjs
+npm.cmd run build
+
+Build geçerse:
+
+git add .
+git commit -m "Remove build-time Google font dependency"
+git push
+
+SONRA
+-----
+Yeni Vercel deploy tamamlanınca:
+
+https://redpen-showroom.vercel.app/tasarla?costdebug=1
+
+adresini aç.
+
+V40'taki sarı:
+SARFİYAT + MALİYET TEST PANELİ
+görünmeli.
+
+NOT
+---
+Bu patch görsel tasarım fontlarını silmez.
+Sadece global layout'ta Vercel build sırasında internete bağlı Google font
+fetch'ini kaldırır.
