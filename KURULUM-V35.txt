@@ -1,0 +1,35 @@
+REDPEN VERCEL BLOB OIDC FIX V35
+
+NE DEĞİŞTİ?
+- BLOB_READ_WRITE_TOKEN kontrolü kaldırıldı.
+- REDPEN_SHOWROOM_DESIGNS_STORE_ID kullanılıyor.
+- @vercel/blob latest sürüme alınır.
+- Upload route storeId ile public Blob'a yazar.
+- Hatalar artık daha ayrıntılı döner.
+
+KURULUM
+ZIP'i D:\Projects\redpen-showroom içine çıkar.
+Mevcut dosyanın üzerine yazılmasına izin ver.
+
+PowerShell:
+
+cd D:\Projects\redpen-showroom
+node PATCH-BLOB-OIDC-V35.cjs
+npm.cmd install
+npm.cmd run build
+
+Build geçerse:
+
+git add .
+git commit -m "Fix Vercel Blob OIDC upload"
+git push
+
+VERCEL KONTROL
+- Blob Store: Public
+- Store > Projects: redpen-showroom bağlı
+- Environment Variables:
+  REDPEN_SHOWROOM_DESIGNS_STORE_ID
+- Push sonrası YENİ deployment üzerinde test et.
+
+NOT
+Localhost testinde OIDC farklı davranabilir. Asıl test Vercel production URL'sinde yapılmalı.

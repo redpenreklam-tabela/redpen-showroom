@@ -16,12 +16,11 @@ function createDesignId() {
 
 export async function POST(request: Request) {
   try {
-    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    const storeId = process.env.REDPEN_SHOWROOM_DESIGNS_STORE_ID;
+
+    if (!storeId) {
       return NextResponse.json(
-        {
-          error:
-            "Vercel Blob bağlı değil. Vercel > Storage > Blob bölümünden Public store oluşturun.",
-        },
+        { error: "Vercel Blob store bağlantısı bulunamadı. REDPEN_SHOWROOM_DESIGNS_STORE_ID eksik." },
         { status: 503 }
       );
     }
@@ -48,9 +47,10 @@ export async function POST(request: Request) {
 
     const blob = await put(`showroom-designs/${designId}.png`, file, {
       access: "public",
+      storeId,
       addRandomSuffix: false,
       contentType: "image/png",
-      cacheControlMaxAge: 60 * 60 * 24 * 30,
+      cacheControlMaxAge: 60 * 60 * 24,
     });
 
     return NextResponse.json({
@@ -58,9 +58,11 @@ export async function POST(request: Request) {
       url: blob.url,
     });
   } catch (error) {
-    console.error("REDPEN DESIGN UPLOAD ERROR", error);
+    console.error("REDPEN DESIGN UPLOAD ERROR V35", error);
+    const detail = error instanceof Error ? error.message : "Bilinmeyen Blob yükleme hatası.";
+
     return NextResponse.json(
-      { error: "Tasarım görseli kaydedilemedi." },
+      { error: `Tasarım görseli kaydedilemedi: ${detail}` },
       { status: 500 }
     );
   }
