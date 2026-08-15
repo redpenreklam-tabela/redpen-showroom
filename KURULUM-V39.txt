@@ -1,0 +1,144 @@
+REDPEN SHOWROOM — MATERIAL CONSUMPTION ENGINE V39
+================================================
+
+BU PAKET FİYATI MÜŞTERİYE GÖSTERMEZ.
+İlk amacımız sarfiyat tahminlerini gerçek tasarımlar üzerinde test etmek.
+
+KULLANILAN FİYATLAR
+-------------------
+Kompozit:
+- 300 × 125 cm = 8.700 TL
+- 600 × 150 cm = 16.200 TL
+
+Forex:
+- 300 × 150 cm = 4.800 TL
+
+Pleksi:
+- 300 × 150 cm = 15.000 TL
+
+Harf yanağı:
+- 120 TL / metre
+
+Demir profil:
+- 6 metre = 450 TL
+- sistem maliyeti 6 metrelik boy adedine yuvarlar
+
+LED:
+- 15 TL / adet CONFIG'E KAYDEDİLDİ
+- ancak V39 toplam maliyet hesabına BİLİNÇLİ OLARAK DAHİL DEĞİL
+
+NE HESAPLIYOR?
+--------------
+1) KOMPOZİT
+Tabela eni/yüksekliğine göre 300x125 ve 600x150 plakaları dener.
+Döndürülmüş yerleşimi de kontrol eder.
+Tabela yüksekliği 125 cm altındaysa 300'lük + 600'lük karışık yatay kombinasyonu da dener.
+En ucuz yaklaşık plaka kombinasyonunu seçer.
+
+2) HARF YÜZ ALANI
+Ana yazıyı gerçek seçili fontla görünmez Canvas'a çizer.
+Dolu glyph piksellerini sayar.
+Girilen gerçek harf yüksekliğine göre m²'ye çevirir.
+
+Bu nedenle yalnız bounding-box alanı kullanılmaz.
+Örneğin "I" ile "M" aynı kaba dikdörtgen alan gibi hesaplanmaz.
+
+3) HARF ÇEVRESİ / YANAK
+Canvas maskesindeki dolu/boş piksel sınırlarını sayar.
+Bunu gerçek cm ölçeğine çevirip yaklaşık kontur çevresi üretir.
+Kutu harf malzemelerinde:
+yaklaşık çevre metre × 120 TL
+
+4) PLEKSİ / FOREX TABAKA
+Gerçek yaklaşık yüz alanını kullanır.
+İlk test için nesting/fire verimi %68 kabul edilir.
+300×150 plakaya göre yaklaşık tabaka adedi çıkarır.
+
+Pleksiye dahil:
+- PLEKSİ harf
+- FİLELİ GOLD / FİLELİ KROM pleksi yüz
+- Pleksi/Fileli 6 cm ışık bandı
+- Ek yazı bunlardan biriyse onun yüzü
+
+Forex'e dahil:
+- FOREX harf
+- FOREX ek yazı
+- FOREX 6 cm ışık bandı
+
+5) GOLD / KROM
+Gold/Krom yüzün yaklaşık m² sarfiyatını ölçer,
+ancak fiyat verilmediği için maliyete eklemez.
+
+6) DEMİR PROFİL
+Yaklaşık dış çerçeve:
+2×en + 2×boy
+
+Ayrıca yaklaşık her 80 cm'de ara kayıt ekler.
+Toplam metreyi 6 metrelik profil boya yuvarlar:
+profil boy adedi × 450 TL
+
+TEST PANELİNİ NASIL AÇACAĞIM?
+------------------------------
+Normal müşteri URL'sinde panel görünmez.
+
+Şunu aç:
+https://SENIN-SITEN/tasarla?costdebug=1
+
+Panelde:
+- Kompozit plaka
+- Pleksi plaka
+- Forex plaka
+- Harf yanağı metre
+- Profil adet/metre
+- Gold/Krom yüz m²
+- Şu an bilinen malzeme maliyeti
+görünür.
+
+Ayrıca browser console'da:
+[REDPEN] Material Consumption Engine V39
+başlığı altında detay obje görünür.
+
+KURULUM
+-------
+ZIP'i:
+D:\Projects\redpen-showroom
+
+içine çıkar.
+
+PowerShell:
+
+cd D:\Projects\redpen-showroom
+node PATCH-MATERIAL-CONSUMPTION-V39.cjs
+npm.cmd run build
+
+Build geçerse:
+
+git add .
+git commit -m "Add material consumption estimator"
+git push
+
+TESTTE BANA GÖNDERMEN ÇOK DEĞERLİ OLACAK
+----------------------------------------
+Birkaç gerçek atölye örneği seç:
+
+Örn:
+- 300×80 / REDPEN / 50 cm Pleksi
+- 590×110 / farklı font / Fileli Gold
+- Forex yazı
+- çok uzun ve ince font
+- kısa ve kalın font
+
+Her biri için sistemin söylediği:
+Pleksi kaç plaka?
+Yanak kaç metre?
+Profil kaç metre?
+Kompozit kaç plaka?
+
+ile senin gerçek üretim tecrübeni karşılaştıracağız.
+Sonra %68 nesting, profil aralığı ve kontur katsayılarını kalibre edeceğiz.
+
+ÖNEMLİ
+------
+Bu V39 tam CNC nesting değildir.
+Ama gerçek fontun raster yüz alanını ve yaklaşık konturunu kullandığı için
+sadece "yazı genişliği × yüksekliği" yönteminden çok daha gerçekçi bir ilk tahmindir.
