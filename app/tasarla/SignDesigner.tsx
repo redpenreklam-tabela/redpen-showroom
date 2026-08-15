@@ -1766,6 +1766,7 @@ export default function SignDesigner() {
             letterSpacing={letterSpacing}
             letterMaterial={letterMaterial}
             baseMaterial={baseMaterial}
+            lighted={lighted}
           />
 
           <div className="designer-summary">

@@ -11,6 +11,7 @@ type Props = {
   letterSpacing: number;
   letterMaterial: string;
   baseMaterial: string;
+  lighted: boolean;
 };
 
 const CONFIG = {
@@ -22,6 +23,15 @@ const CONFIG = {
   plexi: { w: 300, h: 150, price: 15000, efficiency: 0.68 },
   sidePerM: 120,
   profile: { stockM: 6, price: 450, braceEveryCm: 80 },
+  led: {
+    unitPriceTl: 14,
+    // Atölye referansı:
+    // 50 cm yüksekliğinde Montserrat "R" harfi ≈ 40 LED.
+    referenceCharacter: "R",
+    referenceHeightCm: 50,
+    referenceLedCount: 40,
+    referenceFontFamily: "var(--font-sign-montserrat)",
+  },
 } as const;
 
 const tl = (value: number) =>
@@ -172,6 +182,18 @@ export default function CostDebugPanel(props: Props) {
       props.letterSpacing,
     );
 
+    const referenceRGeometry = textGeometry(
+      CONFIG.led.referenceCharacter,
+      CONFIG.led.referenceFontFamily,
+      CONFIG.led.referenceHeightCm,
+      0,
+    );
+
+    const ledPerM2 =
+      referenceRGeometry.areaM2 > 0
+        ? CONFIG.led.referenceLedCount / referenceRGeometry.areaM2
+        : 0;
+
     const composite =
       props.baseMaterial === "KOMPOZİT"
         ? bestComposite(props.width, props.height)
@@ -182,7 +204,9 @@ export default function CostDebugPanel(props: Props) {
       props.letterMaterial === "FİLELİ GOLD" ||
       props.letterMaterial === "FİLELİ KROM";
 
-    const usesForex = props.letterMaterial === "FOREX";
+    // Tüm harf reçetelerinde altta Forex taban kullanılıyor.
+    // Düz FOREX harfte aynı yüz tek kat sayılır.
+    const usesForex = true;
 
     const usesSide =
       props.letterMaterial === "PLEKSİ" ||
@@ -190,6 +214,16 @@ export default function CostDebugPanel(props: Props) {
       props.letterMaterial === "KROM KAPLAMA" ||
       props.letterMaterial === "FİLELİ GOLD" ||
       props.letterMaterial === "FİLELİ KROM";
+
+    const usesLed =
+      props.lighted &&
+      props.letterMaterial !== "FOREX" &&
+      props.letterMaterial !== "FOLYO";
+
+    const ledCount =
+      usesLed && ledPerM2 > 0
+        ? Math.max(1, Math.ceil(geom.areaM2 * ledPerM2))
+        : 0;
 
     const plexiSheets = usesPlexi
       ? Math.max(
@@ -238,6 +272,7 @@ export default function CostDebugPanel(props: Props) {
       forex: forexSheets * CONFIG.forex.price,
       side: sideM * CONFIG.sidePerM,
       profile: profileStocks * CONFIG.profile.price,
+      led: ledCount * CONFIG.led.unitPriceTl,
     };
 
     const total =
@@ -245,7 +280,8 @@ export default function CostDebugPanel(props: Props) {
       costs.plexi +
       costs.forex +
       costs.side +
-      costs.profile;
+      costs.profile +
+      costs.led;
 
     return {
       geom,
@@ -257,6 +293,9 @@ export default function CostDebugPanel(props: Props) {
       profileStocks,
       vertical,
       horizontal,
+      referenceRGeometry,
+      ledPerM2,
+      ledCount,
       costs,
       total,
     };
@@ -305,7 +344,7 @@ export default function CostDebugPanel(props: Props) {
           </div>
           <strong style={{ fontSize: 16 }}>SARFİYAT + MALİYET TEST PANELİ</strong>
         </div>
-        <b style={{ color: "#ffb53e", fontSize: 11 }}>LED HARİÇ</b>
+        <b style={{ color: "#ffb53e", fontSize: 11 }}>LED ALAN BAZLI</b>
       </div>
 
       <div
@@ -368,6 +407,18 @@ export default function CostDebugPanel(props: Props) {
           </div>
         </div>
 
+        <div style={box}>
+          <small>LED</small>
+          <div style={{ fontSize: 18, fontWeight: 900, marginTop: 5 }}>
+            {result.ledCount} adet
+          </div>
+          <div style={{ opacity: 0.6, fontSize: 11, marginTop: 5 }}>
+            {result.ledCount
+              ? `14 TL/adet · ${tl(result.costs.led)}`
+              : "Işıksız / LED kullanılmıyor"}
+          </div>
+        </div>
+
         <div
           style={{
             ...box,
@@ -386,7 +437,7 @@ export default function CostDebugPanel(props: Props) {
             {tl(result.total)}
           </div>
           <div style={{ opacity: 0.6, fontSize: 10, marginTop: 5 }}>
-            LED + metal yüz + işçilik + montaj + kâr dahil değil
+            Metal yüz + işçilik + montaj + kâr dahil değil
           </div>
         </div>
       </div>
@@ -402,7 +453,9 @@ export default function CostDebugPanel(props: Props) {
         Gerçek raster yazı yüzü: {result.geom.areaM2.toFixed(3)} m² · yaklaşık
         kontur: {result.geom.perimeterM.toFixed(2)} m · profil ara kayıt:
         {" "}{result.vertical} dikey + {result.horizontal} yatay · Pleksi/Forex
-        verim katsayısı şimdilik %68.
+        verim katsayısı şimdilik %68 · LED kalibrasyonu: 50 cm Montserrat R =
+        40 LED · referans R alanı {result.referenceRGeometry.areaM2.toFixed(4)} m² ·
+        yoğunluk {result.ledPerM2.toFixed(0)} LED/m².
       </div>
     </div>
   );

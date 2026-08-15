@@ -1,0 +1,115 @@
+REDPEN SHOWROOM — LED ALAN KALİBRASYONU V44
+==========================================
+
+ATÖLYE REFERANSI
+----------------
+50 cm yüksekliğinde Montserrat "R" harfi = 40 LED
+
+LED fiyatı:
+14 TL / adet
+
+NASIL HESAPLIYOR?
+-----------------
+Sistem önce görünmez Canvas'ta:
+
+Montserrat
+R
+50 cm yükseklik
+
+harfinin gerçek dolu raster yüz alanını hesaplar.
+
+Örnek mantık:
+R alanı = X m²
+
+LED yoğunluğu:
+40 / X = Y LED / m²
+
+Sonra müşterinin gerçek yazısının seçili font + harf yüksekliğiyle
+raster yüz alanını hesaplar:
+
+Toplam LED =
+yazı yüz alanı × Y LED/m²
+
+ve yukarı yuvarlar.
+
+Böylece:
+- daha büyük harf -> daha çok LED
+- daha küçük harf -> daha az LED
+- kalın font -> daha çok LED
+- ince font -> daha az LED
+- uzun yazı -> toplam gerçek yüz alanına göre daha çok LED
+
+LED MALİYETİ
+-------------
+LED adedi × 14 TL
+
+Artık "Bilinen Malzeme Toplamı"na LED maliyeti DAHİLDİR.
+
+LED NE ZAMAN 0?
+---------------
+- IŞIK kapalıysa
+- FOREX harfte
+- FOLYO harfte
+
+Pleksi / Gold / Krom / Fileli Gold / Fileli Krom ışıklıysa hesaplanır.
+
+FOREX TABAN
+-----------
+Bu patch V43'ü de kümülatif olarak garanti eder:
+tüm harf reçetelerinde Forex taban hesaplanır.
+Düz Forex harfte ikinci kat sayılmaz.
+
+PANELDE GÖRECEĞİN
+-----------------
+LED
+XX adet
+14 TL/adet · X.XXX TL
+
+Alt debug satırında ayrıca:
+- referans R alanı (m²)
+- türetilen LED/m² yoğunluğu
+görünür.
+
+Böylece bana ekran görüntüsü attığında şu hesabı beraber kalibre edebiliriz:
+"R gerçekten sistemde kaç m² çıktı ve bu kaç LED/m² yaptı?"
+
+KURULUM
+-------
+ZIP'i D:\Projects\redpen-showroom içine çıkar.
+
+PowerShell:
+
+cd D:\Projects\redpen-showroom
+node PATCH-LED-AREA-CALIBRATION-V44.cjs
+npm.cmd run build
+
+Build geçerse:
+
+git add .
+git commit -m "Calibrate LED usage by letter area"
+git push
+
+TEST
+----
+Deploy sonrası normal /tasarla ekranında:
+
+1) Font: Montserrat
+2) Yazı: R
+3) Harf yüksekliği: 50 cm
+4) Harf: PLEKSİ
+5) IŞIK: açık
+
+LED sonucu TAM 40 adet olmalı.
+
+Sonra:
+- REDPEN / 50 cm
+- R / 100 cm
+- farklı kalın font
+ile kıyasla.
+
+ÖNEMLİ
+------
+Bu yaklaşım "harf alanına düşen LED" modelidir.
+Gerçek üretimde dar stroke, çok küçük iç boşluk veya sıra aralığı gibi detaylar
+için ileride minimum/maksimum yoğunluk katsayısı eklenebilir.
+İlk hedef: atölyedeki R=40 referansını matematiksel olarak bütün harflere yaymak.
