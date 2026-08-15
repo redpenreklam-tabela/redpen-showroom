@@ -815,7 +815,7 @@ export default function SignDesigner() {
 
     if (usage.count >= MAX_DAILY_IMAGE_QUOTES) {
       openTextOnlyWhatsApp(
-        "Not: Günlük görselli teklif sınırına ulaşıldı. Tasarım ekran görüntüsünü bu sohbete manuel olarak ekleyebilirsiniz."
+        "Not: Günlük otomatik görselli teklif sınırına ulaşıldı. Bu mesajda yeni tasarım görseli eklenmeyecektir."
       );
       return;
     }
@@ -873,15 +873,13 @@ export default function SignDesigner() {
       console.error("REDPEN QUOTE REQUEST ERROR", error);
       const message = error instanceof Error ? error.message : String(error);
 
-      const fallback = window.confirm(
-        `Görsel otomatik gönderilemedi. ${message}\n\nWhatsApp'ı görselsiz açalım mı? Ekran görüntüsünü sohbete kendiniz ekleyebilirsiniz.`
+      window.alert(
+        `Tasarım görseli otomatik hazırlanamadı. ${message}\n\nTeknik teklif bilgileri WhatsApp üzerinden gönderilecek; kullanıcıdan manuel görsel eklemesi istenmeyecek.`
       );
 
-      if (fallback) {
-        openTextOnlyWhatsApp(
-          "Not: Tasarım görseli otomatik yüklenemedi. Ekran görüntüsü manuel olarak eklenecek."
-        );
-      }
+      openTextOnlyWhatsApp(
+        "Not: Tasarım görseli otomatik eklenemedi. Teknik bilgiler üzerinden teklif talebi oluşturuldu."
+      );
     } finally {
       setQuoteSubmitting(false);
     }

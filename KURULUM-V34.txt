@@ -1,0 +1,19 @@
+REDPEN QUOTE LIMIT V34
+
+Değişiklik:
+- İlk 3 görselli teklif mevcut otomatik sistemle devam eder.
+- 24 saatlik 3 görsel hakkı bittikten sonra yeni PNG yüklenmez.
+- Kullanıcıya ekran görüntüsü / manuel görsel ekleme yönlendirmesi yapılmaz.
+- WhatsApp teknik bilgilerle açılır.
+- Görsel tarafındaki devam süreci Redpen tarafından yürütülür.
+- Otomatik görsel yükleme hata verirse de kullanıcıdan manuel screenshot istenmez.
+
+Kurulum:
+  cd D:\Projects\redpen-showroom
+  node PATCH-QUOTE-LIMIT-V34.cjs
+  npm.cmd run build
+
+Build geçerse:
+  git add .
+  git commit -m "Prevent manual image fallback after quote limit"
+  git push
