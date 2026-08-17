@@ -346,10 +346,29 @@ export default function CostDebugPanel(props: Props) {
       Math.ceil(profileNeededM / CONFIG.profile.stockM),
     );
 
+    // Pleksi ve Forex maliyeti artık tam plaka adedinden değil,
+    // kullanılan efektif plaka alanı payından hesaplanır.
+    // Böylece 6 cm ışık bandı eklendiği anda fiyat da kademesiz artar.
+    const plexiEffectiveSheetAreaM2 =
+      ((CONFIG.plexi.w * CONFIG.plexi.h) / 10000) * CONFIG.plexi.efficiency;
+
+    const forexEffectiveSheetAreaM2 =
+      ((CONFIG.forex.w * CONFIG.forex.h) / 10000) * CONFIG.forex.efficiency;
+
+    const plexiUsedSheetShare =
+      plexiEffectiveSheetAreaM2 > 0
+        ? plexiAreaM2 / plexiEffectiveSheetAreaM2
+        : 0;
+
+    const forexUsedSheetShare =
+      forexEffectiveSheetAreaM2 > 0
+        ? forexAreaM2 / forexEffectiveSheetAreaM2
+        : 0;
+
     const costs = {
       composite: composite?.cost ?? 0,
-      plexi: plexiSheets * CONFIG.plexi.price,
-      forex: forexSheets * CONFIG.forex.price,
+      plexi: plexiUsedSheetShare * CONFIG.plexi.price,
+      forex: forexUsedSheetShare * CONFIG.forex.price,
       side: sideM * CONFIG.sidePerM,
       profile: profileStocks * CONFIG.profile.price,
       led: ledCount * CONFIG.led.unitPriceTl,
@@ -381,6 +400,8 @@ export default function CostDebugPanel(props: Props) {
       stripGeom,
       plexiAreaM2,
       forexAreaM2,
+      plexiUsedSheetShare,
+      forexUsedSheetShare,
       costs,
       total,
     };
@@ -502,7 +523,7 @@ export default function CostDebugPanel(props: Props) {
             {result.plexiSheets} plaka
           </div>
           <div style={{ opacity: 0.6, fontSize: 11, marginTop: 5 }}>
-            {result.geom.areaM2.toFixed(3)} m² yüz · {tl(result.costs.plexi)}
+            {result.plexiAreaM2.toFixed(3)} m² toplam · %{(result.plexiUsedSheetShare * 100).toFixed(1)} efektif plaka · {tl(result.costs.plexi)}
           </div>
         </div>
 
@@ -512,7 +533,9 @@ export default function CostDebugPanel(props: Props) {
             {result.forexSheets} plaka
           </div>
           <div style={{ opacity: 0.6, fontSize: 11, marginTop: 5 }}>
-            {result.forexSheets ? tl(result.costs.forex) : "Kullanılmıyor"}
+            {result.forexSheets
+              ? `${result.forexAreaM2.toFixed(3)} m² toplam · %${(result.forexUsedSheetShare * 100).toFixed(1)} efektif plaka · ${tl(result.costs.forex)}`
+              : "Kullanılmıyor"}
           </div>
         </div>
 

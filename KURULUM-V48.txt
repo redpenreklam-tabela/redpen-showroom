@@ -1,0 +1,74 @@
+REDPEN SHOWROOM — ALAN BAZLI PLEKSİ / FOREX FİYATI V48
+=====================================================
+
+SORUN
+-----
+V47 ışık bandının Pleksi ve Forex alanını doğru şekilde artırıyordu.
+Ancak fiyat şöyleydi:
+
+pleksiSheets * 15.000 TL
+forexSheets  * 4.800 TL
+
+Örneğin:
+Harf + band hâlâ 1 plaka sınırındaysa
+1 plaka -> 1 plaka kaldığı için fiyat değişmiyordu.
+
+Yani hesap alanı büyüyordu ama müşteri fiyatında bunu göremiyordu.
+
+V48 ÇÖZÜM
+----------
+Pleksi / Forex artık kullanılan efektif plaka PAYINA göre fiyatlanır.
+
+Pleksi:
+300 × 150 = 4.50 m² brüt
+%68 efektif = 3.06 m²
+Tam efektif plaka = 15.000 TL
+
+Örnek:
+0.90 m² kullanım
+0.90 / 3.06 = %29.41 efektif plaka
+15.000 × 0.2941 ≈ 4.412 TL
+
+Işık bandı 0.30 m² daha eklerse:
+1.20 / 3.06 = %39.22
+≈ 5.882 TL
+
+Dolayısıyla ışık bandı açıldığı anda fiyat ARTAR.
+
+Forex:
+aynı mantık
+300 × 150
+4.800 TL
+%68 verim/fire katsayısı
+
+PLAKA ADEDİ
+-----------
+Debug panelde plaka adedi yine korunur.
+Bu üretim için "kaç plaka gerekebilir" bilgisidir.
+
+FİYAT
+-----
+Müşteri tarafında ise kullanılan alan payı üzerinden çalışır.
+Bu fiyat geçişlerini çok daha akıcı ve mantıklı yapar.
+
+KURULUM
+-------
+cd D:\Projects\redpen-showroom
+node PATCH-AREA-BASED-SHEET-COST-V48.cjs
+npm.cmd run build
+
+Build geçerse:
+git add .
+git commit -m "Use area based Plexi and Forex cost"
+git push
+
+TEST
+----
+Aynı tasarımda:
+IŞIK BANDI = YOK
+sonra
+ÜST
+ÜST + ALT
+4 KENAR
+
+Pleksi ve Forex TL fiyatlarının her seçimde yükselmesi gerekir.
