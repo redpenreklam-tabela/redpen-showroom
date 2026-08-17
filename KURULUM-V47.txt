@@ -1,0 +1,29 @@
+REDPEN SHOWROOM — IŞIK BANDI MALİYETİ V47
+
+6 cm ışık bandı aktif olduğunda:
+- Pleksi
+- Forex
+- Harf yanağı
+- LED
+maliyete eklenir.
+
+Pleksi/Forex band alanı mevcut harf alanına eklenir ve sonra plaka sayısına yuvarlanır.
+LED, mevcut 50 cm Montserrat R = 40 LED kalibrasyonuyla alan bazlı hesaplanır.
+Harf yanağı 120 TL/m mevcut fiyatı kullanır.
+LED 14 TL/adet mevcut fiyatı kullanır.
+
+Normal /tasarla:
+müşteri yalnızca TL fiyat kutularını görür.
+
+Debug /tasarla?costdebug=1:
+ışık bandı alanı, yanak metresi ve LED adedi ayrıca görünür.
+
+KURULUM:
+cd D:\Projects\redpen-showroom
+node PATCH-LIGHT-STRIP-COST-V47.cjs
+npm.cmd run build
+
+Build geçerse:
+git add .
+git commit -m "Add light strip material costs"
+git push

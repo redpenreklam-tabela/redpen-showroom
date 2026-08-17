@@ -12,6 +12,7 @@ type Props = {
   letterMaterial: string;
   baseMaterial: string;
   lighted: boolean;
+  lightStripMode: string;
   onQuote: () => void;
   quoteBusy: boolean;
 };
@@ -132,6 +133,55 @@ function textGeometry(
   };
 }
 
+
+function lightStripGeometry(mode, widthCm, heightCm) {
+  if (mode === "none") {
+    return { active: false, areaM2: 0, sideM: 0 };
+  }
+
+  const w = Math.max(0, widthCm);
+  const h = Math.max(0, heightCm);
+  const b = 6;
+  let areaCm2 = 0;
+  let sideCm = 0;
+
+  switch (mode) {
+    case "top":
+    case "bottom":
+      areaCm2 = w * b;
+      sideCm = 2 * (w + b);
+      break;
+    case "top-bottom":
+      areaCm2 = 2 * w * b;
+      sideCm = 4 * (w + b);
+      break;
+    case "left":
+    case "right":
+      areaCm2 = h * b;
+      sideCm = 2 * (h + b);
+      break;
+    case "left-right":
+      areaCm2 = 2 * h * b;
+      sideCm = 4 * (h + b);
+      break;
+    case "all": {
+      const innerW = Math.max(0, w - 2 * b);
+      const innerH = Math.max(0, h - 2 * b);
+      areaCm2 = w * h - innerW * innerH;
+      sideCm = 2 * (w + h) + 2 * (innerW + innerH);
+      break;
+    }
+    default:
+      return { active: false, areaM2: 0, sideM: 0 };
+  }
+
+  return {
+    active: true,
+    areaM2: areaCm2 / 10000,
+    sideM: sideCm / 100,
+  };
+}
+
 function bestComposite(width: number, height: number) {
   const options: Array<{ label: string; sheets: number; cost: number }> = [];
 
@@ -199,6 +249,12 @@ export default function CostDebugPanel(props: Props) {
         ? CONFIG.led.referenceLedCount / referenceRGeometry.areaM2
         : 0;
 
+    const stripGeom = lightStripGeometry(
+      props.lightStripMode,
+      props.width,
+      props.height,
+    );
+
     const composite =
       props.baseMaterial === "KOMPOZİT"
         ? bestComposite(props.width, props.height)
@@ -225,34 +281,53 @@ export default function CostDebugPanel(props: Props) {
       props.letterMaterial !== "FOREX" &&
       props.letterMaterial !== "FOLYO";
 
-    const ledCount =
+    const letterLedCount =
       usesLed && ledPerM2 > 0
         ? Math.max(1, Math.ceil(geom.areaM2 * ledPerM2))
         : 0;
 
-    const plexiSheets = usesPlexi
-      ? Math.max(
-          1,
-          Math.ceil(
-            geom.areaM2 /
-              (((CONFIG.plexi.w * CONFIG.plexi.h) / 10000) *
-                CONFIG.plexi.efficiency),
-          ),
-        )
-      : 0;
+    const stripLedCount =
+      stripGeom.active && ledPerM2 > 0
+        ? Math.max(1, Math.ceil(stripGeom.areaM2 * ledPerM2))
+        : 0;
 
-    const forexSheets = usesForex
-      ? Math.max(
-          1,
-          Math.ceil(
-            geom.areaM2 /
-              (((CONFIG.forex.w * CONFIG.forex.h) / 10000) *
-                CONFIG.forex.efficiency),
-          ),
-        )
-      : 0;
+    const ledCount = letterLedCount + stripLedCount;
 
-    const sideM = usesSide ? geom.perimeterM : 0;
+    const plexiAreaM2 =
+      (usesPlexi ? geom.areaM2 : 0) +
+      (stripGeom.active ? stripGeom.areaM2 : 0);
+
+    const forexAreaM2 =
+      (usesForex ? geom.areaM2 : 0) +
+      (stripGeom.active ? stripGeom.areaM2 : 0);
+
+    const plexiSheets =
+      plexiAreaM2 > 0
+        ? Math.max(
+            1,
+            Math.ceil(
+              plexiAreaM2 /
+                (((CONFIG.plexi.w * CONFIG.plexi.h) / 10000) *
+                  CONFIG.plexi.efficiency),
+            ),
+          )
+        : 0;
+
+    const forexSheets =
+      forexAreaM2 > 0
+        ? Math.max(
+            1,
+            Math.ceil(
+              forexAreaM2 /
+                (((CONFIG.forex.w * CONFIG.forex.h) / 10000) *
+                  CONFIG.forex.efficiency),
+            ),
+          )
+        : 0;
+
+    const sideM =
+      (usesSide ? geom.perimeterM : 0) +
+      (stripGeom.active ? stripGeom.sideM : 0);
 
     const perimeterM = (2 * props.width + 2 * props.height) / 100;
     const vertical = Math.max(
@@ -300,7 +375,12 @@ export default function CostDebugPanel(props: Props) {
       horizontal,
       referenceRGeometry,
       ledPerM2,
+      letterLedCount,
+      stripLedCount,
       ledCount,
+      stripGeom,
+      plexiAreaM2,
+      forexAreaM2,
       costs,
       total,
     };
@@ -467,6 +547,18 @@ export default function CostDebugPanel(props: Props) {
               : "Işıksız / LED kullanılmıyor"}
           </div>
         </div>
+
+        {result.stripGeom.active && (
+          <div style={box}>
+            <small>IŞIK BANDI / 6 CM</small>
+            <div style={{ fontSize: 18, fontWeight: 900, marginTop: 5 }}>
+              {result.stripGeom.areaM2.toFixed(3)} m²
+            </div>
+            <div style={{ opacity: 0.6, fontSize: 11, marginTop: 5 }}>
+              Pleksi + Forex + {result.stripGeom.sideM.toFixed(1)} m yanak · {result.stripLedCount} LED
+            </div>
+          </div>
+        )}
 
         <div
           style={{

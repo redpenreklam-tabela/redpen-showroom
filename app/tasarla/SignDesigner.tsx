@@ -1767,6 +1767,7 @@ export default function SignDesigner() {
             letterMaterial={letterMaterial}
             baseMaterial={baseMaterial}
             lighted={lighted}
+            lightStripMode={lightStripMode}
             onQuote={handleQuoteRequest}
             quoteBusy={quoteSubmitting || exportingPng}
           />
