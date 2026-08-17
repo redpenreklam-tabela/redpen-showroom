@@ -1,0 +1,31 @@
+REDPEN SHOWROOM — İKİNCİ METİN MALİYETİ V49
+
+İkinci metin artık maliyet hesabına dahil.
+
+PLEKSİ:
+Pleksi + Forex taban + yanak + LED
+
+GOLD/KROM:
+Forex taban + yanak + LED
+(Metal yüz fiyatı henüz ayrı değil)
+
+FİLELİ:
+Pleksi + Forex taban + yanak + LED
+(Metal çerçeve fiyatı henüz ayrı değil)
+
+FOREX:
+Forex, LED yok, yanak yok
+
+FOLYO:
+Forex taban, LED yok, yanak yok
+(Folyo birim fiyatı henüz ayrı değil)
+
+KURULUM:
+cd D:\Projects\redpen-showroom
+node PATCH-EXTRA-TEXT-COST-V49.cjs
+npm.cmd run build
+
+Build geçerse:
+git add .
+git commit -m "Include extra text in material cost"
+git push

@@ -1768,6 +1768,12 @@ export default function SignDesigner() {
             baseMaterial={baseMaterial}
             lighted={lighted}
             lightStripMode={lightStripMode}
+            extraTextEnabled={extraTextEnabled}
+            extraText={normalizedExtraText}
+            extraFontFamily={currentExtraFont.family}
+            extraLetterHeightCm={extraLetterHeightCm}
+            extraLetterSpacing={extraLetterSpacing}
+            extraLetterMaterial={extraLetterMaterial}
             onQuote={handleQuoteRequest}
             quoteBusy={quoteSubmitting || exportingPng}
           />

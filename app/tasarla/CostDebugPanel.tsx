@@ -13,6 +13,12 @@ type Props = {
   baseMaterial: string;
   lighted: boolean;
   lightStripMode: string;
+  extraTextEnabled: boolean;
+  extraText: string;
+  extraFontFamily: string;
+  extraLetterHeightCm: number;
+  extraLetterSpacing: number;
+  extraLetterMaterial: string;
   onQuote: () => void;
   quoteBusy: boolean;
 };
@@ -237,6 +243,15 @@ export default function CostDebugPanel(props: Props) {
       props.letterSpacing,
     );
 
+    const extraGeom = props.extraTextEnabled
+      ? textGeometry(
+          props.extraText,
+          props.extraFontFamily,
+          props.extraLetterHeightCm,
+          props.extraLetterSpacing,
+        )
+      : { areaM2: 0, perimeterM: 0 };
+
     const referenceRGeometry = textGeometry(
       CONFIG.led.referenceCharacter,
       CONFIG.led.referenceFontFamily,
@@ -281,6 +296,28 @@ export default function CostDebugPanel(props: Props) {
       props.letterMaterial !== "FOREX" &&
       props.letterMaterial !== "FOLYO";
 
+    const extraUsesPlexi =
+      props.extraTextEnabled &&
+      (props.extraLetterMaterial === "PLEKSİ" ||
+       props.extraLetterMaterial === "FİLELİ GOLD" ||
+       props.extraLetterMaterial === "FİLELİ KROM");
+
+    const extraUsesForex = props.extraTextEnabled;
+
+    const extraUsesSide =
+      props.extraTextEnabled &&
+      (props.extraLetterMaterial === "PLEKSİ" ||
+       props.extraLetterMaterial === "GOLD KAPLAMA" ||
+       props.extraLetterMaterial === "KROM KAPLAMA" ||
+       props.extraLetterMaterial === "FİLELİ GOLD" ||
+       props.extraLetterMaterial === "FİLELİ KROM");
+
+    const extraUsesLed =
+      props.extraTextEnabled &&
+      props.lighted &&
+      props.extraLetterMaterial !== "FOREX" &&
+      props.extraLetterMaterial !== "FOLYO";
+
     const letterLedCount =
       usesLed && ledPerM2 > 0
         ? Math.max(1, Math.ceil(geom.areaM2 * ledPerM2))
@@ -291,14 +328,21 @@ export default function CostDebugPanel(props: Props) {
         ? Math.max(1, Math.ceil(stripGeom.areaM2 * ledPerM2))
         : 0;
 
-    const ledCount = letterLedCount + stripLedCount;
+    const extraLedCount =
+      extraUsesLed && ledPerM2 > 0
+        ? Math.max(1, Math.ceil(extraGeom.areaM2 * ledPerM2))
+        : 0;
+
+    const ledCount = letterLedCount + extraLedCount + stripLedCount;
 
     const plexiAreaM2 =
       (usesPlexi ? geom.areaM2 : 0) +
+      (extraUsesPlexi ? extraGeom.areaM2 : 0) +
       (stripGeom.active ? stripGeom.areaM2 : 0);
 
     const forexAreaM2 =
       (usesForex ? geom.areaM2 : 0) +
+      (extraUsesForex ? extraGeom.areaM2 : 0) +
       (stripGeom.active ? stripGeom.areaM2 : 0);
 
     const plexiSheets =
@@ -327,6 +371,7 @@ export default function CostDebugPanel(props: Props) {
 
     const sideM =
       (usesSide ? geom.perimeterM : 0) +
+      (extraUsesSide ? extraGeom.perimeterM : 0) +
       (stripGeom.active ? stripGeom.sideM : 0);
 
     const perimeterM = (2 * props.width + 2 * props.height) / 100;
@@ -384,6 +429,7 @@ export default function CostDebugPanel(props: Props) {
 
     return {
       geom,
+      extraGeom,
       composite,
       plexiSheets,
       forexSheets,
@@ -395,6 +441,7 @@ export default function CostDebugPanel(props: Props) {
       referenceRGeometry,
       ledPerM2,
       letterLedCount,
+      extraLedCount,
       stripLedCount,
       ledCount,
       stripGeom,
@@ -570,6 +617,18 @@ export default function CostDebugPanel(props: Props) {
               : "Işıksız / LED kullanılmıyor"}
           </div>
         </div>
+
+        {props.extraTextEnabled && (
+          <div style={box}>
+            <small>İKİNCİ METİN</small>
+            <div style={{ fontSize: 18, fontWeight: 900, marginTop: 5 }}>
+              {result.extraGeom.areaM2.toFixed(3)} m²
+            </div>
+            <div style={{ opacity: 0.6, fontSize: 11, marginTop: 5 }}>
+              {props.extraLetterMaterial} · {result.extraGeom.perimeterM.toFixed(1)} m kontur · {result.extraLedCount} LED
+            </div>
+          </div>
+        )}
 
         {result.stripGeom.active && (
           <div style={box}>
