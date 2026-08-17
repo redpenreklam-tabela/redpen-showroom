@@ -1394,3 +1394,152 @@ body.designer-is-dragging .designer-extra-text-preview{cursor:grabbing;}
     font-size: 9px;
   }
 }
+
+
+/* REDPEN PRICE BOXES + WHATSAPP V46 */
+
+.designer-customer-price-strip {
+  margin-top: 8px;
+}
+
+.designer-customer-price-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(92px, 1fr)) minmax(128px, 1.15fr) minmax(190px, 1.55fr);
+  gap: 5px;
+  align-items: stretch;
+}
+
+.designer-customer-price-card {
+  display: flex;
+  min-width: 0;
+  min-height: 52px;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8px 9px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.035);
+}
+
+.designer-customer-price-card > span {
+  overflow: hidden;
+  color: rgba(255,255,255,.48);
+  font-size: 7px;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: .08em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.designer-customer-price-card > strong {
+  display: block;
+  margin-top: 5px;
+  overflow: hidden;
+  color: rgba(255,255,255,.94);
+  font-size: 11px;
+  font-weight: 850;
+  line-height: 1.05;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.designer-customer-price-card.is-total {
+  border-color: rgba(255,181,62,.34);
+  background: rgba(255,181,62,.055);
+}
+
+.designer-customer-price-card.is-total > span {
+  color: rgba(255,181,62,.72);
+}
+
+.designer-customer-price-card.is-total > strong {
+  color: #ffb53e;
+  font-size: 13px;
+}
+
+.designer-price-whatsapp {
+  display: grid;
+  min-width: 0;
+  min-height: 52px;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto 1fr;
+  align-items: center;
+  padding: 8px 12px;
+  border: 0;
+  background: #e21d38;
+  color: #fff;
+  cursor: pointer;
+  text-align: left;
+}
+
+.designer-price-whatsapp > span {
+  grid-column: 1;
+  grid-row: 1;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .13em;
+  opacity: .74;
+}
+
+.designer-price-whatsapp > strong {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: end;
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.designer-price-whatsapp > b {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.designer-price-whatsapp:disabled {
+  cursor: wait;
+  opacity: .62;
+}
+
+.designer-customer-price-note {
+  margin: 5px 1px 0;
+  color: rgba(255,255,255,.33);
+  font-size: 8px;
+  line-height: 1.35;
+}
+
+.designer-summary.designer-summary-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 460px;
+}
+
+@media (max-width: 1280px) {
+  .designer-customer-price-grid {
+    grid-template-columns: repeat(4, minmax(95px, 1fr));
+  }
+
+  .designer-price-whatsapp {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 760px) {
+  .designer-customer-price-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .designer-customer-price-card {
+    min-height: 48px;
+  }
+
+  .designer-price-whatsapp {
+    grid-column: 1 / -1;
+    min-height: 54px;
+  }
+
+  .designer-summary.designer-summary-three {
+    max-width: none;
+  }
+}

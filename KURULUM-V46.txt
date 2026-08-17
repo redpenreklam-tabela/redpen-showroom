@@ -1,0 +1,59 @@
+REDPEN SHOWROOM — PRICE BOXES + WHATSAPP V46
+=============================================
+
+İSTENEN
+-------
+- Fiyat kısmı normal müşteride KALSIN.
+- Malzeme ölçüleri / plaka adetleri / metreler / LED adedi müşteriye gösterilmesin.
+- Fiyat kutuları küçük ama okunur olsun.
+- WhatsApp Teklif Al butonu fiyat kutularının hemen yanında olsun.
+
+NORMAL /tasarla
+---------------
+Müşteri şu tarz kutular görür:
+
+[KOMPOZİT 16.200 TL]
+[PLEKSİ 15.000 TL]
+[FOREX 4.800 TL]
+[HARF YANAĞI 3.200 TL]
+[PROFİL 1.350 TL]
+[LED 2.800 TL]
+[MALZEME TOPLAMI 43.350 TL]
+[WHATSAPP / TEKLİF AL]
+
+Sıfır TL olan kategori otomatik görünmez.
+
+Müşteri GÖRMEZ:
+- kaç plaka
+- kaç m²
+- kaç metre
+- kaç LED
+- nesting/verim hesabı
+- profil adet hesabı
+
+Altta küçük not:
+"Tahmini malzeme bedelidir. Nihai teklif; üretim, montaj, uygulama ve saha koşullarına göre netleşir."
+
+DEBUG
+-----
+/tasarla?costdebug=1
+
+Bu URL'de bizim detaylı iç panel aynen kalır:
+- plaka adetleri
+- m²
+- metre
+- LED adedi
+- kalibrasyon verileri
+- iç maliyet toplamı
+
+KURULUM
+-------
+cd D:\Projects\redpen-showroom
+node PATCH-PRICE-BOXES-WHATSAPP-V46.cjs
+npm.cmd run build
+
+Build geçerse:
+
+git add .
+git commit -m "Show compact price boxes with WhatsApp CTA"
+git push

@@ -1767,9 +1767,11 @@ export default function SignDesigner() {
             letterMaterial={letterMaterial}
             baseMaterial={baseMaterial}
             lighted={lighted}
+            onQuote={handleQuoteRequest}
+            quoteBusy={quoteSubmitting || exportingPng}
           />
 
-          <div className="designer-summary designer-summary-compact">
+          <div className="designer-summary designer-summary-compact designer-summary-three">
             <div className="designer-summary-card">
               <span>01</span>
               <p>FONT</p>
@@ -1788,20 +1790,6 @@ export default function SignDesigner() {
               <b>{letterMaterial}</b>
             </div>
 
-            <div className="designer-actions designer-actions-inline">
-              <button
-                type="button"
-                className="designer-quote designer-quote-compact"
-                onClick={handleQuoteRequest}
-                disabled={quoteSubmitting || exportingPng}
-              >
-                <span>WHATSAPP</span>
-                <strong>
-                  {quoteSubmitting || exportingPng ? "HAZIRLANIYOR" : "TEKLİF AL"}
-                </strong>
-                <b>↗</b>
-              </button>
-            </div>
           </div>
         </section>
       </div>
