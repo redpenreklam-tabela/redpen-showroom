@@ -134,7 +134,7 @@ function textGeometry(
 }
 
 
-function lightStripGeometry(mode, widthCm, heightCm) {
+function lightStripGeometry(mode: string, widthCm: number, heightCm: number) {
   if (mode === "none") {
     return { active: false, areaM2: 0, sideM: 0 };
   }

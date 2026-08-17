@@ -1,0 +1,25 @@
+REDPEN SHOWROOM — V47.1 TYPESCRIPT FIX
+
+HATA:
+Parameter 'mode' implicitly has an 'any' type.
+
+DÜZELTME:
+function lightStripGeometry(
+  mode: string,
+  widthCm: number,
+  heightCm: number
+)
+
+KURULUM:
+cd D:\Projects\redpen-showroom
+node PATCH-LIGHT-STRIP-TS-FIX-V47-1.cjs
+npm.cmd run build
+
+BUILD GEÇERSE:
+git add .
+git commit -m "Fix light strip TypeScript types"
+git push
+
+Not:
+Önceki V47 commit'i main'e push edildiği için Vercel o commit'te fail olabilir.
+Bu fix commit'i push edilince yeni deployment doğru sürümden çalışacaktır.
