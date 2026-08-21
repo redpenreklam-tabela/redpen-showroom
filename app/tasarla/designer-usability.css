@@ -1977,3 +1977,56 @@ body.designer-is-dragging .designer-extra-text-preview{cursor:grabbing;}
     height:40px;
   }
 }
+
+
+/* REDPEN STRUCTURAL FOLYO FLAT V63
+   Folyo artık <strong> değildir. Böylece kutu harf/forex için yazılmış
+   bütün strong tabanlı 3D stillerden yapısal olarak ayrılır. */
+.designer-board-content > .designer-folyo-flat-text{
+  position:absolute!important;
+  z-index:10!important;
+  margin:0!important;
+  padding:0!important;
+  max-width:none!important;
+  white-space:nowrap!important;
+
+  transform:translate(-50%,-50%)!important;
+  transform-origin:center center!important;
+
+  color:var(--letter-color)!important;
+  -webkit-text-fill-color:var(--letter-color)!important;
+  -webkit-text-stroke:0!important;
+
+  background:none!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+  filter:none!important;
+
+  line-height:1!important;
+  font-family:var(--sign-font)!important;
+  font-size:calc(var(--board-px-height) * var(--font-size-ratio))!important;
+  font-weight:800!important;
+  letter-spacing:var(--letter-spacing-em)!important;
+
+  isolation:auto!important;
+}
+
+.designer-board-content > .designer-folyo-flat-text::before,
+.designer-board-content > .designer-folyo-flat-text::after{
+  content:none!important;
+  display:none!important;
+}
+
+/* Folyo seçiliyken board-level ışık/gölge katmanları da tamamen kapalı. */
+.designer-board.letter-material-folyo .designer-board-glow{
+  display:none!important;
+  opacity:0!important;
+}
+
+.designer-board.letter-material-folyo .designer-folyo-flat-text{
+  text-shadow:none!important;
+  box-shadow:none!important;
+  filter:none!important;
+}

@@ -1779,6 +1779,22 @@ export default function SignDesigner() {
                       )}
                     </svg>
                   </div>
+                ) : letterMaterial === "FOLYO" ? (
+                  <span
+                    ref={(node) => { mainTextRef.current = node; }}
+                    className="designer-draggable-element designer-main-text material-folyo designer-folyo-flat-text"
+                    onPointerDown={(event) => startDrag(event, "text")}
+                    style={{
+                      left: `${50 + textOffset.x}%`,
+                      top: `${50 + textOffset.y}%`,
+                      color: letterColor,
+                      WebkitTextFillColor: letterColor,
+                      textShadow: "none",
+                      filter: "none",
+                    }}
+                  >
+                    {normalizedText}
+                  </span>
                 ) : (
                   <strong
                     ref={(node) => { mainTextRef.current = node; }}
