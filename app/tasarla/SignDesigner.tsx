@@ -18,6 +18,7 @@ type FontId =
   | "cal-sans" | "caveat-brush" | "luckiest-guy"
   | "momo-trust-display" | "russo-one" | "sekuya" | "sriracha";
 
+const baseMaterials: BaseMaterial[] = ["KOMPOZİT", "PLEKSİ", "ALÜMİNYUM"];
 const kutuHarfMaterials: LetterMaterial[] = ["PLEKSİ", "GOLD KAPLAMA", "KROM KAPLAMA", "FİLELİ KROM", "FİLELİ GOLD"];
 const lightStripMaterials: LightStripMaterial[] = ["PLEKSİ", "GOLD KAPLAMA", "KROM KAPLAMA", "FİLELİ KROM", "FİLELİ GOLD", "FOREX"];
 
@@ -51,8 +52,24 @@ const letterColors = [
   { name: "Kırmızı", value: "#e21d38" },
   { name: "Beyaz", value: "#f5f5f3" },
   { name: "Siyah", value: "#141416" },
+  { name: "Antrasit", value: "#30363b" },
+  { name: "Gri", value: "#7b8288" },
+  { name: "Gümüş", value: "#b8bec4" },
   { name: "Altın", value: "#c8a96a" },
+  { name: "Sarı", value: "#ffd13d" },
+  { name: "Turuncu", value: "#f47a2a" },
+  { name: "Bordo", value: "#7f1f2a" },
+  { name: "Pembe", value: "#ef5f8f" },
+  { name: "Fuşya", value: "#d81b8c" },
+  { name: "Mor", value: "#7a4dd8" },
+  { name: "Lacivert", value: "#183d7a" },
   { name: "Mavi", value: "#4285f4" },
+  { name: "Turkuaz", value: "#25b8b4" },
+  { name: "Petrol", value: "#1f6d73" },
+  { name: "Yeşil", value: "#168a57" },
+  { name: "Açık Yeşil", value: "#69b86b" },
+  { name: "Kahverengi", value: "#6b4632" },
+  { name: "Krem", value: "#e9dfc4" },
 ];
 
 const baseColors = [
@@ -180,13 +197,11 @@ export default function SignDesigner() {
   const [text, setText] = useState("REDPEN");
   const signType: SignType = "KUTU HARF";
   const [letterMaterial, setLetterMaterial] = useState<LetterMaterial>("PLEKSİ");
-  const baseMaterial: BaseMaterial = "KOMPOZİT";
+  const [baseMaterial, setBaseMaterial] = useState<BaseMaterial>("KOMPOZİT");
   const [letterColor, setLetterColor] = useState(letterColors[1].value);
   const [baseColor, setBaseColor] = useState("#24333b");
   const [width, setWidth] = useState(300);
   const [height, setHeight] = useState(80);
-  const [widthInput, setWidthInput] = useState("300");
-  const [heightInput, setHeightInput] = useState("80");
   const [lighted, setLighted] = useState(true);
   const [fileliBacklight, setFileliBacklight] = useState(true);
   const [scene, setScene] = useState<SceneMode>("night");
@@ -1001,65 +1016,6 @@ export default function SignDesigner() {
             </span>
           </div>
 
-          {/* 01 — TABELA ZEMİN BOYUTU */}
-          <div className="designer-field designer-measurements">
-            <div>
-              <label>GENİŞLİK / CM</label>
-              <input
-                type="number"
-                min={40}
-                max={1200}
-                value={widthInput}
-                onChange={(e) => {
-                  const raw = e.target.value;
-                  setWidthInput(raw);
-                  if (raw === "") return;
-
-                  const next = Number(raw);
-                  if (Number.isFinite(next)) setWidth(next);
-                }}
-                onBlur={() => {
-                  if (widthInput.trim() === "") {
-                    setWidthInput(String(width));
-                    return;
-                  }
-
-                  const next = Math.max(40, Math.min(1200, Number(widthInput) || 40));
-                  setWidth(next);
-                  setWidthInput(String(next));
-                }}
-              />
-            </div>
-            <div>
-              <label>YÜKSEKLİK / CM</label>
-              <input
-                type="number"
-                min={20}
-                max={600}
-                value={heightInput}
-                onChange={(e) => {
-                  const raw = e.target.value;
-                  setHeightInput(raw);
-                  if (raw === "") return;
-
-                  const next = Number(raw);
-                  if (Number.isFinite(next)) setHeight(next);
-                }}
-                onBlur={() => {
-                  if (heightInput.trim() === "") {
-                    setHeightInput(String(height));
-                    return;
-                  }
-
-                  const next = Math.max(20, Math.min(600, Number(heightInput) || 20));
-                  setHeight(next);
-                  setHeightInput(String(next));
-                }}
-              />
-            </div>
-          </div>
-
-          {/* 02 — ANA METİN + BOYUT + ARALIK + EK METİN */}
           <div className="designer-field">
             <label>MARKA / TABELA YAZISI</label>
             <input
@@ -1100,79 +1056,29 @@ export default function SignDesigner() {
                     <span>{filteredFonts.length} FONT</span>
                   </div>
                   <div className="designer-font-options">
-                    {filteredFonts.map((font) => (
-                      <button
-                        type="button"
-                        key={font.id}
-                        className={selectedFont === font.id ? "is-active" : ""}
-                        onClick={() => {
-                          setSelectedFont(font.id);
-                          setFontMenuOpen(false);
-                        }}
-                      >
-                        <span>{font.name}</span>
-                        <strong style={{ fontFamily: font.family }}>
-                          {normalizedText}
-                        </strong>
-                        <i>{selectedFont === font.id ? "✓" : ""}</i>
-                      </button>
-                    ))}
-                    {filteredFonts.length === 0 && (
-                      <div className="designer-font-empty">Font bulunamadı.</div>
-                    )}
+                  {filteredFonts.map((font) => (
+                    <button
+                      type="button"
+                      key={font.id}
+                      className={selectedFont === font.id ? "is-active" : ""}
+                      onClick={() => {
+                        setSelectedFont(font.id);
+                        setFontMenuOpen(false);
+                      }}
+                    >
+                      <span>{font.name}</span>
+                      <strong style={{ fontFamily: font.family }}>
+                        {normalizedText}
+                      </strong>
+                      <i>{selectedFont === font.id ? "✓" : ""}</i>
+                    </button>
+                  ))}
+                  {filteredFonts.length === 0 && (
+                    <div className="designer-font-empty">Font bulunamadı.</div>
+                  )}
                   </div>
                 </div>
               )}
-            </div>
-          </div>
-
-          <div className="designer-field designer-cm-size-field">
-            <div className="designer-slider-heading">
-              <label>HARF YÜKSEKLİĞİ / CM</label>
-              <div className="designer-cm-value">
-                <input
-                  type="number"
-                  min="1"
-                  max="999"
-                  step="1"
-                  value={letterHeightCm}
-                  onChange={(e) => setLetterHeightCm(Math.max(1, Math.min(999, Number(e.target.value) || 1)))}
-                />
-                <b>CM</b>
-              </div>
-            </div>
-            <input
-              className="designer-range"
-              type="range"
-              min="1"
-              max={Math.max(160, height * 2)}
-              step="1"
-              value={Math.min(letterHeightCm, Math.max(160, height * 2))}
-              onChange={(e) => setLetterHeightCm(Number(e.target.value))}
-            />
-            <div className="designer-range-scale">
-              <span>1 CM</span>
-              <span>{Math.max(160, height * 2)} CM</span>
-            </div>
-          </div>
-
-          <div className="designer-field">
-            <div className="designer-slider-heading">
-              <label>HARF ARALIĞI</label>
-              <b>{letterSpacing > 0 ? "+" : ""}{letterSpacing}</b>
-            </div>
-            <input
-              className="designer-range"
-              type="range"
-              min="-20"
-              max="100"
-              step="1"
-              value={letterSpacing}
-              onChange={(e) => setLetterSpacing(Number(e.target.value))}
-            />
-            <div className="designer-range-scale">
-              <span>SIKI</span>
-              <span>GENİŞ</span>
             </div>
           </div>
 
@@ -1180,9 +1086,7 @@ export default function SignDesigner() {
             <div className="designer-extra-copy-heading">
               <div>
                 <label>EK METİN / ALT BAŞLIK</label>
-                <p className="designer-control-note">
-                  İş alanı, slogan, şube adı veya istediğin ikinci metni ekle.
-                </p>
+                <p className="designer-control-note">İş alanı, slogan, şube adı veya istediğin ikinci metni ekle.</p>
               </div>
               <button
                 type="button"
@@ -1279,7 +1183,247 @@ export default function SignDesigner() {
             )}
           </div>
 
-          {/* 03 — LOGO + BOYUT */}
+          <div className="designer-field designer-cm-size-field">
+            <div className="designer-slider-heading">
+              <label>HARF YÜKSEKLİĞİ / CM</label>
+              <div className="designer-cm-value">
+                <input
+                  type="number"
+                  min="1"
+                  max="999"
+                  step="1"
+                  value={letterHeightCm}
+                  onChange={(e) => setLetterHeightCm(Math.max(1, Math.min(999, Number(e.target.value) || 1)))}
+                />
+                <b>CM</b>
+              </div>
+            </div>
+            <input
+              className="designer-range"
+              type="range"
+              min="1"
+              max={Math.max(160, height * 2)}
+              step="1"
+              value={Math.min(letterHeightCm, Math.max(160, height * 2))}
+              onChange={(e) => setLetterHeightCm(Number(e.target.value))}
+            />
+            <div className="designer-range-scale">
+              <span>1 CM</span>
+              <span>{Math.max(160, height * 2)} CM</span>
+            </div>
+            <p className="designer-control-note">Harf yüksekliğini yüzde yerine santimetre olarak gir. Önizleme tabela ölçeğine göre otomatik hesaplanır.</p>
+          </div>
+
+          <div className="designer-field">
+            <div className="designer-slider-heading">
+              <label>HARF ARALIĞI</label>
+              <b>{letterSpacing > 0 ? "+" : ""}{letterSpacing}</b>
+            </div>
+            <input
+              className="designer-range"
+              type="range"
+              min="-20"
+              max="100"
+              step="1"
+              value={letterSpacing}
+              onChange={(e) => setLetterSpacing(Number(e.target.value))}
+            />
+            <div className="designer-range-scale">
+              <span>SIKI</span>
+              <span>GENİŞ</span>
+            </div>
+          </div>
+
+          <div className="designer-field designer-position-field">
+            <div className="designer-slider-heading">
+              <label>SAHNE KONUMU</label>
+              <b>SÜRÜKLE</b>
+            </div>
+            <p className="designer-control-note">
+              Yazıyı ve logoyu sahnede fareyle tutup istediğin yere sürükleyebilirsin.
+            </p>
+            <button type="button" className="designer-position-reset" onClick={resetPositions}>
+              KONUMU ORTALA
+            </button>
+          </div>
+
+          <div className="designer-field">
+            <label>ZEMİN MALZEMESİ</label>
+            <div className="designer-material-row">
+              {baseMaterials.map((item) => (
+                <button
+                  type="button"
+                  key={`base-${item}`}
+                  className={baseMaterial === item ? "is-active" : ""}
+                  onClick={() => setBaseMaterial(item)}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="designer-field">
+            <label>ZEMİN RENGİ</label>
+            <div className="designer-colors designer-colors-wide">
+              {baseColors.map((item) => (
+                <button
+                  key={`base-color-${item.value}`}
+                  type="button"
+                  className={baseColor === item.value ? "is-active" : ""}
+                  style={{ "--swatch": item.value } as React.CSSProperties}
+                  onClick={() => setBaseColor(item.value)}
+                  aria-label={`${item.code} ${item.name}`}
+                  title={`${item.code} · ${item.name}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="designer-field designer-light-strip-field">
+            <div className="designer-light-strip-heading">
+              <div>
+                <label>IŞIK BANDI / 6 CM</label>
+                <p className="designer-control-note">
+                  Zeminin kenarına sıfır 6 cm ışık bandı ekle. Bant tabela ölçüsüyle birlikte gerçek oranda ölçeklenir.
+                </p>
+              </div>
+              <span className={lightStripMode === "none" ? "" : "is-active"}>
+                {lightStripMode === "none" ? "KAPALI" : "AKTİF"}
+              </span>
+            </div>
+
+            <div className="designer-light-strip-grid">
+              {lightStripModes.map((item) => (
+                <button
+                  key={`light-strip-${item.id}`}
+                  type="button"
+                  className={lightStripMode === item.id ? "is-active" : ""}
+                  onClick={() => setLightStripMode(item.id)}
+                  title={item.label}
+                >
+                  <i className={`designer-strip-icon strip-${item.id}`} aria-hidden="true">
+                    <span className="strip-top" />
+                    <span className="strip-right" />
+                    <span className="strip-bottom" />
+                    <span className="strip-left" />
+                  </i>
+                  <b>{item.short}</b>
+                </button>
+              ))}
+            </div>
+
+            {lightStripMode !== "none" && (
+              <div className="designer-light-strip-materials">
+                <div className="designer-light-strip-material-heading">
+                  <label>BANT MALZEMESİ</label>
+                  <span>{lightStripMaterial}</span>
+                </div>
+                <div className="designer-material-row designer-strip-material-row">
+                  {lightStripMaterials.map((item) => (
+                    <button
+                      type="button"
+                      key={`strip-material-${item}`}
+                      className={lightStripMaterial === item ? "is-active" : ""}
+                      onClick={() => setLightStripMaterial(item)}
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
+                <p className="designer-control-note designer-strip-material-note">
+                  Pleksi ışığı doğrudan verir. Gold/krom kaplamalarda seçilen renk metalin çevresindeki ışık etkisine, fileli seçeneklerde ise pleksi merkeze uygulanır.
+                </p>
+
+                {lightStripMaterial !== "FOREX" && (
+                  <div className="designer-strip-color-control">
+                    <div className="designer-light-strip-material-heading">
+                      <label>BANT IŞIK RENGİ</label>
+                      <span>{lightStripColors.find((item) => item.value === lightStripColor)?.name ?? "ÖZEL"}</span>
+                    </div>
+                    <div className="designer-strip-color-row">
+                      {lightStripColors.map((item) => (
+                        <button
+                          key={`strip-light-color-${item.value}`}
+                          type="button"
+                          className={lightStripColor === item.value ? "is-active" : ""}
+                          style={{ "--strip-swatch": item.value } as React.CSSProperties}
+                          onClick={() => setLightStripColor(item.value)}
+                          title={item.name}
+                          aria-label={`Bant ışık rengi ${item.name}`}
+                        />
+                      ))}
+                      <label className="designer-strip-custom-color" title="Özel renk seç">
+                        <input
+                          type="color"
+                          value={lightStripColor}
+                          onChange={(event) => setLightStripColor(event.target.value)}
+                        />
+                        <span>ÖZEL</span>
+                      </label>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="designer-field designer-letter-material-field">
+            <label>HARF MALZEMESİ</label>
+            <p className="designer-control-note">Ana metin için üretim tipini seç.</p>
+            <MaterialPicker value={letterMaterial} onChange={setLetterMaterial} />
+          </div>
+
+          <div className="designer-field">
+            <label>HARF RENGİ</label>
+            <div className="designer-colors">
+              {letterColors.map((item) => (
+                <button
+                  key={`letter-color-${item.value}`}
+                  type="button"
+                  className={letterColor === item.value ? "is-active" : ""}
+                  style={{ "--swatch": item.value } as React.CSSProperties}
+                  onClick={() => setLetterColor(item.value)}
+                  aria-label={item.name}
+                  title={item.name}
+                />
+              ))}
+              {letterMaterial === "FOLYO" && (
+                <label className="designer-letter-custom-color" title="Özel folyo rengi">
+                  <input
+                    type="color"
+                    value={letterColor}
+                    onChange={(event) => setLetterColor(event.target.value)}
+                  />
+                  <span>ÖZEL</span>
+                </label>
+              )}
+            </div>
+          </div>
+
+          <div className="designer-field designer-measurements">
+            <div>
+              <label>GENİŞLİK / CM</label>
+              <input
+                type="number"
+                min={40}
+                max={1200}
+                value={width}
+                onChange={(e) => setWidth(Number(e.target.value) || 40)}
+              />
+            </div>
+            <div>
+              <label>YÜKSEKLİK / CM</label>
+              <input
+                type="number"
+                min={20}
+                max={600}
+                value={height}
+                onChange={(e) => setHeight(Number(e.target.value) || 20)}
+              />
+            </div>
+          </div>
+
           <div className="designer-field">
             <label>LOGO / OPSİYONEL</label>
             <input
@@ -1304,7 +1448,6 @@ export default function SignDesigner() {
                 </button>
               )}
             </div>
-
             {logo && (
               <div className="designer-logo-size-control">
                 <div className="designer-slider-heading">
@@ -1337,149 +1480,6 @@ export default function SignDesigner() {
               </div>
             )}
           </div>
-
-          {/* 04 — ZEMİN RENGİ (zemin malzemesi sabit KOMPOZİT) */}
-          <div className="designer-field">
-            <label>KOMPOZİT ZEMİN RENGİ</label>
-            <div className="designer-colors designer-colors-wide">
-              {baseColors.map((item) => (
-                <button
-                  key={`base-color-${item.value}`}
-                  type="button"
-                  className={baseColor === item.value ? "is-active" : ""}
-                  style={{ "--swatch": item.value } as React.CSSProperties}
-                  onClick={() => setBaseColor(item.value)}
-                  aria-label={`${item.code} ${item.name}`}
-                  title={`${item.code} · ${item.name}`}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* 05 — HARF MALZEMESİ */}
-          <div className="designer-field designer-letter-material-field">
-            <label>HARF MALZEMESİ</label>
-            <p className="designer-control-note">Ana metin için üretim tipini seç.</p>
-            <MaterialPicker value={letterMaterial} onChange={setLetterMaterial} />
-          </div>
-
-          {/* 06 — HARF RENGİ */}
-          <div className="designer-field">
-            <label>HARF RENGİ</label>
-            <div className="designer-colors">
-              {letterColors.map((item) => (
-                <button
-                  key={`letter-color-${item.value}`}
-                  type="button"
-                  className={letterColor === item.value ? "is-active" : ""}
-                  style={{ "--swatch": item.value } as React.CSSProperties}
-                  onClick={() => setLetterColor(item.value)}
-                  aria-label={item.name}
-                  title={item.name}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* 07 — IŞIK BANDI / KONUM */}
-          <div className="designer-field designer-light-strip-field">
-            <div className="designer-light-strip-heading">
-              <div>
-                <label>IŞIK BANDI / 6 CM</label>
-                <p className="designer-control-note">
-                  Zeminin kenarına sıfır 6 cm ışık bandı ekle.
-                </p>
-              </div>
-              <span className={lightStripMode === "none" ? "" : "is-active"}>
-                {lightStripMode === "none" ? "KAPALI" : "AKTİF"}
-              </span>
-            </div>
-
-            <div className="designer-light-strip-grid">
-              {lightStripModes.map((item) => (
-                <button
-                  key={`light-strip-${item.id}`}
-                  type="button"
-                  className={lightStripMode === item.id ? "is-active" : ""}
-                  onClick={() => setLightStripMode(item.id)}
-                  title={item.label}
-                >
-                  <i className={`designer-strip-icon strip-${item.id}`} aria-hidden="true">
-                    <span className="strip-top" />
-                    <span className="strip-right" />
-                    <span className="strip-bottom" />
-                    <span className="strip-left" />
-                  </i>
-                  <b>{item.short}</b>
-                </button>
-              ))}
-            </div>
-
-            {lightStripMode !== "none" && (
-              <div className="designer-light-strip-materials">
-                {/* 08 — BANT RENGİ */}
-                <div className="designer-strip-color-control">
-                  <div className="designer-light-strip-material-heading">
-                    <label>BANT IŞIK RENGİ</label>
-                    <span>
-                      {lightStripMaterial === "FOREX"
-                        ? "FOREX / IŞIKSIZ"
-                        : lightStripColors.find((item) => item.value === lightStripColor)?.name ?? "ÖZEL"}
-                    </span>
-                  </div>
-
-                  <div className="designer-strip-color-row">
-                    {lightStripColors.map((item) => (
-                      <button
-                        key={`strip-light-color-${item.value}`}
-                        type="button"
-                        className={lightStripColor === item.value ? "is-active" : ""}
-                        style={{ "--strip-swatch": item.value } as React.CSSProperties}
-                        onClick={() => setLightStripColor(item.value)}
-                        title={item.name}
-                        aria-label={`Bant ışık rengi ${item.name}`}
-                      />
-                    ))}
-                    <label className="designer-strip-custom-color" title="Özel renk seç">
-                      <input
-                        type="color"
-                        value={lightStripColor}
-                        onChange={(event) => setLightStripColor(event.target.value)}
-                      />
-                      <span>ÖZEL</span>
-                    </label>
-                  </div>
-                  {lightStripMaterial === "FOREX" && (
-                    <p className="designer-control-note">
-                      Forex bant ışıksızdır; seçtiğin renk başka bir ışıklı bant malzemesine geçtiğinde uygulanır.
-                    </p>
-                  )}
-                </div>
-
-                {/* 09 — BANT MALZEMESİ */}
-                <div className="designer-light-strip-material-heading">
-                  <label>BANT MALZEMESİ</label>
-                  <span>{lightStripMaterial}</span>
-                </div>
-                <div className="designer-material-row designer-strip-material-row">
-                  {lightStripMaterials.map((item) => (
-                    <button
-                      type="button"
-                      key={`strip-material-${item}`}
-                      className={lightStripMaterial === item ? "is-active" : ""}
-                      onClick={() => setLightStripMaterial(item)}
-                    >
-                      {item}
-                    </button>
-                  ))}
-                </div>
-                <p className="designer-control-note designer-strip-material-note">
-                  Pleksi ışığı doğrudan verir. Gold/krom kaplamalarda seçilen renk metalin çevresindeki ışık etkisine, fileli seçeneklerde ise pleksi merkeze uygulanır.
-                </p>
-              </div>
-            )}
-          </div>
-
         </aside>
 
         <section className="designer-preview">
@@ -1534,15 +1534,6 @@ export default function SignDesigner() {
                   )}
                 </>
               )}
-              <button
-                type="button"
-                className="designer-preview-reset-button"
-                onClick={resetPositions}
-                title="Yazı ve logoyu sahnede ortala"
-              >
-                <span>⌖</span>
-                <b>SAHNEYİ ORTALA</b>
-              </button>
             </div>
 
             <div
