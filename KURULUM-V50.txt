@@ -1,0 +1,24 @@
+REDPEN SHOWROOM — PUBLIC FİYATI GİZLE V50
+
+Normal /tasarla:
+[ FONT ] [ ZEMİN ] [ HARF ] [ WHATSAPP / TEKLİF AL ]
+
+Müşteri artık fiyat kutularını ve malzeme toplamını görmez.
+
+Fiyat motoru silinmez. Ana metin, ikinci metin, Pleksi, Forex, yanak,
+LED, ışık bandı, kompozit, profil ve alan bazlı maliyet hesabı arkada korunur.
+
+Bizim kontrol:
+  /tasarla?costdebug=1
+
+WhatsApp teklif akışı ve mesaj özeti değiştirilmez.
+
+KURULUM:
+cd D:\Projects\redpen-showroom
+node PATCH-HIDE-PUBLIC-PRICING-V50.cjs
+npm.cmd run build
+
+Build geçerse:
+git add .
+git commit -m "Hide public pricing and keep internal cost engine"
+git push

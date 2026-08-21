@@ -1778,7 +1778,7 @@ export default function SignDesigner() {
             quoteBusy={quoteSubmitting || exportingPng}
           />
 
-          <div className="designer-summary designer-summary-compact designer-summary-three">
+          <div className="designer-summary designer-summary-compact">
             <div className="designer-summary-card">
               <span>01</span>
               <p>FONT</p>
@@ -1795,6 +1795,21 @@ export default function SignDesigner() {
               <span>03</span>
               <p>HARF</p>
               <b>{letterMaterial}</b>
+            </div>
+
+            <div className="designer-actions designer-actions-inline">
+              <button
+                type="button"
+                className="designer-quote designer-quote-compact"
+                onClick={handleQuoteRequest}
+                disabled={quoteSubmitting || exportingPng}
+              >
+                <span>WHATSAPP</span>
+                <strong>
+                  {quoteSubmitting || exportingPng ? "HAZIRLANIYOR" : "TEKLİF AL"}
+                </strong>
+                <b>↗</b>
+              </button>
             </div>
 
           </div>

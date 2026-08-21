@@ -457,49 +457,7 @@ export default function CostDebugPanel(props: Props) {
     fontReadyTick,
   ]);
 
-  if (!showDebug) {
-    const priceItems = [
-      { label: "KOMPOZİT", value: result.costs.composite },
-      { label: "PLEKSİ", value: result.costs.plexi },
-      { label: "FOREX", value: result.costs.forex },
-      { label: "HARF YANAĞI", value: result.costs.side },
-      { label: "PROFİL", value: result.costs.profile },
-      { label: "LED", value: result.costs.led },
-    ].filter((item) => item.value > 0);
-
-    return (
-      <div className="designer-customer-price-strip">
-        <div className="designer-customer-price-grid">
-          {priceItems.map((item) => (
-            <div className="designer-customer-price-card" key={item.label}>
-              <span>{item.label}</span>
-              <strong>{tl(item.value)}</strong>
-            </div>
-          ))}
-
-          <div className="designer-customer-price-card is-total">
-            <span>MALZEME TOPLAMI</span>
-            <strong>{tl(result.total)}</strong>
-          </div>
-
-          <button
-            type="button"
-            className="designer-price-whatsapp"
-            onClick={props.onQuote}
-            disabled={props.quoteBusy}
-          >
-            <span>WHATSAPP</span>
-            <strong>{props.quoteBusy ? "HAZIRLANIYOR" : "TEKLİF AL"}</strong>
-            <b>↗</b>
-          </button>
-        </div>
-
-        <p className="designer-customer-price-note">
-          Tahmini malzeme bedelidir. Nihai teklif; üretim, montaj, uygulama ve saha koşullarına göre netleşir.
-        </p>
-      </div>
-    );
-  }
+  if (!showDebug) return null;
 
   const box: React.CSSProperties = {
     border: "1px solid rgba(255,181,62,.38)",
