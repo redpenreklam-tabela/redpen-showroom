@@ -1,0 +1,37 @@
+REDPEN SHOWROOM — MOBİL TOOLBAR HARD FIX V52
+============================================
+
+V51 neden yeterli olmadı?
+------------------------
+V51 mevcut `.designer-toolbar` elementini mobil CSS ile görünür yapmaya çalışıyordu.
+Projede eski responsive kurallar / layout davranışı toolbar'ı yine devre dışı
+bırakabildiği için bu kez aynı elementi zorlamıyoruz.
+
+V52:
+Mobil için AYRI bir toolbar render eder.
+
+Mobil görünüm:
+[ GERİ ]   TABELANI TASARLA   [ GÜNDÜZ | GECE ]
+
+- 980px altında yeni mobil toolbar görünür.
+- Eski desktop toolbar mobilde gizlenir.
+- Desktop'ta mobil toolbar hiç görünmez.
+- Gündüz/Gece mevcut `scene` state'ini kullanır, yani fonksiyon aynı.
+- GERİ/SHOWROOM ana sayfaya gider.
+
+KURULUM
+-------
+cd D:\Projects\redpen-showroom
+node PATCH-MOBILE-TOOLBAR-HARDFIX-V52.cjs
+npm.cmd run build
+
+Build geçerse:
+git add .
+git commit -m "Add dedicated mobile designer toolbar"
+git push
+
+TEST
+----
+Deploy sonrası telefonda sayfayı tamamen yenile.
+PWA / Safari ana ekranından açıyorsan uygulamayı kapatıp tekrar aç.
+Üstte koyu bir bar ve sağda GÜNDÜZ / GECE görünmeli.

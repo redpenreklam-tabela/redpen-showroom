@@ -958,6 +958,34 @@ export default function SignDesigner() {
         </div>
       </header>
 
+      <div className="designer-mobile-toolbar" aria-label="Mobil üst menü">
+        <a href="/" className="designer-mobile-back">
+          <span>←</span>
+          <b>SHOWROOM</b>
+        </a>
+
+        <div className="designer-mobile-title">
+          <strong>TABELANI TASARLA</strong>
+        </div>
+
+        <div className="designer-mobile-mode-switch">
+          <button
+            type="button"
+            className={scene === "day" ? "is-active" : ""}
+            onClick={() => setScene("day")}
+          >
+            GÜNDÜZ
+          </button>
+          <button
+            type="button"
+            className={scene === "night" ? "is-active" : ""}
+            onClick={() => setScene("night")}
+          >
+            GECE
+          </button>
+        </div>
+      </div>
+
       <div className="designer-layout">
         <aside className="designer-panel">
           <div className="designer-panel-heading">
