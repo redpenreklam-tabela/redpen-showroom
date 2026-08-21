@@ -1841,261 +1841,58 @@ body.designer-is-dragging .designer-extra-text-preview{cursor:grabbing;}
 }
 
 
-/* REDPEN MOBILE CONFIGURATOR UX V56
-   Mobilde sahne hep görünür, ayarlar alttaki bağımsız panelde kayar. */
-@media (max-width: 980px) {
-  html:has(.designer-screen),
-  body:has(.designer-screen) {
-    height: 100%;
-    overflow: hidden !important;
-  }
-
-  .designer-screen {
-    height: 100svh !important;
-    min-height: 0 !important;
-    overflow: hidden !important;
-    display: grid !important;
-    grid-template-rows: auto minmax(0, 1fr) !important;
-  }
-
-  .designer-layout {
-    min-height: 0 !important;
-    height: 100% !important;
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    grid-template-rows: minmax(270px, 42svh) minmax(0, 1fr) !important;
-    overflow: hidden !important;
-  }
-
-  /* Önizleme artık her zaman üstte ve sabit kalan çalışma alanı. */
-  .designer-preview {
-    order: 1 !important;
-    min-height: 0 !important;
-    height: 100% !important;
-    padding: 10px 10px 8px !important;
-    overflow: hidden !important;
-    border-bottom: 1px solid rgba(255,255,255,.10);
-    background:
-      linear-gradient(180deg, rgba(8,8,10,.98), rgba(5,5,7,.96));
-  }
-
-  /* Ayarlar yalnız kendi alanında scroll olur. */
-  .designer-panel {
-    order: 2 !important;
-    min-height: 0 !important;
-    height: 100% !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
-    padding: 20px 16px 110px !important;
-    border-right: 0 !important;
-    background: rgba(5,5,7,.98) !important;
-  }
-
-  .designer-panel::before {
-    content: "AYARLAR";
-    position: sticky;
-    top: 0;
-    z-index: 30;
-    display: block;
-    margin: -20px -16px 14px;
-    padding: 10px 16px 9px;
-    border-bottom: 1px solid rgba(255,255,255,.08);
-    background: rgba(5,5,7,.96);
-    color: rgba(255,255,255,.42);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    font: 800 8px/1 var(--font-geist-mono), monospace;
-    letter-spacing: .16em;
-  }
-
-  /* Mobilde üst önizlemenin boş teknik alanlarını küçült. */
-  .designer-preview-top {
-    min-height: 24px !important;
-    align-items: center !important;
-  }
-
-  .designer-preview-top span {
-    font-size: 7px !important;
-  }
-
-  .designer-preview-top b {
-    font-size: 8px !important;
-  }
-
-  .designer-facade {
-    align-self: center !important;
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 0 !important;
-    max-height: none !important;
-  }
-
-  .designer-preview-caption,
-  .designer-floor-line,
-  .designer-scale-readout,
-  .designer-human-scale {
-    display: none !important;
-  }
-
-  .designer-dimension-width {
-    top: auto !important;
-    bottom: 8px !important;
-  }
-
-  .designer-dimension-height {
-    top: 50% !important;
-  }
-
-  /* Işık kontrolleri daha kompakt; sahnenin üstünü yemesin. */
-  .designer-preview-light-controls {
-    top: 7px !important;
-    right: 7px !important;
-    left: auto !important;
-    display: flex !important;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 4px !important;
-    max-width: 72%;
-  }
-
-  .designer-preview-light-button,
-  .designer-preview-light-fixed {
-    width: auto !important;
-    min-width: 0 !important;
-    min-height: 36px !important;
-    padding: 6px 8px !important;
-  }
-
-  .designer-preview-light-fixed {
-    display: none !important;
-  }
-
-  .designer-light-icon {
-    width: 21px !important;
-    height: 21px !important;
-    font-size: 14px !important;
-  }
-
-  .designer-preview-light-button small {
-    display: none !important;
-  }
-
-  .designer-preview-light-button b {
-    font-size: 8px !important;
-  }
-
-  /* Fiyat gizli olsa da özet/WhatsApp varsa küçük alt bar olarak kalır. */
-  .designer-summary.designer-summary-compact {
-    position: absolute;
-    z-index: 45;
-    left: 10px;
-    right: 10px;
-    bottom: 8px;
-    margin: 0 !important;
-    padding: 0 !important;
-    grid-template-columns: repeat(3, minmax(0, .7fr)) minmax(128px, 1.25fr) !important;
-    gap: 4px !important;
-    pointer-events: auto;
-  }
-
-  .designer-summary-compact > .designer-summary-card {
-    min-height: 42px !important;
-    padding: 6px 7px !important;
-    background: rgba(8,8,10,.88) !important;
-    backdrop-filter: blur(10px);
-  }
-
-  .designer-summary-compact .designer-summary-card > span,
-  .designer-summary-compact .designer-summary-card > p {
-    display: none !important;
-  }
-
-  .designer-summary-compact .designer-summary-card > b {
-    font-size: 7px !important;
-    white-space: nowrap;
-  }
-
-  .designer-quote.designer-quote-compact {
-    min-height: 42px !important;
-    padding: 6px 9px !important;
-  }
-
-  .designer-quote-compact > span {
-    font-size: 6px !important;
-  }
-
-  .designer-quote-compact > strong {
-    font-size: 10px !important;
-  }
-
-  /* Başlangıçtaki büyük tanıtım başlığı mobilde gereksiz yer kaplamasın. */
-  .designer-panel-heading {
-    margin-bottom: 16px !important;
-  }
-
-  .designer-panel-heading h1 {
-    font-size: 34px !important;
-  }
-
-  .designer-panel-heading span {
-    font-size: 10px !important;
-    line-height: 1.45 !important;
-  }
-
-  .designer-field {
-    padding: 15px 0 !important;
-  }
+/* REDPEN PANEL ORDER + PREVIEW RESET V60 */
+.designer-preview-reset-button{
+  min-width:138px;
+  min-height:58px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 13px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(7,8,10,.82);
+  color:rgba(255,255,255,.72);
+  backdrop-filter:blur(14px);
+  box-shadow:0 10px 28px rgba(0,0,0,.26);
+  cursor:pointer;
+  text-align:left;
+  transition:border-color .18s ease,background .18s ease,transform .18s ease;
+}
+.designer-preview-reset-button:hover{
+  transform:translateY(-1px);
+  border-color:rgba(255,255,255,.28);
+}
+.designer-preview-reset-button>span{
+  flex:0 0 auto;
+  width:30px;
+  height:30px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.055);
+  color:#fff;
+  font-size:18px;
+}
+.designer-preview-reset-button>b{
+  color:#fff;
+  font:800 10px/1.15 var(--font-geist-mono),monospace;
+  letter-spacing:.05em;
 }
 
-@media (max-width: 620px) {
-  .designer-layout {
-    grid-template-rows: minmax(240px, 39svh) minmax(0, 1fr) !important;
+@media(max-width:980px){
+  .designer-preview-reset-button{
+    width:auto!important;
+    min-width:0!important;
+    min-height:36px!important;
+    padding:6px 8px!important;
   }
-
-  .designer-preview {
-    padding: 8px 8px 6px !important;
+  .designer-preview-reset-button>span{
+    width:21px!important;
+    height:21px!important;
+    font-size:13px!important;
   }
-
-  .designer-panel {
-    padding: 16px 14px 100px !important;
-  }
-
-  .designer-panel::before {
-    margin: -16px -14px 12px;
-    padding: 9px 14px 8px;
-  }
-
-  .designer-summary.designer-summary-compact {
-    left: 8px;
-    right: 8px;
-    bottom: 6px;
-    grid-template-columns: repeat(3, minmax(0, .62fr)) minmax(112px, 1.2fr) !important;
-  }
-
-  .designer-summary-compact > .designer-summary-card {
-    min-height: 38px !important;
-  }
-
-  .designer-quote.designer-quote-compact {
-    min-height: 38px !important;
-  }
-}
-
-@media (max-width: 420px) {
-  .designer-layout {
-    grid-template-rows: minmax(220px, 36svh) minmax(0, 1fr) !important;
-  }
-
-  /* Çok dar cihazda bilgi kartlarını at, sadece sahne + teklif kalsın. */
-  .designer-summary-compact > .designer-summary-card {
-    display: none !important;
-  }
-
-  .designer-summary.designer-summary-compact {
-    grid-template-columns: 1fr !important;
-    left: auto;
-    width: 132px;
+  .designer-preview-reset-button>b{
+    font-size:7px!important;
   }
 }
