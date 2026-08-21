@@ -1,0 +1,31 @@
+REDPEN SHOWROOM — MOBİL ÜST MENÜ V51
+====================================
+
+AMAÇ
+----
+Masaüstünde görünen üst toolbar mobil cihazlarda da görünsün.
+
+Mobilde gösterilenler:
+- GERİ / SHOWROOM
+- TABELANI TASARLA
+- GÜNDÜZ / GECE
+
+DAVRANIŞ
+--------
+- 980px altı cihazlarda toolbar zorla görünür.
+- Mobilde daha kompakt hale gelir.
+- Sticky olarak ekranın üstünde kalır.
+- 560px altında SHOWROOM yazısı GERİ olarak kısalır.
+- Çok dar ekranlarda font/padding biraz daha küçülür.
+- Desktop tasarıma dokunmaz.
+
+KURULUM
+-------
+cd D:\Projects\redpen-showroom
+node PATCH-MOBILE-TOP-MENU-V51.cjs
+npm.cmd run build
+
+Build geçerse:
+git add .
+git commit -m "Show designer top menu on mobile"
+git push
