@@ -186,6 +186,8 @@ export default function SignDesigner() {
   const [baseColor, setBaseColor] = useState("#24333b");
   const [width, setWidth] = useState(300);
   const [height, setHeight] = useState(80);
+  const [widthInput, setWidthInput] = useState("300");
+  const [heightInput, setHeightInput] = useState("80");
   const [lighted, setLighted] = useState(true);
   const [fileliBacklight, setFileliBacklight] = useState(true);
   const [scene, setScene] = useState<SceneMode>("night");
@@ -1382,8 +1384,28 @@ export default function SignDesigner() {
                 type="number"
                 min={40}
                 max={1200}
-                value={width}
-                onChange={(e) => setWidth(Number(e.target.value) || 40)}
+                value={widthInput}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  setWidthInput(raw);
+
+                  if (raw === "") return;
+
+                  const next = Number(raw);
+                  if (Number.isFinite(next)) {
+                    setWidth(next);
+                  }
+                }}
+                onBlur={() => {
+                  if (widthInput.trim() === "") {
+                    setWidthInput(String(width));
+                    return;
+                  }
+
+                  const next = Math.max(40, Math.min(1200, Number(widthInput) || 40));
+                  setWidth(next);
+                  setWidthInput(String(next));
+                }}
               />
             </div>
             <div>
@@ -1392,8 +1414,28 @@ export default function SignDesigner() {
                 type="number"
                 min={20}
                 max={600}
-                value={height}
-                onChange={(e) => setHeight(Number(e.target.value) || 20)}
+                value={heightInput}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  setHeightInput(raw);
+
+                  if (raw === "") return;
+
+                  const next = Number(raw);
+                  if (Number.isFinite(next)) {
+                    setHeight(next);
+                  }
+                }}
+                onBlur={() => {
+                  if (heightInput.trim() === "") {
+                    setHeightInput(String(height));
+                    return;
+                  }
+
+                  const next = Math.max(20, Math.min(600, Number(heightInput) || 20));
+                  setHeight(next);
+                  setHeightInput(String(next));
+                }}
               />
             </div>
           </div>
