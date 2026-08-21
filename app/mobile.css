@@ -5,71 +5,15 @@
   .showroom { overflow-x: clip; overflow-y: visible; }
 
   .topbar {
-    height: auto;
-    min-height: 104px;
-    padding: 8px 14px 9px;
+    height: 64px;
+    padding: 0 14px;
     grid-template-columns: 1fr auto;
-    grid-template-rows: 48px auto;
-    align-items: center;
     backdrop-filter: blur(12px);
   }
-  .topbar .brand {
-    gap: 8px;
-    font-size: 9px;
-    letter-spacing: .13em;
-    min-width: 0;
-  }
+  .topbar .brand { gap: 8px; font-size: 9px; letter-spacing: .13em; }
   .topbar .brand-mark { width: 27px; height: 27px; }
-
-  .topbar nav {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    grid-column: 1 / -1;
-    grid-row: 2;
-    width: 100%;
-    min-width: 0;
-    gap: 6px;
-    align-items: center;
-    justify-content: flex-start;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding: 5px 0 2px;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .topbar nav::-webkit-scrollbar { display: none; }
-
-  .topbar nav a {
-    display: inline-flex !important;
-    flex: 0 0 auto;
-    min-height: 34px;
-    align-items: center;
-    justify-content: center;
-    padding: 0 11px;
-    border: 1px solid rgba(255,255,255,.11);
-    border-radius: 999px;
-    background: rgba(255,255,255,.03);
-    color: rgba(255,255,255,.76);
-    font-size: 7.5px;
-    line-height: 1;
-    letter-spacing: .10em;
-    white-space: nowrap;
-    text-decoration: none;
-  }
-
-  .topbar nav a:active {
-    color: #fff;
-    border-color: rgba(226,29,56,.55);
-    background: rgba(226,29,56,.14);
-  }
-
-  .outline-button {
-    min-height: 38px;
-    padding: 10px 12px;
-    font-size: 7.5px;
-  }
+  .topbar nav { display: none; }
+  .outline-button { min-height: 40px; padding: 11px 13px; }
 
   .section-pad { padding: 76px 18px; }
   .section-kicker { font-size: 8px; letter-spacing: .28em; }
@@ -399,34 +343,74 @@
 }
 
 
-/* REDPEN MOBILE MAIN NAV DIRECT FIX V54 */
-@media (max-width: 480px) {
-  .topbar {
-    min-height: 100px;
-    padding-left: 10px;
-    padding-right: 10px;
+/* REDPEN DESIGNER FIRST SECTION MOBILE V55 */
+@media (max-width:780px){
+  .designer-entry{
+    min-height:auto;
+    padding:88px 16px 76px;
   }
-
-  .topbar .brand > span:last-child {
-    max-width: 118px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  .designer-entry-glow{
+    width:120vw;
+    right:-66vw;
+    opacity:.7;
   }
-
-  .topbar nav {
-    gap: 5px;
+  .designer-entry-grid{
+    background-size:44px 44px;
   }
-
-  .topbar nav a {
-    min-height: 32px;
-    padding: 0 10px;
-    font-size: 7px;
+  .designer-entry-inner{
+    grid-template-columns:1fr;
+    gap:42px;
   }
-
-  .outline-button {
-    min-height: 34px;
-    padding: 8px 10px;
-    font-size: 7px;
+  .designer-entry-copy h2{
+    margin:14px 0 20px;
+    font-size:clamp(52px,15.2vw,78px);
+    line-height:.86;
+  }
+  .designer-entry-lead{
+    max-width:none;
+    font-size:12px;
+    line-height:1.65;
+  }
+  .designer-entry-points{
+    margin:24px 0 26px;
+    gap:6px;
+  }
+  .designer-entry-points span{
+    min-height:32px;
+    padding:0 9px;
+    font-size:6.5px;
+  }
+  .designer-entry-cta{
+    min-height:72px;
+  }
+  .designer-entry-cta b{
+    font-size:18px;
+  }
+  .designer-entry-cta i{
+    width:42px;
+    height:42px;
+    font-size:17px;
+  }
+  .designer-entry-preview{
+    min-height:330px;
+    padding:14px;
+    transform:none;
+  }
+  .designer-entry-board{
+    width:94%;
+  }
+  .designer-entry-board strong{
+    font-size:clamp(28px,11vw,52px);
+  }
+  .designer-entry-preview-bottom{
+    gap:5px;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .designer-entry-preview-bottom::-webkit-scrollbar{display:none;}
+  .designer-entry-preview-bottom span{
+    flex:0 0 auto;
+    padding:7px;
+    font-size:6px;
   }
 }

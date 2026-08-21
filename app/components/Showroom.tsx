@@ -51,8 +51,48 @@ export default function Showroom(){
  },[]);
  const moveGlow=(event:React.MouseEvent<HTMLElement>)=>{const rect=event.currentTarget.getBoundingClientRect();event.currentTarget.style.setProperty("--mouse-x",`${event.clientX-rect.left}px`);event.currentTarget.style.setProperty("--mouse-y",`${event.clientY-rect.top}px`)};
  return <div ref={root} className="showroom"><IntroExperience/><GlobalAmbient/>
-  <header className="topbar"><a className="brand" href="#top"><span className="brand-mark">R</span><span>REDPEN <b>SHOWCASE</b></span></a><nav><a href="#showcase">SHOWCASE</a><a href="#works">İŞLER</a><a href="#studio">STÜDYO</a><a href="#contact">İLETİŞİM</a></nav><a className="outline-button" href="#showcase">KEŞFET <span>↘</span></a></header>
+  <header className="topbar"><a className="brand" href="#top"><span className="brand-mark">R</span><span>REDPEN <b>SHOWCASE</b></span></a><nav><a href="#designer-start">TABELANI TASARLA</a><a href="#showcase">SHOWCASE</a><a href="#works">İŞLER</a><a href="#studio">STÜDYO</a><a href="#contact">İLETİŞİM</a></nav><a className="outline-button" href="#designer-start">TASARLA <span>↘</span></a></header>
   <main>
+   <section id="designer-start" className="designer-entry" data-ambient="designer">
+    <div className="designer-entry-grid" aria-hidden="true"/>
+    <div className="designer-entry-glow" aria-hidden="true"/>
+    <div className="designer-entry-inner">
+     <div className="designer-entry-copy" data-scroll-reveal>
+      <p className="section-kicker">KENDİN TASARLA / ANINDA ÖNİZLE</p>
+      <h2>Tabelanı<br/><em>kendin oluştur.</em></h2>
+      <p className="designer-entry-lead">Ölçünü gir, malzemeni seç, yazını ve ışığını ayarla. Tabelanı gerçek oranlarda gör ve tasarımını doğrudan teklif için bize gönder.</p>
+      <div className="designer-entry-points">
+       <span><b>01</b> GERÇEK ÖLÇÜ</span>
+       <span><b>02</b> MALZEME SEÇİMİ</span>
+       <span><b>03</b> CANLI ÖNİZLEME</span>
+      </div>
+      <a className="designer-entry-cta" href="/tasarla">
+       <span>TABELANI TASARLA</span>
+       <b>HEMEN BAŞLA</b>
+       <i>↗</i>
+      </a>
+     </div>
+
+     <a className="designer-entry-preview" href="/tasarla" aria-label="Tabelanı Tasarla aracını aç" data-scroll-reveal>
+      <div className="designer-entry-preview-top">
+       <span>REDPEN DESIGNER</span>
+       <b>CANLI</b>
+      </div>
+      <div className="designer-entry-board">
+       <span className="designer-entry-light designer-entry-light-a"/>
+       <span className="designer-entry-light designer-entry-light-b"/>
+       <strong>MARKANIZ</strong>
+       <small>300 × 80 CM</small>
+      </div>
+      <div className="designer-entry-preview-bottom">
+       <span>KOMPOZİT</span>
+       <span>PLEKSİ HARF</span>
+       <span>AYDINLATMALI</span>
+      </div>
+     </a>
+    </div>
+   </section>
+
    <section id="top" className="showcase-hero" data-ambient="showcase"><div className="showcase-grid"/><div className="showcase-heading"><p>REDPEN REKLAM</p><h1>SHOWCASE</h1><div className="showcase-heading-meta"><span>3D TABELA · CEPHE · REKLAM OBJELERİ</span><span>DÖNDÜR · İNCELE · KEŞFET</span></div></div><div id="showcase" className="showcase-stage"><ModelShowcase/></div><div className="scroll-cue"><span/>AŞAĞI KAYDIR</div></section>
    <AssemblyScroll/>
    <SignAnatomy/>
