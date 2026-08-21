@@ -1,0 +1,42 @@
+REDPEN SHOWROOM — ÖLÇÜ INPUT DÜZELTMESİ V57
+
+SORUN
+-----
+GENİŞLİK ve YÜKSEKLİK alanları controlled number input olarak direkt numeric state'e bağlıydı.
+
+Eski davranış:
+setWidth(Number(e.target.value) || 40)
+setHeight(Number(e.target.value) || 20)
+
+Input tamamen silinince:
+Number("") = 0
+0 falsy olduğu için sistem anında 40 / 20 yazıyordu.
+
+Bu yüzden kullanıcı eski rakamı tamamen silemeden yeni ölçü yazamıyordu.
+
+ÇÖZÜM
+-----
+GENİŞLİK ve YÜKSEKLİK için geçici string input state eklendi.
+
+Artık:
+- alanı tamamen silebilirsin
+- boş halde yeni rakamı yazabilirsin
+- yazarken tabela canlı güncellenir
+- inputtan çıkınca min/max sınırı uygulanır
+- genişlik: 40–1200 cm
+- yükseklik: 20–600 cm
+- boş bırakıp çıkarsan son geçerli değer geri gelir
+
+Hem PC hem mobilde çalışır.
+
+KURULUM
+-------
+ZIP'i proje köküne çıkar ve dosyanın üzerine yazdır.
+
+cd D:\Projects\redpen-showroom
+npm.cmd run build
+
+Build geçerse:
+git add app/tasarla/SignDesigner.tsx
+git commit -m "Fix editable sign dimension inputs"
+git push

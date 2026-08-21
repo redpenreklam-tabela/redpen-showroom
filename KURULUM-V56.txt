@@ -1,0 +1,49 @@
+REDPEN SHOWROOM — MOBİL CANLI ÖNİZLEME UX V56
+
+SORUN
+-----
+Mobilde mevcut sıra:
+1. Ayarlar
+2. En altta tabela önizlemesi
+
+Kullanıcı ayarı değiştirip sonucu görmek için sürekli aşağı/yukarı kaydırmak zorunda kalıyor.
+
+V56 ÇÖZÜMÜ
+-----------
+Mobil / tablet görünümü artık uygulama gibi iki parçalı:
+
+ÜST:
+- Tabela canlı önizlemesi
+- Her zaman ekranda
+- yaklaşık ekranın %36–42'si
+
+ALT:
+- Ayarlar paneli
+- Sadece bu panel scroll olur
+- Kullanıcı ayarı değiştirirken tabela aynı anda üstte görünür
+
+Yani:
+[ CANLI TABELA ]
+----------------
+[ AYARLAR       ]
+[ ↓ scroll      ]
+[ ↓ scroll      ]
+
+Ek olarak:
+- teknik sahne yazıları mobilde gizlendi
+- ışık butonları küçültüldü
+- WhatsApp/özet barı sahnenin altında kompakt kaldı
+- çok dar telefonda özet kutuları gizlenip sadece teklif butonu bırakılır
+- desktop davranışı değişmez
+
+KURULUM
+-------
+ZIP'i proje köküne çıkar, app/tasarla/designer-usability.css üzerine yazdır.
+
+cd D:\Projects\redpen-showroom
+npm.cmd run build
+
+Build geçerse:
+git add app/tasarla/designer-usability.css
+git commit -m "Optimize mobile designer with persistent live preview"
+git push

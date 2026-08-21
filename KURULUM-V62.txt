@@ -1,0 +1,48 @@
+REDPEN SHOWROOM — MERGED V62
+
+NEDEN MENÜ ESKİYE DÖNDÜ?
+------------------------
+V61 doğrudan iki dosyayı eski proje snapshot'ından üretmişti:
+- SignDesigner.tsx
+- designer-usability.css
+
+Bu yüzden V60'ta yaptığımız yeni kontrol sırası V61 uygulanınca üzerine yazıldı.
+
+V62 artık V60'I TABAN ALIR ve üstüne:
+- V61 geniş Folyo renk paleti
+- V61 özel Folyo renk seçici
+- V61 sıfıra sıfır / gölgesiz Folyo görünümü
+- V56 mobil sabit canlı önizleme UX'i
+birleştirilmiştir.
+
+KORUNAN YENİ SIRA
+-----------------
+1. Tabela zemini boyutu
+2. Ana metin + boyut + harf aralığı + ek metin
+3. Logo + boyut
+4. Kompozit zemin rengi
+5. Harf malzemesi
+6. Harf rengi
+7. Işık bandı
+8. Bant ışık rengi
+9. Bant malzemesi
+
+Ayrıca:
+- zemin malzemesi sabit KOMPOZİT
+- sahneyi ortala üst önizleme kontrollerinde
+- ölçü input düzeltmesi korunur
+- Folyo gölgesiz/düzdür
+- Folyo renk seçenekleri geniştir
+- mobilde canlı önizleme üstte sabit kalır
+
+KURULUM
+-------
+ZIP'i proje köküne çıkar ve iki dosyanın üzerine yazdır.
+
+cd D:\Projects\redpen-showroom
+npm.cmd run build
+
+Build geçerse:
+git add app/tasarla/SignDesigner.tsx app/tasarla/designer-usability.css
+git commit -m "Merge reordered controls with foil and mobile UX"
+git push

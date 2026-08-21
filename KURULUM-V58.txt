@@ -1,0 +1,38 @@
+REDPEN SHOWROOM — TABELA ALT KENAR HİZASI V58
+
+SORUN
+-----
+Tabela altındaki 3D derinlik katmanı:
+left: 5px;
+right: -7px;
+transform: skewX(-38deg);
+
+şeklindeydi.
+
+Bu yüzden özellikle sağ tarafta zeminden dışarı taşıyordu.
+
+ÇÖZÜM
+-----
+Alt 3D katman artık:
+left: 6px;
+right: 0;
+
+Skew açısı aynı kaldı.
+
+Böylece:
+- sağ taraf artık tabeladan dışarı taşmaz
+- sol tarafta skew ile oluşan eğim ana tabelaya oturur
+- 3D derinlik hissi korunur
+- tabela yüzeyinin üstüne gereksiz binme azalır
+
+KURULUM
+-------
+ZIP'i proje köküne çıkar ve app/tasarla/tasarla.css üzerine yazdır.
+
+cd D:\Projects\redpen-showroom
+npm.cmd run build
+
+Build geçerse:
+git add app/tasarla/tasarla.css
+git commit -m "Align sign board 3D bottom edge"
+git push

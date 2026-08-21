@@ -1,0 +1,26 @@
+REDPEN SHOWROOM — MOBİL ANA MENÜ DIRECT FIX V54
+
+Projeyi inceledim. Sorunun kaynağı doğrudan app/mobile.css içindeydi:
+
+.topbar nav { display: none; }
+
+Ayrıca app/globals.css içinde 1000px altında da nav gizleniyor.
+V54 mobile.css içinde display:flex !important kullanarak bunu kesin olarak eziyor.
+
+Bu paket SCRIPT DEĞİL.
+ZIP'i proje köküne çıkarınca app/mobile.css doğrudan güncellenir.
+
+SONRA:
+cd D:\Projects\redpen-showroom
+npm.cmd run build
+
+Build geçerse:
+git add app/mobile.css
+git commit -m "Fix mobile showroom navigation"
+git push
+
+Beklenen mobil görünüm:
+Üst satır: REDPEN SHOWCASE + KEŞFET
+Alt satır: SHOWCASE / İŞLER / STÜDYO / İLETİŞİM / TABELANI TASARLA / KATALOG
+
+Son iki link CatalogNavInjector tarafından tarayıcıda eklenir.

@@ -1,0 +1,64 @@
+REDPEN SHOWROOM — GERÇEK DÜZ FOLYO V63
+
+SORUNUN KAYNAĞI
+---------------
+Folyo daha önce normal harflerle aynı <strong> elementiyle çiziliyordu.
+
+Projede kutu harf / forex / ışık gibi sistemlerin bir kısmı:
+.designer-board-content strong
+seçicisini kullanıyor.
+
+Bu yüzden Folyo CSS'te text-shadow:none verilse bile aynı element hâlâ
+3D harf sisteminin parçası olarak kalıyordu ve bazı taban stilleri
+görsel olarak hafif derinlik/gölge hissi bırakabiliyordu.
+
+V63 ÇÖZÜMÜ
+-----------
+Folyo artık yapısal olarak ayrı render edilir:
+
+Normal harf:
+<strong>...</strong>
+
+Folyo:
+<span class="designer-folyo-flat-text">...</span>
+
+Böylece bütün strong tabanlı:
+- 3D depth
+- kutu harf gölgesi
+- pseudo katmanları
+- metal/forex stilleri
+
+Folyo'ya hiç uygulanamaz.
+
+Folyo:
+- sıfır text-shadow
+- sıfır box-shadow
+- sıfır filter
+- sıfır stroke
+- sıfır pseudo-element
+- sıfır glow
+- sadece düz renk glyph
+
+Kompozit yüzeye yapıştırılmış gerçek kesim folyo gibi görünür.
+
+V62'DEN KORUNANLAR
+------------------
+- yeni ayar sıralaması
+- kompozit sabit zemin
+- geniş Folyo renk paleti
+- özel Folyo rengi
+- ölçü input düzeltmesi
+- mobil sabit canlı önizleme
+- Sahneyi Ortala üst kontrollerde
+
+KURULUM
+-------
+ZIP'i proje köküne çıkar ve iki dosyanın üzerine yazdır.
+
+cd D:\Projects\redpen-showroom
+npm.cmd run build
+
+Build geçerse:
+git add app/tasarla/SignDesigner.tsx app/tasarla/designer-usability.css
+git commit -m "Render foil as truly flat surface text"
+git push

@@ -1,0 +1,52 @@
+REDPEN SHOWROOM — FOLYO RENK + SIFIRA SIFIR V61
+
+YAPILANLAR
+-----------
+1) Harf renk paleti genişletildi:
+- kırmızı
+- beyaz
+- siyah
+- antrasit
+- gri
+- gümüş
+- altın
+- sarı
+- turuncu
+- bordo
+- pembe
+- fuşya
+- mor
+- lacivert
+- mavi
+- turkuaz
+- petrol
+- yeşil
+- açık yeşil
+- kahverengi
+- krem
+
+2) FOLYO seçiliyken ayrıca ÖZEL renk seçici görünür.
+İstenilen herhangi bir HEX renk color picker üzerinden seçilebilir.
+
+3) FOLYO görsel davranışı düzeltildi:
+- text-shadow yok
+- box-shadow yok
+- glow yok
+- metal depth yok
+- border/stroke yok
+- kabartı yok
+- çıkıntı yok
+
+Folyo artık kompozit yüzeyine sıfıra sıfır yapışmış düz baskı/folyo gibi görünür.
+
+KURULUM
+-------
+ZIP'i proje köküne çıkar ve dosyaların üzerine yazdır.
+
+cd D:\Projects\redpen-showroom
+npm.cmd run build
+
+Build geçerse:
+git add app/tasarla/SignDesigner.tsx app/tasarla/designer-usability.css
+git commit -m "Expand foil colors and make foil fully flat"
+git push

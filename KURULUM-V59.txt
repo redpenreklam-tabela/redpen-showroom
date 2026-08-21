@@ -1,0 +1,33 @@
+REDPEN SHOWROOM — TABELA ALT 3D KENAR V59
+
+SORUN
+-----
+Önceki 3D alt parça skewX ile eğiliyordu.
+Skew bütün dikdörtgeni kaydırdığı için üst kenarın iki köşesi tabela genişliğiyle
+tam çakışmıyordu. Kırmızı zeminde sol ve sağda boşluk daha net görünüyordu.
+
+ÇÖZÜM
+-----
+Skew kaldırıldı.
+Alt parça artık gerçek trapez olarak clip-path ile çiziliyor:
+
+üst kenar: tabelayla %100 aynı genişlik
+alt kenar: iki taraftan hafif içeri giriyor
+
+Bu sayede:
+- sol üst köşe boş kalmaz
+- sağ üst köşe boş kalmaz
+- 3D alt derinlik hissi korunur
+- parça tabela dışına taşmaz
+
+KURULUM
+-------
+ZIP'i proje köküne çıkar ve app/tasarla/tasarla.css üzerine yazdır.
+
+cd D:\Projects\redpen-showroom
+npm.cmd run build
+
+Build geçerse:
+git add app/tasarla/tasarla.css
+git commit -m "Fix sign board bottom edge corners"
+git push

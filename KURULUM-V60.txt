@@ -1,0 +1,57 @@
+REDPEN SHOWROOM — ORTAK PC + MOBİL AYAR SIRASI V60
+
+Yeni sıra hem masaüstü hem mobil için aynıdır:
+
+1. TABELA ZEMİN BOYUTU
+   - Genişlik / CM
+   - Yükseklik / CM
+
+2. METİN
+   - Marka / tabela yazısı
+   - Yazı tipi
+   - Harf yüksekliği / CM
+   - Harf aralığı
+   - Ek metin / alt başlık
+     - metin
+     - konum
+     - font
+     - boyut
+     - harf aralığı
+     - malzeme
+     - renk
+
+3. LOGO
+   - Logo yükle / değiştir / kaldır
+   - Logo yüksekliği / CM
+
+4. KOMPOZİT ZEMİN RENGİ
+
+5. HARF MALZEMESİ
+
+6. HARF RENGİ
+
+7. IŞIK BANDI / 6 CM
+   - konum / kenarlar
+
+8. BANT IŞIK RENGİ
+
+9. BANT MALZEMESİ
+
+Ek değişiklikler:
+- Zemin malzemesi seçimi kaldırıldı.
+- Zemin sabit KOMPOZİT.
+- "Sahne Konumu" bölümü ayar panelinden kaldırıldı.
+- "SAHNEYİ ORTALA" butonu önizlemedeki ışık aç/kapa kontrollerinin yanına taşındı.
+- V57 genişlik/yükseklik input düzeltmesi korunuyor; ölçü alanı tamamen silinip yeniden yazılabilir.
+
+KURULUM
+-------
+ZIP'i proje köküne çıkar ve dosyaların üzerine yazdır.
+
+cd D:\Projects\redpen-showroom
+npm.cmd run build
+
+Build geçerse:
+git add app/tasarla/SignDesigner.tsx app/tasarla/designer-usability.css
+git commit -m "Reorder designer controls and lock composite base"
+git push

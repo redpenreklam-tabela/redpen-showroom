@@ -1,0 +1,36 @@
+REDPEN SHOWROOM — TABELANI TASARLA İLK BÖLÜM V55
+
+YAPILAN
+-------
+SHOWROOM'U AYDINLAT girişinden sonra ilk ana bölüm artık TABELANI TASARLA.
+
+Yeni sıra:
+1. Intro / SHOWROOM'U AYDINLAT
+2. TABELANI TASARLA
+3. SHOWCASE
+4. Üretim / anatomi / işler / stüdyo / iletişim
+
+Yeni ilk bölüm:
+- güçlü "Tabelanı kendin oluştur" başlığı
+- gerçek ölçü / malzeme / canlı önizleme mesajı
+- TABELANI TASARLA / HEMEN BAŞLA CTA
+- sağda tabelanın basit canlı mockup görünümü
+- CTA doğrudan /tasarla açar
+
+Üst menü:
+- TABELANI TASARLA ilk link oldu
+- KEŞFET yerine TASARLA butonu yeni ilk bölüme iner
+
+KURULUM
+-------
+Bu ZIP doğrudan dosya içeriyor. Proje köküne çıkar ve üzerine yazdır.
+
+D:\Projects\redpen-showroom
+
+Sonra:
+npm.cmd run build
+
+Build geçerse:
+git add app/components/Showroom.tsx app/globals.css app/mobile.css
+git commit -m "Put designer experience first on showroom"
+git push
