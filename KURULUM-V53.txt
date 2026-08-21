@@ -1,0 +1,38 @@
+REDPEN SHOWROOM — MOBİL ANA MENÜ V53
+===================================
+
+SORUNUN GERÇEK NEDENİ
+---------------------
+app/mobile.css içinde şu kural vardı:
+
+.topbar nav { display: none; }
+
+Yani ana showroom üst menüsü mobilde bilerek gizleniyordu.
+Bu yüzden önceki /tasarla toolbar patch'leri doğru yere müdahale etmiyordu.
+
+V53
+---
+Mobil ana showroom üst barı:
+
+Üst satır:
+[ REDPEN SHOWCASE ]                         [ KEŞFET ]
+
+Alt satır:
+[ SHOWCASE ] [ İŞLER ] [ STÜDYO ] [ İLETİŞİM ]
+
+- Menü görünür.
+- Dar ekranda yatay kaydırılabilir.
+- Scrollbar gizli.
+- Masaüstü görünüm değişmez.
+- /tasarla sayfasındaki toolbar'a dokunmaz.
+
+KURULUM
+-------
+cd D:\Projects\redpen-showroom
+node PATCH-MOBILE-MAIN-NAV-V53.cjs
+npm.cmd run build
+
+Build geçerse:
+git add .
+git commit -m "Show main showroom navigation on mobile"
+git push
