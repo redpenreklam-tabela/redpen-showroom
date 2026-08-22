@@ -1382,65 +1382,57 @@ export default function SignDesigner() {
             <MaterialPicker value={letterMaterial} onChange={setLetterMaterial} />
           </div>
 
-          {/* 06 — HARF RENGİ */}
+          {/* REDPEN FILELI SAME COLOR CONTROL V69 */}
+          {/* 06 — HARF RENGİ / FILELİDE PLEKSİ-İŞIK RENGİ */}
           <div className="designer-field">
-            <label>HARF RENGİ</label>
+            <label>{isFileliMetalFace ? "PLEKSİ / IŞIK RENGİ" : "HARF RENGİ"}</label>
+
+            {isFileliMetalFace && (
+              <p className="designer-control-note">
+                Fileli harfin metal konturu malzemeye göre sabittir; buradan iç pleksi ve ışık rengini seçersin.
+              </p>
+            )}
+
             <div className="designer-colors">
-              {letterColors.map((item) => (
+              {(isFileliMetalFace ? lightStripColors : letterColors).map((item) => (
                 <button
-                  key={`letter-color-${item.value}`}
+                  key={`${isFileliMetalFace ? "fileli-plexi" : "letter"}-color-${item.value}`}
                   type="button"
-                  className={letterColor === item.value ? "is-active" : ""}
+                  className={(isFileliMetalFace ? fileliPlexiColor : letterColor) === item.value ? "is-active" : ""}
                   style={{ "--swatch": item.value } as React.CSSProperties}
-                  onClick={() => setLetterColor(item.value)}
+                  onClick={() => {
+                    if (isFileliMetalFace) {
+                      setFileliPlexiColor(item.value);
+                    } else {
+                      setLetterColor(item.value);
+                    }
+                  }}
                   aria-label={item.name}
                   title={item.name}
                 />
               ))}
-              {letterMaterial === "FOLYO" && (
-                <label className="designer-letter-custom-color" title="Özel folyo rengi">
+
+              {(letterMaterial === "FOLYO" || isFileliMetalFace) && (
+                <label
+                  className="designer-letter-custom-color"
+                  title={isFileliMetalFace ? "Özel pleksi / ışık rengi" : "Özel folyo rengi"}
+                >
                   <input
                     type="color"
-                    value={letterColor}
-                    onChange={(event) => setLetterColor(event.target.value)}
+                    value={isFileliMetalFace ? fileliPlexiColor : letterColor}
+                    onChange={(event) => {
+                      if (isFileliMetalFace) {
+                        setFileliPlexiColor(event.target.value);
+                      } else {
+                        setLetterColor(event.target.value);
+                      }
+                    }}
                   />
                   <span>ÖZEL</span>
                 </label>
               )}
             </div>
           </div>
-
-          {isFileliMetalFace && (
-            <div className="designer-field designer-fileli-light-color-field">
-              <label>PLEKSİ / IŞIK RENGİ</label>
-              <p className="designer-control-note">
-                Fileli harfin içindeki pleksinin ve verdiği ışığın rengini seç.
-              </p>
-
-              <div className="designer-colors">
-                {lightStripColors.map((item) => (
-                  <button
-                    key={`fileli-plexi-color-${item.value}`}
-                    type="button"
-                    className={fileliPlexiColor === item.value ? "is-active" : ""}
-                    style={{ "--swatch": item.value } as React.CSSProperties}
-                    onClick={() => setFileliPlexiColor(item.value)}
-                    aria-label={`Fileli pleksi ${item.name}`}
-                    title={item.name}
-                  />
-                ))}
-
-                <label className="designer-letter-custom-color" title="Özel pleksi / ışık rengi">
-                  <input
-                    type="color"
-                    value={fileliPlexiColor}
-                    onChange={(event) => setFileliPlexiColor(event.target.value)}
-                  />
-                  <span>ÖZEL</span>
-                </label>
-              </div>
-            </div>
-          )}
 
           {/* 07 — IŞIK BANDI / KONUM */}
           <div className="designer-field designer-light-strip-field">
@@ -1959,5 +1951,6 @@ export default function SignDesigner() {
     </main>
   );
 }
+
 
 
