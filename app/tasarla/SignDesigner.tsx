@@ -206,6 +206,7 @@ export default function SignDesigner() {
   const [lighted, setLighted] = useState(true);
   const [fileliBacklight, setFileliBacklight] = useState(true);
   /* REDPEN FILELI PLEXI COLOR V67 */
+  /* REDPEN FILELI COLOR FIX V68 */
   const [fileliPlexiColor, setFileliPlexiColor] = useState("#ffffff");
   const [scene, setScene] = useState<SceneMode>("night");
   const [lightStripMode, setLightStripMode] = useState<LightStripMode>("none");
@@ -1719,7 +1720,7 @@ export default function SignDesigner() {
                               radius="2.35"
                               result="insetAlpha"
                             />
-                            <feFlood floodColor="#ffffff" result="whiteFill" />
+                            <feFlood floodColor={fileliPlexiColor} result="whiteFill" />
                             <feComposite
                               in="whiteFill"
                               in2="insetAlpha"
@@ -1958,4 +1959,5 @@ export default function SignDesigner() {
     </main>
   );
 }
+
 
