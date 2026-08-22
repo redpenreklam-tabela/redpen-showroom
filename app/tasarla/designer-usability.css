@@ -2122,3 +2122,49 @@ body.designer-is-dragging .designer-extra-text-preview{cursor:grabbing;}
     1px 1px 0 rgba(0,0,0,.22),
     3px 4px 0 rgba(0,0,0,.40)!important;
 }
+
+/* REDPEN PLEKSI THICKNESS V64
+   Pleksi kutu harfin fiziksel yanak hissini hafifçe artırır.
+   Folyo / Forex / metal malzemelere dokunmaz. */
+
+/* Işıksız pleksi: mevcut ~5x7 px derinliği biraz daha tok hale getir. */
+.designer-board.letter-material-pleksi:not(.is-lighted) .designer-main-text.material-pleksi{
+  text-shadow:
+    1px 1px 0 rgba(0,0,0,.24),
+    2px 2.5px 0 rgba(0,0,0,.30),
+    4px 5px 0 rgba(0,0,0,.40),
+    6px 8px 0 rgba(0,0,0,.58)!important;
+}
+
+/* Işıklı pleksi: glow korunur, fiziksel gövde/yanak biraz kalınlaşır. */
+.designer-board.letter-material-pleksi.is-lighted .designer-main-text.material-pleksi{
+  text-shadow:
+    0 0 7px var(--letter-color),
+    0 0 18px var(--letter-color),
+    0 0 42px color-mix(in srgb,var(--letter-color) 70%,transparent),
+    1px 1px 0 rgba(0,0,0,.24),
+    3px 4px 0 rgba(0,0,0,.42),
+    6px 8px 0 rgba(0,0,0,.66)!important;
+}
+
+/* Gündüzde daha doğal, daha kısa ama yine eskiye göre biraz kalın yanak. */
+.mode-day .designer-board.letter-material-pleksi.is-lighted .designer-main-text.material-pleksi{
+  text-shadow:
+    0 0 8px color-mix(in srgb,var(--letter-color) 50%,white),
+    2px 2px 0 rgba(0,0,0,.20),
+    5px 6px 0 rgba(0,0,0,.36)!important;
+}
+
+/* Ek metin PLEKSİ seçilirse ana harfle tutarlı olsun. */
+.designer-extra-text-preview.extra-material-pleksi{
+  text-shadow:
+    1px 1px 0 rgba(0,0,0,.20),
+    3px 4px 0 rgba(0,0,0,.36)!important;
+}
+.designer-extra-text-preview.extra-material-pleksi.is-lighted{
+  text-shadow:
+    0 0 2px rgba(255,255,255,.9),
+    0 0 8px var(--extra-letter-color),
+    1px 1px 0 rgba(0,0,0,.22),
+    3px 4px 0 rgba(0,0,0,.40)!important;
+}
