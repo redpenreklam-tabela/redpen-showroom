@@ -2196,3 +2196,33 @@ body.designer-is-dragging .designer-extra-text-preview{cursor:grabbing;}
     1px 1px 0 rgba(0,0,0,.22),
     3px 4px 0 rgba(0,0,0,.40)!important;
 }
+
+/* REDPEN PLEKSI GLOW MATCH FILELI V66
+   Pleksi ışığını fileli krom/gold'un algılanan yoğunluğuna yaklaştırır.
+   Fiziksel kalınlık V64'teki gibi korunur. */
+
+.designer-board.letter-material-pleksi.is-lighted .designer-main-text.material-pleksi{
+  text-shadow:
+    0 0 3px color-mix(in srgb,var(--letter-color) 78%,transparent),
+    0 0 9px color-mix(in srgb,var(--letter-color) 64%,transparent),
+    0 0 20px color-mix(in srgb,var(--letter-color) 40%,transparent),
+    1px 1px 0 rgba(0,0,0,.24),
+    3px 4px 0 rgba(0,0,0,.42),
+    6px 8px 0 rgba(0,0,0,.66)!important;
+}
+
+.mode-day .designer-board.letter-material-pleksi.is-lighted .designer-main-text.material-pleksi{
+  text-shadow:
+    0 0 3px color-mix(in srgb,var(--letter-color) 34%,white),
+    2px 2px 0 rgba(0,0,0,.20),
+    5px 6px 0 rgba(0,0,0,.36)!important;
+}
+
+.designer-extra-text-preview.extra-material-pleksi.is-lighted{
+  text-shadow:
+    0 0 1px rgba(255,255,255,.60),
+    0 0 4px color-mix(in srgb,var(--extra-letter-color) 68%,transparent),
+    0 0 10px color-mix(in srgb,var(--extra-letter-color) 38%,transparent),
+    1px 1px 0 rgba(0,0,0,.22),
+    3px 4px 0 rgba(0,0,0,.40)!important;
+}
