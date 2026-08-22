@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { domToPng } from "modern-screenshot";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -205,6 +205,8 @@ export default function SignDesigner() {
   const [heightInput, setHeightInput] = useState("80");
   const [lighted, setLighted] = useState(true);
   const [fileliBacklight, setFileliBacklight] = useState(true);
+  /* REDPEN FILELI PLEXI COLOR V67 */
+  const [fileliPlexiColor, setFileliPlexiColor] = useState("#ffffff");
   const [scene, setScene] = useState<SceneMode>("night");
   const [lightStripMode, setLightStripMode] = useState<LightStripMode>("none");
   const [lightStripMaterial, setLightStripMaterial] = useState<LightStripMaterial>("PLEKSİ");
@@ -1407,6 +1409,38 @@ export default function SignDesigner() {
             </div>
           </div>
 
+          {isFileliMetalFace && (
+            <div className="designer-field designer-fileli-light-color-field">
+              <label>PLEKSİ / IŞIK RENGİ</label>
+              <p className="designer-control-note">
+                Fileli harfin içindeki pleksinin ve verdiği ışığın rengini seç.
+              </p>
+
+              <div className="designer-colors">
+                {lightStripColors.map((item) => (
+                  <button
+                    key={`fileli-plexi-color-${item.value}`}
+                    type="button"
+                    className={fileliPlexiColor === item.value ? "is-active" : ""}
+                    style={{ "--swatch": item.value } as React.CSSProperties}
+                    onClick={() => setFileliPlexiColor(item.value)}
+                    aria-label={`Fileli pleksi ${item.name}`}
+                    title={item.name}
+                  />
+                ))}
+
+                <label className="designer-letter-custom-color" title="Özel pleksi / ışık rengi">
+                  <input
+                    type="color"
+                    value={fileliPlexiColor}
+                    onChange={(event) => setFileliPlexiColor(event.target.value)}
+                  />
+                  <span>ÖZEL</span>
+                </label>
+              </div>
+            </div>
+          )}
+
           {/* 07 — IŞIK BANDI / KONUM */}
           <div className="designer-field designer-light-strip-field">
             <div className="designer-light-strip-heading">
@@ -1703,6 +1737,7 @@ export default function SignDesigner() {
                         dominantBaseline="middle"
                         textAnchor="middle"
                         filter={`url(#${metalHaloId})`}
+                        fill={isFileliMetalFace ? fileliPlexiColor : undefined}
                       >
                         {normalizedText}
                       </text>
@@ -1757,7 +1792,7 @@ export default function SignDesigner() {
                             y="50%"
                             dominantBaseline="middle"
                             textAnchor="middle"
-                            fill="#ffffff"
+                            fill={fileliPlexiColor}
                             filter={`url(#${fileliInsetId})`}
                           >
                             {normalizedText}
@@ -1923,3 +1958,4 @@ export default function SignDesigner() {
     </main>
   );
 }
+
